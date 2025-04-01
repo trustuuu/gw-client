@@ -1,0 +1,4 @@
+span.rdg-header-sort-name + span{
+    display: flex;
+    align-items: center;
+}
