@@ -18,7 +18,7 @@ function GroupPage({
 }) {
   const history = useHistory();
   const pageDisplayCount = 4;
-  const postDisplayCount = 3;
+  const postDisplayCount = 10;
   const { accessToken, company, domain } = useAuth();
   const [groups, setGroups] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);

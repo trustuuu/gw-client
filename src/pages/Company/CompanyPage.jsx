@@ -11,8 +11,8 @@ import domainApi from "../../api/domain-api";
 
 function CompanyPage() {
   const history = useHistory();
-  const pageDisplayCount = 3;
-  const postDisplayCount = 3;
+  const pageDisplayCount = 4;
+  const postDisplayCount = 10;
   const { accessToken, company, rootCompany, saveCompany, saveDomain } =
     useAuth();
   const [companies, setCompanies] = useState([]);

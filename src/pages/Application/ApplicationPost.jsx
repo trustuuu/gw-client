@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { applicationFields } from "../../constants/formFields";
+import { applicationFields } from "../../constants/applicationFields";
 import { useHistory, useLocation } from "react-router-dom";
 import applicationApi from "../../api/application-api";
 import ItemField from "../../component/ItemField";
@@ -8,17 +8,17 @@ import PanelExpandable from "../../component/PanelExpandable";
 import Stepper from "../../component/Stepper";
 
 const fields = applicationFields;
-const fields_basic = fields.filter((a) => a.category == "settings.basic");
+const fields_basic = fields.filter((a) => a.category === "settings.basic");
 const fields_settings_properties = fields.filter(
-  (a) => a.category == "settings.properties"
+  (a) => a.category === "settings.properties"
 );
 const fields_settings_uris = fields.filter(
-  (a) => a.category == "settings.uris"
+  (a) => a.category === "settings.uris"
 );
 
 let fieldsState = {};
 fields.forEach(
-  (field) => (fieldsState[field.id] = field.type == "checkbox" ? false : "")
+  (field) => (fieldsState[field.id] = field.type === "checkbox" ? false : "")
 );
 
 const generateString = (
@@ -33,10 +33,10 @@ export default function ApplicationPost() {
   const location = useLocation();
   const history = useHistory();
   const [errorText, setError] = useState();
-  const { url, company, domain, application } = location.state;
+  const { company, domain, application } = location.state;
   const [mode, setMode] = useState(location.state.mode);
   const [itemState, setItemState] = useState(
-    mode == "new"
+    mode === "new"
       ? {
           ...fieldsState,
           client_id: generateString(32),
@@ -47,11 +47,12 @@ export default function ApplicationPost() {
   );
 
   const handleChange = (e) => {
-    const currentItem = fields.filter((f) => f.id == e.target.id)[0];
+    const currentItem = fields.filter((f) => f.id === e.target.id)[0];
     const itemValue =
-      e.target.value == "true" || e.target.value == "false"
+      e.target.value === "true" || e.target.value === "false"
         ? e.target.checked
-        : currentItem.valueType != undefined && currentItem.valueType == "array"
+        : currentItem.valueType !== undefined &&
+          currentItem.valueType === "array"
         ? e.target.value.split(/\r\n|\n|\r/)
         : e.target.value;
 
@@ -65,7 +66,7 @@ export default function ApplicationPost() {
 
   const populateItem = async (data) => {
     fields.forEach((field) => {
-      if (!field.database && field.database != undefined) {
+      if (!field.database && field.database !== undefined) {
         delete data[field.id];
       }
     });
@@ -84,7 +85,7 @@ export default function ApplicationPost() {
       await applicationApi.create(data);
       history.goBack();
     } catch (err) {
-      if (err.response.status == 409) {
+      if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.client_name} already exist!`);
       } else {
         setError(err.message);
@@ -117,7 +118,7 @@ export default function ApplicationPost() {
       });
       history.goBack();
     } catch (err) {
-      if (err.response.status == 409) {
+      if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.client_name} already exist!`);
       } else {
         setError(err.message);
@@ -126,17 +127,17 @@ export default function ApplicationPost() {
     }
   };
 
-  const customClassEdit =
-    "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";
-  const customClass =
-    "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 min-w-80 dark:bg-gray-300 ";
+  // const customClassEdit =
+  //   "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";
+  // const customClass =
+  //   "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 min-w-80 dark:bg-gray-300 ";
 
   const steps = [
     {
       title: "Basic Information",
       page: displayPanel(
         "Basic Information",
-        fields_basic.filter((f) => f.id != "domain"),
+        fields_basic.filter((f) => f.id !== "domain"),
         application,
         itemState,
         handleChange,
@@ -171,7 +172,7 @@ export default function ApplicationPost() {
     <div className="flex justify-center">
       <form className="mt-8 space-y-6">
         <h4 className="text-red-400">{errorText}</h4>
-        {mode == "new" ? (
+        {mode === "new" ? (
           <div>
             {/* {displayPanel('Basic Information', fields_basic, application, itemState, handleChange, mode)} */}
             <Stepper steps={steps} handleSubmit={handleSubmit} />
@@ -180,7 +181,7 @@ export default function ApplicationPost() {
           <div>
             {displayPanel(
               "Basic Information",
-              fields_basic.filter((f) => f.id != "domain"),
+              fields_basic.filter((f) => f.id !== "domain"),
               application,
               itemState,
               handleChange,
@@ -204,12 +205,12 @@ export default function ApplicationPost() {
             )}
           </div>
         )}
-        {mode == "new" || mode == "edit" ? (
+        {mode === "new" || mode === "edit" ? (
           <div className="flex justify-center">
             <div className="mr-3">
               <FormAction
-                handleSubmit={mode == "new" ? handleSubmit : handleSave}
-                text={mode == "new" ? "Create" : "Save"}
+                handleSubmit={mode === "new" ? handleSubmit : handleSave}
+                text={mode === "new" ? "Create" : "Save"}
               />
             </div>
             <div>
@@ -236,15 +237,15 @@ const displayPanel = (title, fields, item, itemState, handleChange, mode) => {
     <PanelExpandable title={title} initExpand={true}>
       <div className="space-y-4">
         {fields.map((field) =>
-          (field.hiddenUpdate || field.hiddenUpdate != undefined) &&
-          mode == "edit" ? (
+          (field.hiddenUpdate || field.hiddenUpdate !== undefined) &&
+          mode === "edit" ? (
             <></>
           ) : (
             <ItemField
               item={item}
               handleChange={handleChange}
               value={
-                field.valueType == "array" && itemState[field.id]
+                field.valueType === "array" && itemState[field.id]
                   ? itemState[field.id].join("\r\n")
                   : itemState[field.id]
               }

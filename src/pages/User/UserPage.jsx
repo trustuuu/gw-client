@@ -18,7 +18,7 @@ function UserPage({
 }) {
   const history = useHistory();
   const pageDisplayCount = 4;
-  const postDisplayCount = 3;
+  const postDisplayCount = 10;
   const { accessToken, company, domain, header } = useAuth();
   const [users, setUsers] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);

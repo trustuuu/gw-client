@@ -18,10 +18,13 @@ function Domains({
     if (!item) return;
 
     if (isChecked) {
-      parentCallback([...checkedItems, ...domains.filter((i) => i.id == item)]);
+      parentCallback([
+        ...checkedItems,
+        ...domains.filter((i) => i.id === item),
+      ]);
       setCheckedItems([
         ...checkedItems,
-        ...domains.filter((i) => i.id == item),
+        ...domains.filter((i) => i.id === item),
       ]);
     } else {
       parentCallback(checkedItems.filter((i) => i.id != item));
@@ -69,7 +72,8 @@ function Domains({
                       name={domain.id}
                       id={domain.id}
                       checked={
-                        checkedItems.filter((i) => i.id == domain.id).length > 0
+                        checkedItems.filter((i) => i.id === domain.id).length >
+                        0
                       }
                       onChange={handleChangeCheck}
                     />

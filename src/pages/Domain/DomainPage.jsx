@@ -12,7 +12,7 @@ import ButtonToolbox from "../../component/ButtonToolbox";
 function DomainPage() {
   const history = useHistory();
   const pageDisplayCount = 4;
-  const postDisplayCount = 3;
+  const postDisplayCount = 10;
   const { accessToken, company, domain, saveDomain } = useAuth();
   const [domains, setDomains] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
@@ -28,7 +28,7 @@ function DomainPage() {
   const currentPosts =
     domains && domain
       ? domains
-          .filter((d) => d.id != domain.id)
+          .filter((d) => d.id !== domain.id)
           .slice(indexOfFirstPost, indexOfLastPost)
       : [];
   const paginate = (pageNumber, startPage, endPage) => {
@@ -84,10 +84,10 @@ function DomainPage() {
       setPageEnd(
         domain
           ? Math.ceil(
-              dom.data.filter((d) => d.id != domain.id).length / postsPerPage
+              dom.data.filter((d) => d.id !== domain.id).length / postsPerPage
             ) < pageDisplayCount
             ? Math.ceil(
-                dom.data.filter((d) => d.id != domain.id).length / postsPerPage
+                dom.data.filter((d) => d.id !== domain.id).length / postsPerPage
               )
             : pageDisplayCount
           : 0
@@ -132,7 +132,7 @@ function DomainPage() {
           text="Set Primary"
           svg={primarySvg}
           clickHandle={onClickPrimary}
-          disabled={checkedItems.length != 1}
+          disabled={checkedItems.length !== 1}
           customClass={primaryButtonClass}
         />
       </header>
@@ -177,7 +177,7 @@ function DomainPage() {
         {/* "Yesterday" group */}
         <Domains
           domain={domain}
-          domains={currentPosts.filter((d) => d.id != domain.id)}
+          domains={currentPosts.filter((d) => d.id !== domain.id)}
           parentCallback={handleCallback}
           onClickView={onClickView}
           onClickEdit={onClickEdit}
@@ -186,17 +186,18 @@ function DomainPage() {
         <Pagination
           postsPerPage={postsPerPage}
           totalPosts={
-            domain ? domains.filter((d) => d.id != domain.id).length : 0
+            domain ? domains.filter((d) => d.id !== domain.id).length : 0
           }
           paginate={paginate}
           currentPage={currentPage}
           pageDisplayCount={
             domain
               ? Math.ceil(
-                  domains.filter((d) => d.id != domain.id).length / postsPerPage
+                  domains.filter((d) => d.id !== domain.id).length /
+                    postsPerPage
                 ) < pageDisplayCount
                 ? Math.ceil(
-                    domains.filter((d) => d.id != domain.id).length /
+                    domains.filter((d) => d.id !== domain.id).length /
                       postsPerPage
                   )
                 : pageDisplayCount

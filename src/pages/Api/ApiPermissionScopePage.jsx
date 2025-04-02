@@ -1,9 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import ItemField from "../../component/ItemField";
-import { apiPermissionScopesFields } from "../../constants/formFields";
-import Toolbox from "../../component/Toolbox";
+import { apiPermissionScopesFields } from "../../constants/apiFields";
 import Pagination from "../../component/Pagination";
 import ApiPermissions from "./ApiPermissions";
 import apiApi from "../../api/api-api";
@@ -62,29 +59,29 @@ function ApiPermissionScopePage({ mode, api }) {
     setIsLoading(false);
   }, []);
 
-  const delSvg = (
-    <svg
-      class="w-4 h-4 mr-2"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      stroke-width="2"
-      stroke="currentColor"
-      fill="none"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      {" "}
-      <path stroke="none" d="M0 0h24v24H0z" />{" "}
-      <line x1="4" y1="7" x2="20" y2="7" />{" "}
-      <line x1="10" y1="11" x2="10" y2="17" />{" "}
-      <line x1="14" y1="11" x2="14" y2="17" />{" "}
-      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />{" "}
-      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-    </svg>
-  );
-  const purgeClass =
-    "w-30 ml-8 bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
+  // const delSvg = (
+  //   <svg
+  //     class="w-4 h-4 mr-2"
+  //     width="24"
+  //     height="24"
+  //     viewBox="0 0 24 24"
+  //     stroke-width="2"
+  //     stroke="currentColor"
+  //     fill="none"
+  //     stroke-linecap="round"
+  //     stroke-linejoin="round"
+  //   >
+  //     {" "}
+  //     <path stroke="none" d="M0 0h24v24H0z" />{" "}
+  //     <line x1="4" y1="7" x2="20" y2="7" />{" "}
+  //     <line x1="10" y1="11" x2="10" y2="17" />{" "}
+  //     <line x1="14" y1="11" x2="14" y2="17" />{" "}
+  //     <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />{" "}
+  //     <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+  //   </svg>
+  // );
+  // const purgeClass =
+  //   "w-30 ml-8 bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
 
   const primarySvg = (
     <svg
@@ -157,7 +154,7 @@ function ApiPermissionScopePage({ mode, api }) {
           <ButtonToolbox
             text="Add"
             svg={primarySvg}
-            disabled={mode != "edit"}
+            disabled={mode !== "edit"}
             customClass={primaryButtonClass}
             clickHandle={onClickNew}
           />

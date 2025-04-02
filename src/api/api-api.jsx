@@ -1,4 +1,3 @@
-import axios from "axios";
 import { uniOAuthServer } from "./igw-api";
 import { httpClient } from "./httpClient";
 
