@@ -50,6 +50,7 @@ export default function AuthCallback() {
         //   navigate("/dashboard");
         // } else
         if (code) {
+          console.log("code", code, form_data);
           const axiosAuth = axios.create();
           const tokenJson = await axiosAuth.post(
             authServer.tokenEndpoint,
@@ -58,7 +59,7 @@ export default function AuthCallback() {
           );
           // const userSession = {id:tokenJson.data.user.id, email:tokenJson.data.user.email, root:tokenJson.data.user.root};
           // saveUser(userSession);
-
+          console.log("tokenJson", tokenJson);
           //saveClient(tokenJson.data.client);
           if (tokenJson.data.access_token) {
             await fetchDashboard(tokenJson, cookies.IsRemember);
@@ -67,8 +68,8 @@ export default function AuthCallback() {
           navigate("/dashboard");
         }
       } catch (error) {
-        navigate("/error");
         console.log("error", error);
+        navigate("/error");
       }
     })();
   }, []);
@@ -78,19 +79,27 @@ export default function AuthCallback() {
       companyId: tokenJson.data.client.companyId,
       domainId: tokenJson.data.client.domain,
     };
+    console.log("clientSession start", clientSession);
     saveClient(clientSession);
-
+    console.log("clientSession", clientSession);
     if (tokenJson.data.access_token) {
       const header = {
         "Access-Control-Allow-Origin": "*",
         Authorization: `Bearer ${tokenJson.data.access_token}`,
       };
-
+      console.log(
+        "header",
+        header,
+        `${uniDirServer.Endpoint}/companys/${tokenJson.data.user.companyId}`
+      );
       setHttpClient(header);
       const com = await httpClient.get(
         `${uniDirServer.Endpoint}/companys/${tokenJson.data.user.companyId}`
       );
-
+      console.log(
+        "httpClient.get",
+        `${uniDirServer.Endpoint}/companys/${tokenJson.data.user.companyId}`
+      );
       const companySession = {
         id: com.data.id,
         name: com.data.name,
