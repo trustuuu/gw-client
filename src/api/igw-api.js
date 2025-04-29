@@ -7,25 +7,27 @@ export const igwApi = {
 //export default igwApi;
 
 export const client = {
-  client_id: process.env.REACT_APP_UNIDIR_CLIENT_ID,
-  client_secret: process.env.REACT_APP_UNIDIR_CLIENT_SECRET,
-  redirect_uris: [process.env.REACT_APP_UNIDIR_REDIRECT_URI],
-  scope: process.env.REACT_APP_UNIDIR_SCOPE,
+  client_id: import.meta.env.VITE_UNIDIR_CLIENT_ID,
+  client_secret: import.meta.env.VITE_UNIDIR_CLIENT_SECRET,
+  redirect_uris: [import.meta.env.VITE_UNIDIR_REDIRECT_URI],
+  scope: import.meta.env.VITE_UNIDIR_SCOPE,
   state: Math.random().toString(36).substring(2, 36),
 };
 
 export const authServer = {
-  authorizationEndpoint: process.env.REACT_APP_UNIDIR_AUTHORIZATIONENDPOINT,
-  tokenEndpoint: process.env.REACT_APP_UNIDIR_TOKENENDPOINT,
-  authLogin: process.env.REACT_APP_UNIDIR_AUTHLOGIN,
+  authorizationEndpoint: import.meta.env.VITE_UNIDIR_AUTHORIZATIONENDPOINT,
+  tokenEndpoint: import.meta.env.VITE_UNIDIR_TOKENENDPOINT,
+  authLogin: import.meta.env.VITE_UNIDIR_AUTHLOGIN,
 };
 
 export const uniDirServer = {
-  Endpoint: process.env.REACT_APP_UNIDIR_API_ENDPOINT,
+  Endpoint: import.meta.env.VITE_UNIDIR_API_ENDPOINT,
+  callback: import.meta.env.VITE_UNIDIR_CALLBACK_POINT,
+  session: import.meta.env.VITE_UNIDIR_GET_SESSION,
 };
 
 export const uniOAuthServer = {
-  Endpoint: process.env.REACT_APP_UNIDIR_AUTH_API_ENDPOINT,
+  Endpoint: import.meta.env.VITE_UNIDIR_AUTH_API_ENDPOINT,
 };
 
 function loginWithiGoodWorks() {
@@ -50,7 +52,7 @@ const buildUrl = function (base, options, hash) {
   if (!newUrl.query) {
     newUrl.query = {};
   }
-  forEach(options, function (value, key, list) {
+  forEach(options, function (value, key) {
     newUrl.query[key] = value;
   });
   if (hash) {

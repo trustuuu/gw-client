@@ -7,7 +7,6 @@ import { useAuth } from "../component/AuthContext";
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user } = useAuth();
-
   useEffect(() => {
     if (localStorage.theme === "dark" || !("theme" in localStorage)) {
       document.querySelector("html").classList.add("dark");

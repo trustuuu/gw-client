@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../component/AuthContext";
 import Toolbox from "../../component/Toolbox";
@@ -16,10 +16,10 @@ function GroupPage({
   parentCallback,
   noDetailView,
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { accessToken, company, domain } = useAuth();
+  const { company, domain } = useAuth();
   const [groups, setGroups] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -48,15 +48,17 @@ function GroupPage({
     }
   };
 
-  const onClickNew = function (e) {
-    history.push("/groups-new", {
-      company: company,
-      domain: domain,
-      mode: "new",
+  const onClickNew = function () {
+    navigate("/groups-new", {
+      state: {
+        company: company,
+        domain: domain,
+        mode: "new",
+      },
     });
   };
 
-  const onClickDel = async function (e) {
+  const onClickDel = async function () {
     //const group = await groupApi.get(company.id, domain.id, checkedItems);
     await groupApi.update(
       company.id,
@@ -69,32 +71,36 @@ function GroupPage({
     await getGroups();
   };
 
-  const onClickPurge = async function (e) {
+  const onClickPurge = async function () {
     await groupApi.remove(company.id, domain.id, checkedItems);
     setCheckedItems([]);
     await getGroups();
   };
 
   const onClickView = (item) => {
-    history.push("/groups-new", {
-      company: company,
-      domain: domain,
-      group: item,
-      mode: "view",
+    navigate("/groups-new", {
+      state: {
+        company: company,
+        domain: domain,
+        group: item,
+        mode: "view",
+      },
     });
   };
 
   const onClickEdit = (item) => {
-    history.push("/groups-new", {
-      company: company,
-      domain: domain,
-      group: item,
-      mode: "edit",
+    navigate("/groups-new", {
+      state: {
+        company: company,
+        domain: domain,
+        group: item,
+        mode: "edit",
+      },
     });
   };
 
   const getGroups = async () => {
-    if (accessToken) {
+    try {
       const condition =
         status === "active"
           ? ["status", "!=", "deleted"]
@@ -112,6 +118,8 @@ function GroupPage({
           ? Math.ceil(dom.data.length / postsPerPage)
           : pageDisplayCount
       );
+    } catch (error) {
+      if (error.status === 401) navigate("/");
     }
   };
 
@@ -124,15 +132,15 @@ function GroupPage({
 
   const delSvg = (
     <svg
-      class="w-4 h-4 mr-2"
+      className="w-4 h-4 mr-2"
       width="24"
       height="24"
       viewBox="0 0 24 24"
-      stroke-width="2"
+      strokeWidth="2"
       stroke="currentColor"
       fill="none"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       {" "}
       <path stroke="none" d="M0 0h24v24H0z" />{" "}

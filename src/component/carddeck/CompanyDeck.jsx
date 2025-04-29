@@ -1,27 +1,25 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import companyApi from "../../api/company-api";
-import { setHttpClient } from "../../api/httpClient";
 
 function CompanyDeck() {
-  const history = useHistory();
-  const { company, user, header } = useAuth();
+  const navigate = useNavigate();
+  const { user, company } = useAuth();
   const [companies, setCompanies] = useState();
 
   if (!user) {
-    history.push("/");
+    navigate("/");
   }
   useEffect(() => {
-    (async function () {
-      if (header) {
-        setHttpClient(header);
-        const coms = await companyApi.getTenants(company.id);
-        setCompanies(coms.data);
-      }
-    })();
-  }, [header, company.id]);
+    companyApi
+      .getTenants(company.id)
+      .then((response) => setCompanies(response.data))
+      .catch((error) => {
+        if (error.status === 401) navigate("/");
+      });
+  }, [user, navigate]);
 
   return (
     <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">

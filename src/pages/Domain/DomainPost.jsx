@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { domainFields } from "../../constants/formFields";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../component/AuthContext";
 import domainApi from "../../api/domain-api";
 import Input from "../../component/Input";
@@ -15,7 +15,7 @@ fields.forEach(
 
 export default function Domain() {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [errorText, setError] = useState();
   const { domain, company, domainCount } = location.state;
   const [mode, setMode] = useState(location.state.mode);
@@ -47,8 +47,13 @@ export default function Domain() {
         primary: domainCount == 0 ? true : false,
       };
       await domainApi.create(company.id, data);
-      if (data.primary) saveDomain(data);
-      history.goBack();
+      const domainSession = {
+        id: data.id,
+        name: data.name,
+        description: data.description,
+      };
+      if (data.primary) saveDomain(domainSession);
+      navigate(-1);
     } catch (err) {
       if (err.response.status == 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);
@@ -60,7 +65,7 @@ export default function Domain() {
   };
 
   const handleCancel = (event) => {
-    history.goBack();
+    navigate(-1);
     event.preventDefault();
   };
 
@@ -77,7 +82,7 @@ export default function Domain() {
   const saveItem = async () => {
     try {
       await domainApi.update(company.id, itemState);
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response.status == 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);

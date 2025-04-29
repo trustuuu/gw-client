@@ -5,12 +5,8 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-//import api from "../api/auth-api";
 import { igwApi } from "../api/igw-api";
 import { setHttpClient } from "../api/httpClient";
-
-// Initialize API
-//api.init();
 
 // Create context
 const AuthContext = createContext();
@@ -47,6 +43,7 @@ const AuthContextProvider = ({ children }) => {
 
   const [role, setRole] = useState();
   const [scope, setScope] = useState();
+  const [codeVerifier, setCodeVerifier] = usePersistedState("session", null);
 
   // Set HTTP header if present
   useEffect(() => {
@@ -80,6 +77,7 @@ const AuthContextProvider = ({ children }) => {
       saveClient: setClient,
       saveAccessToken,
       saveHeader: setHeader,
+      saveCodeVerifier: setCodeVerifier,
       user,
       company,
       rootCompany,
@@ -89,6 +87,7 @@ const AuthContextProvider = ({ children }) => {
       client,
       accessToken,
       header,
+      codeVerifier,
     }),
     [
       user,
@@ -100,6 +99,7 @@ const AuthContextProvider = ({ children }) => {
       client,
       accessToken,
       header,
+      codeVerifier,
     ]
   );
 

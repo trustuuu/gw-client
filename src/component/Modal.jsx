@@ -1,63 +1,69 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 
 const Modal = ({
   isOpen,
-  hasCloseBtn,
+  hasCloseBtn = true,
   onClose,
   children,
   optionBtnLabel,
   onOptionBtnClick,
+  customClassName,
 }) => {
-  //const [isModalOpen, setModalOpen] = useState(isOpen);
-  const modalRef = useRef(null);
   useEffect(() => {
-    const modalElement = modalRef.current;
-    if (modalElement) {
-      if (isOpen) {
-        modalElement.showModal();
-      } else {
-        modalElement.close();
-      }
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") onClose?.();
+    };
+
+    if (isOpen) {
+      document.body.style.overflow = "hidden"; // prevent background scroll
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
     }
-  }, [isOpen]);
 
-  const handleCloseModal = () => {
-    //if (onClose) {
-    onClose();
-    //}
-    //setModalOpen(false);
-  };
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Escape") {
-      handleCloseModal();
-    }
-  };
+  if (!isOpen) return null;
 
-  const className =
-    "group relative max-w-40 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 mt-10";
-
+  const modalClass = customClassName
+    ? customClassName
+    : " fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm ";
   return (
-    <dialog
-      ref={modalRef}
-      onKeyDown={handleKeyDown}
-      className="w-1/2 backdrop:backdrop-blur-md"
+    <div
+      className={modalClass}
+      onClick={onClose} // 배경 누르면 닫기
     >
-      {children}
-      <div className="flex items-center justify-center">
-        {optionBtnLabel && (
-          <button className={className + " mr-4"} onClick={onOptionBtnClick}>
-            {optionBtnLabel}
-          </button>
-        )}
-        {hasCloseBtn && (
-          <button className={className} onClick={handleCloseModal}>
-            Close
-          </button>
-        )}
+      <div
+        className="bg-white dark:bg-slate-800 rounded-lg shadow-2xl p-6"
+        onClick={(e) => e.stopPropagation()} // 모달 내부 클릭 시 닫힘 방지
+      >
+        {children}
+
+        <div className="flex justify-end mt-6 space-x-4">
+          {optionBtnLabel && (
+            <button
+              onClick={onOptionBtnClick}
+              className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
+            >
+              {optionBtnLabel}
+            </button>
+          )}
+          {hasCloseBtn && (
+            <button
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 transition"
+            >
+              Close
+            </button>
+          )}
+        </div>
       </div>
-    </dialog>
+    </div>
   );
 };
-
 export default Modal;

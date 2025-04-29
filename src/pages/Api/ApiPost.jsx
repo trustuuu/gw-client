@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { apiFields } from "../../constants/apiFields";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import apiApi from "../../api/api-api";
 import ItemField from "../../component/ItemField";
 import FormAction from "../../component/FormAction";
 import PanelExpandable from "../../component/PanelExpandable";
 import Stepper from "../../component/Stepper";
+import { generateString } from "../../utils/Utils";
 
 const fields = apiFields;
 const fields_general = fields.filter((a) => a.category === "settings.general");
@@ -20,17 +21,9 @@ fields.forEach(
   (field) => (fieldsState[field.id] = field.type === "checkbox" ? false : "")
 );
 
-const generateString = (
-  len,
-  chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-) =>
-  [...Array(len)]
-    .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
-    .join("");
-
 export default function ApiPost() {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [errorText, setError] = useState();
 
   const { company, domain, api } = location.state;
@@ -77,7 +70,7 @@ export default function ApiPost() {
         domain: domain.id,
       });
       await apiApi.create(data);
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);
@@ -89,7 +82,7 @@ export default function ApiPost() {
   };
 
   const handleCancel = (event) => {
-    history.goBack();
+    navigate(-1);
     event.preventDefault();
   };
 
@@ -110,7 +103,7 @@ export default function ApiPost() {
         companyId: company.id,
         domain: domain.id,
       });
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);
@@ -121,10 +114,10 @@ export default function ApiPost() {
     }
   };
 
-  //   const customClassEdit =
-  //     "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";
-  //   const customClass =
-  //     "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 min-w-80 dark:bg-gray-300 ";
+  // const customClassEdit =
+  //   "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";
+  // const customClass =
+  //   "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 min-w-80 dark:bg-gray-300 ";
 
   const steps = [
     {
@@ -256,6 +249,7 @@ const displayPanel = (title, fields, item, itemState, handleChange, mode) => {
               <></>
             ) : (
               <ItemField
+                key={field.id}
                 item={item}
                 handleChange={handleChange}
                 value={

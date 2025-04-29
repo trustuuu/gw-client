@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { applicationFields } from "../../constants/applicationFields";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import applicationApi from "../../api/application-api";
 import ItemField from "../../component/ItemField";
 import FormAction from "../../component/FormAction";
 import PanelExpandable from "../../component/PanelExpandable";
 import Stepper from "../../component/Stepper";
+import { generateString } from "../../utils/Utils";
 
 const fields = applicationFields;
 const fields_basic = fields.filter((a) => a.category === "settings.basic");
@@ -21,17 +22,9 @@ fields.forEach(
   (field) => (fieldsState[field.id] = field.type === "checkbox" ? false : "")
 );
 
-const generateString = (
-  len,
-  chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-) =>
-  [...Array(len)]
-    .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
-    .join("");
-
 export default function ApplicationPost() {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [errorText, setError] = useState();
   const { company, domain, application } = location.state;
   const [mode, setMode] = useState(location.state.mode);
@@ -39,7 +32,7 @@ export default function ApplicationPost() {
     mode === "new"
       ? {
           ...fieldsState,
-          client_id: generateString(32),
+          client_id: String(32),
           client_secret: generateString(32),
           app_type: "SPA",
         }
@@ -83,7 +76,7 @@ export default function ApplicationPost() {
       });
 
       await applicationApi.create(data);
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.client_name} already exist!`);
@@ -95,7 +88,7 @@ export default function ApplicationPost() {
   };
 
   const handleCancel = (event) => {
-    history.goBack();
+    navigate(-1);
     event.preventDefault();
   };
 
@@ -116,7 +109,7 @@ export default function ApplicationPost() {
         companyId: company.id,
         domain: domain.id,
       });
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.client_name} already exist!`);
@@ -242,6 +235,7 @@ const displayPanel = (title, fields, item, itemState, handleChange, mode) => {
             <></>
           ) : (
             <ItemField
+              key={field.name}
               item={item}
               handleChange={handleChange}
               value={

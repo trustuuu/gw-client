@@ -1,9 +1,11 @@
-import { useHistory } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { client, authServer } from "../api/igw-api";
 import AuthFormHeader from "../component/AuthFormHeader";
 import AuthFormExtra from "../component/AuthFormExtra";
+import { generateCodeChallenge, generateCodeVerifier } from "../utils/Utils";
+import { useAuth } from "../component/AuthContext";
 const style = {
   logo: { width: "18px", marginRight: "10px" },
   google: { width: "230px" },
@@ -15,8 +17,10 @@ export default function LogInPage() {
   const [cookies, setCookie, removeCookie] = useCookies(["igw-udir"]);
   const [isRemember, setIsRemeber] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const history = useHistory();
-
+  const [codeChallenge, setCodeChallenge] = useState("");
+  const [codeVerifier, setCodeVerifier] = useState("");
+  const { saveCodeVerifier } = useAuth();
+  const navigate = useNavigate();
   if (cookies.tokenJson) {
     const date = new Date();
     const now_utc = Date.UTC(
@@ -31,10 +35,9 @@ export default function LogInPage() {
       Math.floor(cookies.tokenJson.data.expires_in) <
       Math.floor(now_utc / 1000);
     if (!expires_in) {
-      history.push("/callback");
+      navigate("/callback");
     } else {
       removeCookie("tokenJson");
-      console.log("cookie removed!");
     }
   }
 
@@ -43,7 +46,17 @@ export default function LogInPage() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const onSubmit = (e) => {
+  const code_challenge_method = "sha256";
+  const code_verifier = generateCodeVerifier();
+  useEffect(() => {
+    setCodeVerifier(code_verifier);
+    saveCodeVerifier(code_verifier);
+    generateCodeChallenge(code_verifier).then((response) => {
+      setCodeChallenge(response);
+    });
+  }, []);
+
+  const onSubmit = () => {
     setCookie("IsRemember", isRemember, {
       Expires: new Date(Date.now() + 3600 * 1000), // expires in 1 hour
       Secure: true, // cookie will only be sent over HTTPS
@@ -62,7 +75,6 @@ export default function LogInPage() {
   const getExtraDataChange = (remember) => {
     setIsRemeber(remember);
   };
-
   return (
     <div>
       <AuthFormHeader
@@ -134,19 +146,20 @@ export default function LogInPage() {
           />
           <input type="hidden" name="scope" value={client.scope} />
           <input type="hidden" name="state" value={client.state} />
+          <input type="hidden" name="code_challenge" value={codeChallenge} />
+          <input
+            type="hidden"
+            name="code_challenge_method"
+            value={code_challenge_method}
+          />
+          {/* <input type="hidden" name="code_verifier" value={codeVerifier} /> */}
         </div>
       </form>
     </div>
   );
 }
 
-function LoginButton({
-  ButtonComponent,
-  buttonStyle,
-  onClick,
-  image,
-  loginProvicer,
-}) {
+function LoginButton({ buttonStyle, onClick, image, loginProvicer }) {
   return (
     <div className="flex justify-center my-2">
       <ButtonComponent

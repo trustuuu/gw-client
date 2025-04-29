@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../component/AuthContext";
 import Toolbox from "../../component/Toolbox";
@@ -10,10 +10,10 @@ import domainApi from "../../api/domain-api";
 import ButtonToolbox from "../../component/ButtonToolbox";
 
 function DomainPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { accessToken, company, domain, saveDomain } = useAuth();
+  const { company, domain, saveDomain } = useAuth();
   const [domains, setDomains] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -42,10 +42,12 @@ function DomainPage() {
   };
 
   const onClickNew = function (e) {
-    history.push("/onboarding-domain-new", {
-      company: company,
-      mode: "new",
-      domainCount: domain ? domains.length : 0,
+    navigate("/onboarding-domain-new", {
+      state: {
+        company: company,
+        mode: "new",
+        domainCount: domain ? domains.length : 0,
+      },
     });
   };
   const onClickDel = async function (e) {
@@ -55,30 +57,40 @@ function DomainPage() {
   };
 
   const onClickView = (item) => {
-    history.push("/onboarding-domain-new", {
-      company: company,
-      domain: item,
-      mode: "view",
-      domainCount: domain ? domains.length : 0,
+    navigate("/onboarding-domain-new", {
+      state: {
+        company: company,
+        domain: item,
+        mode: "view",
+        domainCount: domain ? domains.length : 0,
+      },
     });
   };
 
   const onClickEdit = (item) => {
-    history.push("/onboarding-domain-new", {
-      company: company,
-      domain: item,
-      mode: "edit",
-      domainCount: domain ? domains.length : 0,
+    navigate("/onboarding-domain-new", {
+      state: {
+        company: company,
+        domain: item,
+        mode: "edit",
+        domainCount: domain ? domains.length : 0,
+      },
     });
   };
 
-  const onClickPrimary = async function (e) {
+  const onClickPrimary = async function () {
     await domainApi.setPrimary(company.id, checkedItems[0].id);
-    saveDomain(checkedItems[0]);
+    const domainSession = {
+      id: checkedItems[0].id,
+      name: checkedItems[0].name,
+      description: checkedItems[0].description,
+    };
+    saveDomain(domainSession);
+    setCheckedItems([]);
   };
 
   const getDomains = async () => {
-    if (accessToken) {
+    try {
       const dom = await domainApi.get(company.id, null);
       setDomains(dom.data);
       setPageEnd(
@@ -92,6 +104,8 @@ function DomainPage() {
             : pageDisplayCount
           : 0
       );
+    } catch (error) {
+      if (error.status === 401) navigate("/");
     }
   };
 
@@ -103,15 +117,15 @@ function DomainPage() {
 
   const primarySvg = (
     <svg
-      class="fill-current h-4 w-4 mr-2"
+      className="fill-current h-4 w-4 mr-2"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
     >
       <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
         d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
       />
     </svg>
@@ -176,12 +190,12 @@ function DomainPage() {
         </div>
         {/* "Yesterday" group */}
         <Domains
-          domain={domain}
           domains={currentPosts.filter((d) => d.id !== domain.id)}
           parentCallback={handleCallback}
           onClickView={onClickView}
           onClickEdit={onClickEdit}
           loading={isLoading}
+          parentItems={checkedItems}
         />
         <Pagination
           postsPerPage={postsPerPage}

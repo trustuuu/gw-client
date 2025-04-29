@@ -1,9 +1,11 @@
-import resolveConfig from "tailwindcss/resolveConfig";
+// import resolveConfig from "tailwindcss/resolveConfig";
+// export const tailwindConfig = () => {
+//   return resolveConfig("./src/css/tailwind.config.js");
+// };
 
-export const tailwindConfig = () => {
-  // Tailwind config
-  return resolveConfig("./src/css/tailwind.config.js");
-};
+// import resolveConfig from 'tailwindcss/resolveConfig'
+// import tailwindConfig from '../../tailwind.config.js'
+// export const fullTailwindConfig = resolveConfig(tailwindConfig)
 
 export const hexToRGB = (h) => {
   let r = 0;
@@ -29,9 +31,19 @@ export const formatValue = (value) =>
     notation: "compact",
   }).format(value);
 
-export const generateId = (id) => {
+export const generateString = (
+  len,
+  chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+) =>
+  [...Array(len)]
+    .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
+    .join("");
+
+export const generateId = (id, length) => {
   const reg = new RegExp(`.{1,${id.length}}`);
-  let guid = URL.createObjectURL(new Blob([])).slice(-36);
+  let guid = length
+    ? URL.createObjectURL(new Blob([])).slice(length * -1)
+    : URL.createObjectURL(new Blob([])).slice(-36);
   return guid.replace(reg, id);
 };
 
@@ -122,4 +134,25 @@ export function parseQuery(encrypedParams) {
     iv: encrypedParams.get("i"),
     salt: encrypedParams.get("s"),
   };
+}
+
+export function generateCodeVerifier() {
+  const randomBytes = window.crypto.getRandomValues(new Uint8Array(32));
+  const code_verifier = btoa(String.fromCharCode(...randomBytes))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+  return code_verifier;
+}
+
+export async function generateCodeChallenge(code_verifier) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(code_verifier);
+  const digest = await window.crypto.subtle.digest("SHA-256", data);
+
+  const base64String = btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+  return base64String;
 }

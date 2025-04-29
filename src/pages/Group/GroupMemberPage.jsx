@@ -135,7 +135,7 @@ function GroupMemberPage() {
   ];
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
+    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 ">
       <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex items-center justify-between">
         <Toolbox
           NewButtonLabel="Add"
@@ -167,7 +167,7 @@ function GroupMemberPage() {
           pageEnd={pageEnd}
         />
       </div>
-      <>
+      <div className="flex items-center justify-center">
         <Modal
           hasCloseBtn={true}
           isOpen={modalOpen}
@@ -178,7 +178,7 @@ function GroupMemberPage() {
           <div className="mx-auto">
             <TabHeader
               data={data}
-              buttonClass="rounded-full"
+              buttonclassName="rounded-full"
               buttonPosision="justify-center"
               visibleTab={visibleTab}
               setVisibleTab={setVisibleTab}
@@ -186,7 +186,7 @@ function GroupMemberPage() {
             <TabBody data={data} visibleTab={visibleTab} />
           </div>
         </Modal>
-      </>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { companyFields } from "../../constants/formFields";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import companyApi from "../../api/company-api";
 import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
@@ -14,7 +14,7 @@ fields.forEach(
 
 export default function CompanyPost() {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   //const com = !companyId ? companyId : companyId;
   const [errorText, setError] = useState();
   const { header, url, company, parent } = location.state;
@@ -45,7 +45,7 @@ export default function CompanyPost() {
         { ...itemState, id: itemState.name, parent: parent.id },
         header
       );
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response.status == 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);
@@ -57,7 +57,7 @@ export default function CompanyPost() {
   };
 
   const handleCancel = (event) => {
-    history.goBack();
+    navigate(-1);
     event.preventDefault();
   };
 
@@ -74,7 +74,7 @@ export default function CompanyPost() {
   const saveItem = async () => {
     try {
       await companyApi.update(itemState, header);
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response.status == 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);

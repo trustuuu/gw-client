@@ -2,22 +2,21 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useAuth } from "../AuthContext";
 import domainApi from "../../api/domain-api";
-import { setHttpClient } from "../../api/httpClient";
+import { useNavigate } from "react-router-dom";
 
 function DomainDeck() {
-  const { company, domain, header } = useAuth();
+  const { domain, company } = useAuth();
   const [domains, setDomains] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    (async function () {
-      if (header) {
-        setHttpClient(header);
-        const dom = await domainApi.get(company.id, null);
-
-        setDomains(dom.data);
-      }
-    })();
-  }, [header, company.id]);
+    domainApi
+      .get(company.id, null)
+      .then((response) => setDomains(response.data))
+      .catch((error) => {
+        if (error.status === 401) navigate("/");
+      });
+  }, [domain, navigate]);
 
   return (
     <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">

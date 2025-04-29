@@ -1,22 +1,21 @@
 import igwLogo from "../images/igw_logo.png";
 import { useCookies } from "react-cookie";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../component/AuthContext";
 
 const LogOutPage = () => {
-  const history = useHistory();
-  const [_cookies, _setCookie, removeCookie] = useCookies(["igw-udir"]);
-  const { saveUser, saveClient, saveCompany, saveDomain, saveAccessToken } =
-    useAuth();
+  const navigate = useNavigate();
+  const [cookies, _setCookie, removeCookie] = useCookies(["igw-udir"]);
+  const { saveUser, saveClient, saveCompany, saveDomain } = useAuth();
 
   const signOut = () => {
-    removeCookie("tokenJson");
-    saveAccessToken(null);
-    saveUser(null);
-    saveClient(null);
-    saveCompany(null);
-    saveDomain(null);
-    history.push("/");
+    if (!cookies.IsRemember) {
+      saveUser(null);
+      saveClient(null);
+      saveCompany(null);
+      saveDomain(null);
+    }
+    navigate("/");
   };
   return (
     <section className="bg-white dark:bg-gray-900">

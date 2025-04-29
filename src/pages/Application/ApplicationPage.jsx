@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../component/AuthContext";
 import Toolbox from "../../component/Toolbox";
@@ -11,10 +11,10 @@ import applicationApi from "../../api/application-api";
 import domainApi from "../../api/domain-api";
 
 function ApplicationPage({ status }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
-  const { accessToken, company, domain, header } = useAuth();
+  const { company, domain } = useAuth();
   const [applications, setApplications] = useState([]);
   const [domainId, setDomainId] = useState(domain.id);
   const [checkedItems, setCheckedItems] = useState([]);
@@ -43,38 +43,41 @@ function ApplicationPage({ status }) {
   };
 
   const onClickNew = function (e) {
-    history.push("/applications-new", {
-      company: company,
-      domain: domain,
-      mode: "new",
-      header: header,
+    navigate("/applications-new", {
+      state: {
+        company: company,
+        domain: domain,
+        mode: "new",
+      },
     });
   };
 
   const onClickDel = async function (e) {
     //const application = await applicationApi.get(company.id, domain.id, checkedItems, header);
-    await applicationApi.remove(checkedItems, header);
+    await applicationApi.remove(checkedItems);
     setCheckedItems([]);
     await getApplications();
   };
 
   const onClickView = (item) => {
-    history.push("/applications-view", {
-      company: company,
-      domain: domain,
-      application: item,
-      mode: "view",
-      header: header,
+    navigate("/applications-view", {
+      state: {
+        company: company,
+        domain: domain,
+        application: item,
+        mode: "view",
+      },
     });
   };
 
   const onClickEdit = (item) => {
-    history.push("/applications-new", {
-      company: company,
-      domain: domain,
-      application: item,
-      mode: "edit",
-      header: header,
+    navigate("/applications-new", {
+      state: {
+        company: company,
+        domain: domain,
+        application: item,
+        mode: "edit",
+      },
     });
   };
 
@@ -83,15 +86,8 @@ function ApplicationPage({ status }) {
   };
 
   const getApplications = async (domId) => {
-    if (accessToken) {
-      const condition = ["companyId", "==", company.id];
-      const items = await applicationApi.get(
-        company.id,
-        domId,
-        null,
-        null,
-        header
-      );
+    try {
+      const items = await applicationApi.get(company.id, domId, null, null);
       setApplications(items.data);
       setPageEnd(
         Math.ceil(items.data.length / postsPerPage) < pageDisplayCount
@@ -100,10 +96,12 @@ function ApplicationPage({ status }) {
       );
 
       if (domains.length < 1) {
-        const doms = await domainApi.get(company.id, null, header);
+        const doms = await domainApi.get(company.id, null);
         setDomains(doms.data);
       }
       setDomainId(domId);
+    } catch (error) {
+      if (error.status === 401) navigate("/");
     }
   };
 
@@ -114,29 +112,29 @@ function ApplicationPage({ status }) {
     setIsLoading(false);
   }, [domains]);
 
-  const delSvg = (
-    <svg
-      class="w-4 h-4 mr-2"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      stroke-width="2"
-      stroke="currentColor"
-      fill="none"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      {" "}
-      <path stroke="none" d="M0 0h24v24H0z" />{" "}
-      <line x1="4" y1="7" x2="20" y2="7" />{" "}
-      <line x1="10" y1="11" x2="10" y2="17" />{" "}
-      <line x1="14" y1="11" x2="14" y2="17" />{" "}
-      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />{" "}
-      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-    </svg>
-  );
-  const purgeClass =
-    "w-30 ml-8 bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
+  // const delSvg = (
+  //   <svg
+  //     className="w-4 h-4 mr-2"
+  //     width="24"
+  //     height="24"
+  //     viewBox="0 0 24 24"
+  //     strokeWidth="2"
+  //     stroke="currentColor"
+  //     fill="none"
+  //     strokeLinecap="round"
+  //     strokeLinejoin="round"
+  //   >
+  //     {" "}
+  //     <path stroke="none" d="M0 0h24v24H0z" />{" "}
+  //     <line x1="4" y1="7" x2="20" y2="7" />{" "}
+  //     <line x1="10" y1="11" x2="10" y2="17" />{" "}
+  //     <line x1="14" y1="11" x2="14" y2="17" />{" "}
+  //     <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />{" "}
+  //     <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+  //   </svg>
+  // );
+  // const purgeClass =
+  //   "w-30 ml-8 bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
 
   return (
     <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">

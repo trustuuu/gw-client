@@ -1,15 +1,18 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Checkbox from "../../component/Checkbox";
 
 function Domains({
-  domain,
   domains,
   parentCallback,
   onClickView,
   onClickEdit,
+  parentItems,
 }) {
-  const [checkedItems, setCheckedItems] = useState([]);
+  const [checkedItems, setCheckedItems] = useState(parentItems);
+  useEffect(() => {
+    setCheckedItems(parentItems);
+  }, [parentItems]);
 
   const handleChangeCheck = function (e) {
     const item = e.target.name;

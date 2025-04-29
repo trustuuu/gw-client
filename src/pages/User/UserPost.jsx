@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { userFields } from "../../constants/formFields";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import userApi from "../../api/user-api";
 import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
@@ -15,14 +15,14 @@ fields.forEach(
 
 export default function UserPost() {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
+
   const [errorText, setError] = useState();
-  const { header, company, domain, user } = location.state;
+  const { company, domain, user } = location.state;
   const [mode, setMode] = useState(location.state.mode);
   const [itemState, setItemState] = useState(
-    mode === "new" ? fieldsState : user
+    mode == "new" ? fieldsState : user
   );
-
   const handleChange = (e) => {
     setItemState({
       ...itemState,
@@ -54,11 +54,8 @@ export default function UserPost() {
         return;
       }
       let data = await populateItem(itemState);
-
-      data.authVerification = md5(data.authVerification);
-
-      await userApi.create(company.id, domain.id, data, header);
-      history.goBack();
+      await userApi.create(company.id, domain.id, data);
+      navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.username} already exist!`);
@@ -70,7 +67,7 @@ export default function UserPost() {
   };
 
   const handleCancel = (event) => {
-    history.goBack();
+    navigate(-1);
     event.preventDefault();
   };
 
@@ -86,8 +83,8 @@ export default function UserPost() {
 
   const saveItem = async () => {
     try {
-      await userApi.update(company.id, domain.id, itemState, header);
-      history.goBack();
+      await userApi.update(company.id, domain.id, itemState);
+      navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.username} already exist!`);
@@ -155,9 +152,8 @@ export default function UserPost() {
           <h4 className="text-red-400">{errorText}</h4>
           <div className="space-y-4">
             {fields.map((field) =>
-              field.hiddenDisplay || field.hiddenDisplay !== undefined ? (
-                <></>
-              ) : (
+              field.hiddenDisplay ||
+              field.hiddenDisplay !== undefined ? null : (
                 <ItemView
                   Item={user}
                   company={company}

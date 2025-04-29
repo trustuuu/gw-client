@@ -10,7 +10,7 @@ const client = {
 
 export default function ServiceAccountCreationPage() {
   const tokenEndpoint =
-    "https://gw-oauth-server-hcf3ceajdpg2gcbg.canadacentral-01.azurewebsites.net/oauth/tokenService";
+    "https://gw-oauth-server-hcf3ceajdpg2gcbg.canadacentral-01.azurewebsites.net/oauth/v1/tokenService";
   const apiEndpoint =
     "https://gw-oauth-server-hcf3ceajdpg2gcbg.canadacentral-01.azurewebsites.net/api/companys";
 

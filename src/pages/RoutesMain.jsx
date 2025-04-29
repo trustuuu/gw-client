@@ -1,8 +1,9 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import LogInPage from "./LogInPage";
 import LogOutPage from "./LogOutPage";
+import SignUp from "./SignUp";
 import Dashboard from "./Dashboard";
 import ErrorPage from "./ErrorPage";
 //import ServiceAccountCreationPage from './ServiceAccountCreationPage';
@@ -13,6 +14,7 @@ import DomainPage from "./Domain/DomainPage";
 import DomainPost from "./Domain/DomainPost";
 import UserPage from "./User/UserPage";
 import UserPost from "./User/UserPost";
+import UserView from "./User/UserView";
 
 import GroupPage from "./Group/GroupPage";
 import GroupView from "./Group/GroupView";
@@ -23,83 +25,72 @@ import ApplicationPost from "./Application/ApplicationPost";
 import ApiPage from "./Api/ApiPage";
 import ApiView from "./Api/ApiView";
 import ApiPost from "./Api/ApiPost";
+import PasswordResetPage from "./User/PasswordResetPage";
+import PasswordResetFromLinkPage from "./User/PasswordResetFromLinkPage";
+import PasswordResetUsingCurrentPage from "./User/PasswordResetUsingCurrentPage";
 
 function RoutesMain() {
   return (
-    <Switch>
-      <Route path="/dashboard">
-        <Dashboard />
-      </Route>
-      <Route path="/callback">
-        <AuthCallback />
-      </Route>
-      {/* <Route path="/service">
-            <ServiceAccountCreationPage />
-        </Route> */}
-      <Route path="/onboarding-companies">
-        <CompanyPage />
-      </Route>
-      <Route path="/onboarding-company-new">
-        <CompanyPost />
-      </Route>
-      <Route path="/onboarding-domains">
-        <DomainPage />
-      </Route>
-      <Route path="/onboarding-domain-new">
-        <DomainPost />
-      </Route>
-      <Route path="/users">
-        <UserPage key="allUsers" status="active" showTool={true} />
-      </Route>
-      <Route path="/users-deleted">
-        <UserPage key="deletedUsers" status="deleted" showTool={true} />
-      </Route>
-      <Route path="/users-new">
-        <UserPost />
-      </Route>
-      <Route path="/groups">
-        <GroupPage key="allGroups" status="active" showTool={true} />
-      </Route>
-      <Route path="/groups-deleted">
-        <GroupPage key="deletedGroups" status="deleted" showTool={true} />
-      </Route>
-      <Route path="/groups-new">
-        <GroupView />
-      </Route>
+    <Routes>
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/callback" element={<AuthCallback />} />
 
-      <Route path="/applications">
-        <ApplicationPage key="app" status="active" />
-      </Route>
-      <Route path="/applications-view">
-        <ApplicationView key="appView" mode="view" />
-      </Route>
-      <Route path="/applications-new">
-        <ApplicationPost key="appNew" mode="new" />
-      </Route>
+      <Route path="/onboarding-companies" element={<CompanyPage />} />
+      <Route path="/onboarding-company-new" element={<CompanyPost />} />
+      <Route path="/onboarding-domains" element={<DomainPage />} />
+      <Route path="/onboarding-domain-new" element={<DomainPost />} />
 
-      <Route path="/apis">
-        <ApiPage key="api" status="active" />
-      </Route>
-      <Route path="/apis-view">
-        <ApiView key="apiView" mode="view" />
-      </Route>
-      <Route path="/apis-new">
-        <ApiPost key="apiNew" mode="new" />
-      </Route>
-      <Route path="/error">
-        <ErrorPage />
-      </Route>
-      <Route path="/login">
-        <LogInPage />
-      </Route>
-      <Route path="/logout">
-        <LogOutPage />
-      </Route>
+      <Route
+        path="/users"
+        element={<UserPage key="allUsers" status="active" showTool={true} />}
+      />
+      <Route
+        path="/users-deleted"
+        element={
+          <UserPage key="deletedUsers" status="deleted" showTool={true} />
+        }
+      />
+      <Route path="/users-new" element={<UserView />} />
 
-      <Route path="/">
-        <LogInPage />
-      </Route>
-    </Switch>
+      <Route
+        path="/groups"
+        element={<GroupPage key="allGroups" status="active" showTool={true} />}
+      />
+      <Route
+        path="/groups-deleted"
+        element={
+          <GroupPage key="deletedGroups" status="deleted" showTool={true} />
+        }
+      />
+      <Route path="/groups-new" element={<GroupView />} />
+
+      <Route
+        path="/applications"
+        element={<ApplicationPage key="app" status="active" />}
+      />
+      <Route
+        path="/applications-view"
+        element={<ApplicationView key="appView" mode="view" />}
+      />
+      <Route
+        path="/applications-new"
+        element={<ApplicationPost key="appNew" mode="new" />}
+      />
+      <Route path="/apis" element={<ApiPage key="api" status="active" />} />
+      <Route
+        path="/apis-view"
+        element={<ApiView key="apiView" mode="view" />}
+      />
+      <Route path="/apis-new" element={<ApiView key="apiNew" mode="new" />} />
+      <Route path="/error" element={<ErrorPage />} />
+      <Route path="/login" element={<LogInPage />} />
+      <Route path="/logout" element={<LogOutPage />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/resetpw" element={<PasswordResetUsingCurrentPage />} />
+      <Route path="/resetpw-send" element={<PasswordResetPage />} />
+      <Route path="/resetpw-link" element={<PasswordResetFromLinkPage />} />
+      <Route path="/" element={<LogInPage />} />
+    </Routes>
   );
 }
 

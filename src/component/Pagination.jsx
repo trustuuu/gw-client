@@ -72,8 +72,8 @@ const Pagination = ({
                 strokeWidth="2"
                 stroke="currentColor"
                 fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 {" "}
                 <path stroke="none" d="M0 0h24v24H0z" />{" "}
@@ -84,6 +84,7 @@ const Pagination = ({
             {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
             {pageNumbers.slice(pageStart - 1, pageEnd).map((number) => (
               <Link
+                key={number}
                 to="#"
                 aria-current="page"
                 className={number === currentPage ? selectedCSS : generalCSS}
@@ -118,8 +119,8 @@ const Pagination = ({
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
                 {" "}
                 <polyline points="9 18 15 12 9 6" />

@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../component/AuthContext";
 import Toolbox from "../../component/Toolbox";
@@ -16,10 +16,10 @@ function UserPage({
   parentCallback,
   noDetailView,
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { accessToken, company, domain, header } = useAuth();
+  const { company, domain } = useAuth();
   const [users, setUsers] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -48,66 +48,63 @@ function UserPage({
     }
   };
 
-  const onClickNew = function (e) {
-    history.push("/users-new", {
-      company: company,
-      domain: domain,
-      mode: "new",
-      header: header,
+  const onClickNew = function () {
+    navigate("/users-new", {
+      state: {
+        company: company,
+        domain: domain,
+        mode: "new",
+      },
     });
   };
 
-  const onClickDel = async function (e) {
+  const onClickDel = async function () {
     await userApi.update(
       company.id,
       domain.id,
       checkedItems.map((item) => {
         return { ...item, status: status === "active" ? "deleted" : "active" };
-      }),
-      header
+      })
     );
     setCheckedItems([]);
     await getUsers();
   };
 
-  const onClickPurge = async function (e) {
-    await userApi.remove(company.id, domain.id, checkedItems, header);
+  const onClickPurge = async function () {
+    await userApi.remove(company.id, domain.id, checkedItems);
     setCheckedItems([]);
     await getUsers();
   };
 
   const onClickView = (item) => {
-    history.push("/users-new", {
-      company: company,
-      domain: domain,
-      user: item,
-      mode: "view",
-      header: header,
+    navigate("/users-new", {
+      state: {
+        company: company,
+        domain: domain,
+        user: item,
+        mode: "view",
+      },
     });
   };
 
   const onClickEdit = (item) => {
-    history.push("/users-new", {
-      company: company,
-      domain: domain,
-      user: item,
-      mode: "edit",
-      header: header,
+    navigate("/users-new", {
+      state: {
+        company: company,
+        domain: domain,
+        user: item,
+        mode: "edit",
+      },
     });
   };
 
   const getUsers = async () => {
-    if (accessToken) {
+    try {
       const condition =
         status === "active"
           ? ["status", "!=", "deleted"]
           : ["status", "==", status];
-      const dom = await userApi.getWhere(
-        company.id,
-        domain.id,
-        condition,
-        header
-      );
+      const dom = await userApi.getWhere(company.id, domain.id, condition);
       let data = dom.data;
       if (excludes) {
         data = data.filter(
@@ -120,6 +117,8 @@ function UserPage({
           ? Math.ceil(dom.data.length / postsPerPage)
           : pageDisplayCount
       );
+    } catch (error) {
+      if (error.status === 401) navigate("/");
     }
   };
 
@@ -132,15 +131,15 @@ function UserPage({
 
   const delSvg = (
     <svg
-      class="w-4 h-4 mr-2"
+      className="w-4 h-4 mr-2"
       width="24"
       height="24"
       viewBox="0 0 24 24"
-      stroke-width="2"
+      strokeWidth="2"
       stroke="currentColor"
       fill="none"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       {" "}
       <path stroke="none" d="M0 0h24v24H0z" />{" "}

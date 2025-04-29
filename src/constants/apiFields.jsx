@@ -126,6 +126,8 @@ export const apiPermissionScopesFields = [
     isRequired: true,
     placeholder: "Permission",
     category: "settings.access.permission",
+    customClass:
+      "w-max-30 ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 dark:bg-gray-300",
   },
   {
     labelText: "Description",
@@ -137,5 +139,7 @@ export const apiPermissionScopesFields = [
     isRequired: true,
     placeholder: "Description",
     category: "settings.access.permission",
+    customClass:
+      "min-w-60 ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 dark:bg-gray-300",
   },
 ];

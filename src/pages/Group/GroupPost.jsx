@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { groupFields } from "../../constants/formFields";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import groupApi from "../../api/group-api";
 import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
@@ -15,9 +15,9 @@ fields.forEach(
 
 export default function GroupPost() {
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [errorText, setError] = useState();
-  const { header, url, company, domain, group } = location.state;
+  const { header, company, domain, group } = location.state;
   const [mode, setMode] = useState(location.state.mode);
   const [itemState, setItemState] = useState(
     mode == "new" ? fieldsState : group
@@ -55,10 +55,8 @@ export default function GroupPost() {
       }
       let data = await populateItem({ ...itemState, id: itemState.name });
 
-      data.authVerification = md5(data.authVerification);
-
       await groupApi.create(company.id, domain.id, data, header);
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response.status == 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);
@@ -70,7 +68,7 @@ export default function GroupPost() {
   };
 
   const handleCancel = (event) => {
-    history.goBack();
+    navigate(-1);
     event.preventDefault();
   };
 
@@ -87,7 +85,7 @@ export default function GroupPost() {
   const saveItem = async () => {
     try {
       await groupApi.update(company.id, domain.id, itemState, header);
-      history.goBack();
+      navigate(-1);
     } catch (err) {
       if (err.response.status == 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);

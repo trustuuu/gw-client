@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../component/AuthContext";
 import Toolbox from "../../component/Toolbox";
 import Pagination from "../../component/Pagination";
@@ -10,11 +10,10 @@ import ButtonToolbox from "../../component/ButtonToolbox";
 import domainApi from "../../api/domain-api";
 
 function CompanyPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { accessToken, company, rootCompany, saveCompany, saveDomain } =
-    useAuth();
+  const { user, company, rootCompany, saveCompany, saveDomain } = useAuth();
   const [companies, setCompanies] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -40,10 +39,12 @@ function CompanyPage() {
   };
 
   const onClickNew = function (e) {
-    history.push("/onboarding-company-new", {
-      mode: "new",
-      company: company,
-      parent: company,
+    navigate("/onboarding-company-new", {
+      state: {
+        mode: "new",
+        company: company,
+        parent: company,
+      },
     });
   };
 
@@ -54,39 +55,57 @@ function CompanyPage() {
   };
 
   const onClickView = (item) => {
-    history.push("/onboarding-company-new", {
-      company: item,
-      mode: "view",
-      parent: company,
+    navigate("/onboarding-company-new", {
+      state: {
+        company: item,
+        mode: "view",
+        parent: company,
+      },
     });
   };
 
   const onClickEdit = (item) => {
-    history.push("/onboarding-company-new", {
-      company: item,
-      mode: "edit",
-      parent: company,
+    navigate("/onboarding-company-new", {
+      state: {
+        company: item,
+        mode: "edit",
+        parent: company,
+      },
     });
   };
 
-  const onClickSwithToManage = async function (e) {
+  const onClickSwithToManage = async function () {
     await switchCompany(checkedItems[0]);
   };
 
-  const onClickParentCompany = async function (e) {
+  const onClickParentCompany = async function () {
     await switchCompany(company.parent);
   };
 
   const switchCompany = async (companyId) => {
     const coms = await companyApi.get(companyId);
-    saveCompany(coms.data);
+    const companySession = {
+      id: coms.data.id,
+      name: coms.data.name,
+      displayName: coms.data.displayName,
+      parent: coms.data.parent,
+      type: coms.data.type ? coms.data.type : "customer",
+    };
+    saveCompany(companySession);
 
     const dom = await domainApi.getPrimary(companyId);
-    if ((dom.data.length = 1)) saveDomain(dom.data[0]);
+    if (dom.data.length === 1) {
+      const domainSession = {
+        id: dom.data[0].id,
+        name: dom.data[0].name,
+        description: dom.data[0].description,
+      };
+      saveDomain(domainSession);
+    }
   };
 
   const getCompanies = async () => {
-    if (accessToken) {
+    try {
       const coms = await companyApi.getTenants(company.id);
       setCompanies(coms.data);
       setPageEnd(
@@ -94,6 +113,8 @@ function CompanyPage() {
           ? Math.ceil(coms.data.length / postsPerPage)
           : pageDisplayCount
       );
+    } catch (error) {
+      if (error.status === 401) navigate("/");
     }
   };
 
@@ -107,15 +128,15 @@ function CompanyPage() {
 
   const switchCompanySvg = (
     <svg
-      class="h-4 w-4 mr-2"
+      className="h-4 w-4 mr-2"
       width="24"
       height="24"
       viewBox="0 0 24 24"
-      stroke-width="2"
+      strokeWidth="2"
       stroke="currentColor"
       fill="none"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
       {" "}
       <path stroke="none" d="M0 0h24v24H0z" />{" "}
@@ -126,32 +147,40 @@ function CompanyPage() {
   );
   const switchCompanyClass =
     "w-30 ml-4 bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
-  const switchParentClass = switchCompanyClass + "w-30 ml-8";
+  const switchParentClass = switchCompanyClass + "w-30 ml-12";
 
   return (
     <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
       <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700 inline-flex items-center justify-start">
         {/* <h2 className="font-semibold text-slate-800 dark:text-slate-100">Manage Company</h2> */}
-        <Toolbox
-          onClickNew={onClickNew}
-          onClickDel={onClickDel}
-          parentCallback={handleCallback}
-          disabledDel={checkedItems.length < 1}
-        />
-        <ButtonToolbox
-          text="Switch"
-          svg={switchCompanySvg}
-          clickHandle={onClickSwithToManage}
-          disabled={checkedItems.length != 1}
-          customClass={switchCompanyClass}
-        />
-        <ButtonToolbox
-          text="Parent"
-          svg={switchCompanySvg}
-          clickHandle={onClickParentCompany}
-          disabled={company.id == rootCompany.id || company.type == "root"}
-          customClass={switchParentClass}
-        />
+        {user.type === "reseller" || user.type === "root" ? (
+          <>
+            <Toolbox
+              onClickNew={onClickNew}
+              onClickDel={onClickDel}
+              parentCallback={handleCallback}
+              disabledDel={checkedItems.length < 1}
+            />
+            <ButtonToolbox
+              text="Switch"
+              svg={switchCompanySvg}
+              clickHandle={onClickSwithToManage}
+              disabled={checkedItems.length != 1}
+              customClass={switchCompanyClass}
+            />
+            {company.parent ? (
+              <ButtonToolbox
+                text="Parent"
+                svg={switchCompanySvg}
+                clickHandle={onClickParentCompany}
+                disabled={
+                  company.id == rootCompany.id || company.type == "root"
+                }
+                customClass={switchParentClass}
+              />
+            ) : null}
+          </>
+        ) : null}
       </header>
       <div className="p-3">
         {/* Current Company */}

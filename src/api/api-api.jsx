@@ -10,6 +10,13 @@ const apisUrl = (companyId, domainId) =>
     : `${url}/api`;
 
 const get = async (companyId, domainId, id, condition) => {
+  console.log(
+    "companyId, domainId, id, condition",
+    companyId,
+    domainId,
+    id,
+    condition
+  );
   if (id) {
     return await httpClient.get(`${apisUrl()}/api/${id}`);
   } else if (domainId) {
@@ -20,10 +27,10 @@ const get = async (companyId, domainId, id, condition) => {
     return await httpClient.get(`${apisUrl(companyId, null)}`, {
       params: { condition: condition ? condition : null },
     });
-  else
-    return await httpClient.get(`${apisUrl()}`, {
-      params: { condition: condition ? condition : null },
-    });
+  else console.log(`${apisUrl()}`);
+  return await httpClient.get(`${apisUrl()}`, {
+    params: { condition: condition ? condition : null },
+  });
 };
 
 const getPermissions = async (apiId) => {
@@ -65,10 +72,19 @@ const remove = async (data) => {
   }
 };
 
-const removePermission = async (apiId, permissionId) => {
-  return await httpClient.delete(
-    `${apisUrl()}/${apiId}/PermissionScopes/${permissionId}`
-  );
+const removePermission = async (apiId, data) => {
+  try {
+    if (typeof data === "string")
+      return await httpClient.delete(
+        `${apisUrl()}/${apiId}/PermissionScopes/${data}`
+      );
+    else
+      return await httpClient.delete(`${apisUrl()}/${apiId}/PermissionScopes`, {
+        data: data,
+      });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const apiApi = {
