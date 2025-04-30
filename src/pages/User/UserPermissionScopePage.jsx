@@ -39,12 +39,7 @@ function UserPermissionScopePage() {
     scopes.length > 0 ? scopes.slice(indexOfFirstPost, indexOfLastPost) : [];
 
   const getApis = async () => {
-    const condition = [
-      ["companyId", "==", company.id],
-      ["domain", "==", domain.id],
-    ];
     const allApis = await apiApi.get(company.id, domain.id, null, null);
-    console.log("allApis", allApis);
     setApis(allApis.data);
   };
   const getApiPermissions = async (api) => {

@@ -27,10 +27,10 @@ const get = async (companyId, domainId, id, condition) => {
     return await httpClient.get(`${apisUrl(companyId, null)}`, {
       params: { condition: condition ? condition : null },
     });
-  else console.log(`${apisUrl()}`);
-  return await httpClient.get(`${apisUrl()}`, {
-    params: { condition: condition ? condition : null },
-  });
+  else
+    return await httpClient.get(`${apisUrl()}`, {
+      params: { condition: condition ? condition : null },
+    });
 };
 
 const getPermissions = async (apiId) => {
