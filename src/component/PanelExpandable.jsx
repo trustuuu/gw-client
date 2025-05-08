@@ -16,7 +16,7 @@ export default function PanelExpandable({ title, initExpand, children }) {
       <label
         htmlFor="expandCollapse"
         className={classNames(
-          "w-full flex justify-start items-center  border-b-2 hover:cursor-pointer"
+          "w-full flex justify-start items-center border-b-2 hover:cursor-pointer"
         )}
         onClick={() => setOpen(!open)}
       >

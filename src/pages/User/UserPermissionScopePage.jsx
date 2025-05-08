@@ -66,7 +66,7 @@ function UserPermissionScopePage() {
   const onClickAddScope = async function () {
     setModalOpen(true);
   };
-  const onClickDel = async function (e) {
+  const onClickDel = async function () {
     await userApi.removePermissionScopes(
       company.id,
       domain.id,

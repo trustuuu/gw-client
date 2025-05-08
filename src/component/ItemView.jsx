@@ -1,5 +1,3 @@
-//import {useEffect, useRef} from 'react';
-
 const fixedInputClass =
   "rounded-md appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-gray-600 dark:accent-pink-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm";
 
@@ -35,7 +33,7 @@ export default function ItemView({
           onChange={handleChange}
           required={isRequired}
           placeholder={placeholder}
-          className={customClass ? customClass : fixedInputClass + customClass}
+          className={customClass ? fixedInputClass + customClass : customClass}
         ></textarea>
       );
       break;
@@ -48,7 +46,7 @@ export default function ItemView({
           onChange={handleChange}
           required={isRequired}
           placeholder={placeholder}
-          className={customClass ? customClass : fixedInputClass + customClass}
+          className={customClass ? fixedInputClass + customClass : customClass}
         >
           <option value={Item[id]}>{Item[id]}</option>
         </select>
@@ -66,7 +64,7 @@ export default function ItemView({
           name={name}
           type={type}
           required={isRequired}
-          className={customClass ? customClass : fixedInputClass + customClass}
+          className={customClass ? "w-40 " + customClass : " w-40 "}
           placeholder={placeholder}
           checked={value}
           disabled
@@ -83,7 +81,7 @@ export default function ItemView({
           name={name}
           type={type}
           required={isRequired}
-          className={customClass ? customClass : fixedInputClass + customClass}
+          className={customClass ? fixedInputClass + customClass : customClass}
           placeholder={placeholder}
         >
           {Item[id]}

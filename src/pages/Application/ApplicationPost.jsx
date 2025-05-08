@@ -11,12 +11,21 @@ import { generateString } from "../../utils/Utils";
 const fields = applicationFields;
 const fields_basic = fields.filter((a) => a.category === "settings.basic");
 const fields_settings_properties = fields.filter(
-  (a) => a.category === "settings.properties"
+  (a) =>
+    a.category === "settings.properties" || a.category === "settings.advanced"
 );
 const fields_settings_uris = fields.filter(
   (a) => a.category === "settings.uris"
 );
-
+const fields_settings_idToken = fields.filter(
+  (a) => a.category === "settings.idToken"
+);
+const fields_settings_refreshTokenRotation = fields.filter(
+  (a) => a.category === "settings.refreshTokenRotation"
+);
+const fields_settings_refreshTokenExpiration = fields.filter(
+  (a) => a.category === "settings.refreshTokenExpiration"
+);
 let fieldsState = {};
 fields.forEach(
   (field) => (fieldsState[field.id] = field.type === "checkbox" ? false : "")
@@ -35,6 +44,7 @@ export default function ApplicationPost() {
           client_id: String(32),
           client_secret: generateString(32),
           app_type: "SPA",
+          permissions_consent_screen: true,
         }
       : application
   );
@@ -42,7 +52,7 @@ export default function ApplicationPost() {
   const handleChange = (e) => {
     const currentItem = fields.filter((f) => f.id === e.target.id)[0];
     const itemValue =
-      e.target.value === "true" || e.target.value === "false"
+      e.target.type === "checkbox" //e.target.value === "true" || e.target.value === "false"
         ? e.target.checked
         : currentItem.valueType !== undefined &&
           currentItem.valueType === "array"
@@ -88,7 +98,8 @@ export default function ApplicationPost() {
   };
 
   const handleCancel = (event) => {
-    navigate(-1);
+    setMode("view");
+    //navigate(-1);
     event.preventDefault();
   };
 
@@ -102,6 +113,17 @@ export default function ApplicationPost() {
     event.preventDefault();
   };
 
+  // const handlePurchCors = async (event) => {
+  //   console.log(
+  //     "company.id, domain.id, application.id",
+  //     company.id,
+  //     domain.id,
+  //     application.id
+  //   );
+  //   await applicationApi.purgeCors(company.id, domain.id, application.id);
+  //   event.preventDefault();
+  // };
+
   const saveItem = async () => {
     try {
       await applicationApi.update({
@@ -109,6 +131,9 @@ export default function ApplicationPost() {
         companyId: company.id,
         domain: domain.id,
       });
+
+      await applicationApi.purgeCors(company.id, domain.id, application.id);
+
       navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {
@@ -159,6 +184,39 @@ export default function ApplicationPost() {
         mode
       ),
     },
+    {
+      title: "ID Token",
+      page: displayPanel(
+        "ID Token",
+        fields_settings_idToken,
+        application,
+        itemState,
+        handleChange,
+        mode
+      ),
+    },
+    {
+      title: "Refresh Tokken Rotation",
+      page: displayPanel(
+        "Refresh Tokken Rotation",
+        fields_settings_refreshTokenRotation,
+        application,
+        itemState,
+        handleChange,
+        mode
+      ),
+    },
+    {
+      title: "Refresh Tokken Expiration",
+      page: displayPanel(
+        "Refresh Tokken Expiration",
+        fields_settings_refreshTokenExpiration,
+        application,
+        itemState,
+        handleChange,
+        mode
+      ),
+    },
   ];
 
   return (
@@ -196,6 +254,30 @@ export default function ApplicationPost() {
               handleChange,
               mode
             )}
+            {displayPanel(
+              "ID Tokken",
+              fields_settings_idToken,
+              application,
+              itemState,
+              handleChange,
+              mode
+            )}
+            {displayPanel(
+              "Refresh Tokken Rotation",
+              fields_settings_refreshTokenRotation,
+              application,
+              itemState,
+              handleChange,
+              mode
+            )}
+            {displayPanel(
+              "efresh Tokken Expiration",
+              fields_settings_refreshTokenExpiration,
+              application,
+              itemState,
+              handleChange,
+              mode
+            )}
           </div>
         )}
         {mode === "new" || mode === "edit" ? (
@@ -218,6 +300,9 @@ export default function ApplicationPost() {
             <div>
               <FormAction handleSubmit={handleCancel} text="Close" />
             </div>
+            {/* <div>
+              <FormAction handleSubmit={handlePurchCors} text="Push Origins" />
+            </div> */}
           </div>
         )}
       </form>
@@ -228,7 +313,7 @@ export default function ApplicationPost() {
 const displayPanel = (title, fields, item, itemState, handleChange, mode) => {
   return (
     <PanelExpandable title={title} initExpand={true}>
-      <div className="space-y-4">
+      <div className="space-y-4 w-full">
         {fields.map((field) =>
           (field.hiddenUpdate || field.hiddenUpdate !== undefined) &&
           mode === "edit" ? (

@@ -33,11 +33,7 @@ export default function ItemField({
         field.customClass
           ? field.customClass
           : customClassEdit +
-            +`${
-              field.type == "checkbox"
-                ? " max-w-4 dark:bg-pink-500 "
-                : " min-w-80 "
-            }`
+            +`${field.type == "checkbox" ? " max-w-4 " : " min-w-80 "}`
       }
     />
   ) : (
@@ -58,11 +54,7 @@ export default function ItemField({
         field.customClass
           ? field.customClass
           : customClass +
-            `${
-              field.type == "checkbox"
-                ? " max-w-4 dark:bg-pink-500 "
-                : " min-w-80 "
-            }`
+            `${field.type == "checkbox" ? " max-w-4 " : " min-w-80 "}`
       }
       reseller={field.reseller}
     />

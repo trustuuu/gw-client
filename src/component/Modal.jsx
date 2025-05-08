@@ -8,6 +8,7 @@ const Modal = ({
   optionBtnLabel,
   onOptionBtnClick,
   customClassName,
+  fullWidth,
 }) => {
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -39,12 +40,12 @@ const Modal = ({
       onClick={onClose} // 배경 누르면 닫기
     >
       <div
-        className="bg-white dark:bg-slate-800 rounded-lg shadow-2xl p-6"
+        className={`${fullWidth} bg-white dark:bg-slate-800 rounded-lg shadow-2xl p-2`}
         onClick={(e) => e.stopPropagation()} // 모달 내부 클릭 시 닫힘 방지
       >
         {children}
 
-        <div className="flex justify-end mt-6 space-x-4">
+        <div className="flex justify-end mt-6 px-4 space-x-4">
           {optionBtnLabel && (
             <button
               onClick={onOptionBtnClick}

@@ -43,6 +43,7 @@ const AuthContextProvider = ({ children }) => {
 
   const [role, setRole] = useState();
   const [scope, setScope] = useState();
+  const [api, setApi] = useState();
   const [codeVerifier, setCodeVerifier] = usePersistedState("session", null);
 
   // Set HTTP header if present
@@ -65,46 +66,42 @@ const AuthContextProvider = ({ children }) => {
     sessionStorage.setItem("header", JSON.stringify(newHeader));
   };
 
-  const contextValue = useMemo(
+  const contextMemoValue = useMemo(
     () => ({
       loginWithiGoodWorks,
       saveUser: setUser,
-      saveRole: setRole,
-      saveScope: setScope,
       saveCompany: setCompany,
       saveRootCompany: setRootCompany,
       saveDomain: setDomain,
       saveClient: setClient,
       saveAccessToken,
       saveHeader: setHeader,
-      saveCodeVerifier: setCodeVerifier,
       user,
       company,
       rootCompany,
       domain,
-      role,
-      scope,
       client,
       accessToken,
       header,
-      codeVerifier,
     }),
-    [
-      user,
-      company,
-      rootCompany,
-      domain,
-      role,
-      scope,
-      client,
-      accessToken,
-      header,
-      codeVerifier,
-    ]
+    [user, company, rootCompany, domain, client, accessToken, header]
   );
 
+  const contextValue = {
+    saveCodeVerifier: setCodeVerifier,
+    setApi,
+    saveRole: setRole,
+    saveScope: setScope,
+    codeVerifier,
+    api,
+    role,
+    scope,
+  };
+
   return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ ...contextMemoValue, ...contextValue }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 

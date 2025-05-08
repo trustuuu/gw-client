@@ -9,8 +9,11 @@ function Users({
   onClickView,
   onClickEdit,
   noDetailView,
+  selectedItems,
 }) {
-  const [checkedItems, setCheckedItems] = useState([]);
+  const [checkedItems, setCheckedItems] = useState(
+    selectedItems ? selectedItems : []
+  );
 
   const handleChangeCheck = function (e) {
     const item = e.target.name;

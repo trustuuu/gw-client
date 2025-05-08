@@ -26,6 +26,8 @@ export default {
       },
       fontFamily: {
         inter: ["Inter", "sans-serif"],
+        geistS: ["geistSans", "monospace"],
+        geistM: ["geistMono", "monospace"],
       },
       fontSize: {
         xs: ["0.75rem", { lineHeight: "1.5" }],
@@ -63,15 +65,16 @@ export default {
     },
   },
   plugins: [
-    plugin(({ addVariant, e }) => {
-      addVariant("sidebar-expanded", ({ modifySelectors, separator }) => {
-        modifySelectors(
-          ({ className }) =>
-            `.sidebar-expanded .${e(
-              `sidebar-expanded${separator}${className}`
-            )}`
-        );
-      });
+    plugin(function ({ matchVariant }) {
+      matchVariant(
+        "sidebar-expanded",
+        (value) => `.sidebar-expanded .${value}`,
+        {
+          values: {
+            DEFAULT: "",
+          },
+        }
+      );
     }),
   ],
 };

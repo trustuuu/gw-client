@@ -14,7 +14,7 @@ function ApiPage({ status }) {
   const navigate = useNavigate();
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
-  const { company, domain } = useAuth();
+  const { company, domain, setApi } = useAuth();
   const [apis, setApis] = useState([]);
   const [domainId, setDomainId] = useState(domain.id);
   const [checkedItems, setCheckedItems] = useState([]);
@@ -43,7 +43,7 @@ function ApiPage({ status }) {
   };
 
   const onClickNew = function () {
-    navigate("/apis-new", {
+    navigate("/apisnew", {
       state: {
         company: company,
         domain: domain,
@@ -60,6 +60,7 @@ function ApiPage({ status }) {
   };
 
   const onClickView = (item) => {
+    setApi(item);
     navigate("/apis-view", {
       state: {
         company: company,
@@ -71,7 +72,7 @@ function ApiPage({ status }) {
   };
 
   const onClickEdit = (item) => {
-    navigate("/apis-new", {
+    navigate("/apisnew", {
       state: {
         company: company,
         domain: domain,
@@ -102,7 +103,7 @@ function ApiPage({ status }) {
       }
       setDomainId(domId);
     } catch (error) {
-      if (error.status === 401) navigate("/");
+      if (error.status === 401 || error.status === 404) navigate("/");
     }
   };
 

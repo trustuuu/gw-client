@@ -143,3 +143,72 @@ export const apiPermissionScopesFields = [
       "min-w-60 ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 dark:bg-gray-300",
   },
 ];
+
+export const apiAppRolesFields = [
+  {
+    labelText: "Display Name",
+    labelFor: "displayName",
+    id: "displayName",
+    name: "displayName",
+    type: "text",
+    autoComplete: "displayName",
+    isRequired: true,
+    placeholder: "Display Name",
+    category: "settings.access.role",
+    customClass:
+      "w-max-30 ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 dark:bg-gray-300",
+  },
+  {
+    labelText: "Allowed member type",
+    labelFor: "allowedMemberType",
+    id: "allowedMemberType",
+    name: "allowedMemberType",
+    type: "select",
+    autoComplete: "allowedMemberType",
+    isRequired: true,
+    placeholder: "Allowed member type",
+    list: [
+      { key: "UsersGroups", value: "Users/Groups" },
+      { key: "Applications", value: "Applications" },
+      { key: "Both", value: "Both (Users/Groups + Applications" },
+    ],
+    category: "settings.access.role",
+  },
+  {
+    labelText: "Value",
+    labelFor: "value",
+    id: "value",
+    name: "value",
+    type: "text",
+    autoComplete: "value",
+    isRequired: true,
+    placeholder: "e.g. Email:Write",
+    category: "settings.access.role",
+    customClass:
+      "min-w-60 ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 dark:bg-gray-300",
+  },
+  {
+    labelText: "Description",
+    labelFor: "description",
+    id: "description",
+    name: "description",
+    type: "text",
+    autoComplete: "description",
+    isRequired: true,
+    placeholder: "Description",
+    category: "settings.access.role",
+    customClass:
+      "min-w-60 ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 dark:bg-gray-300",
+  },
+  {
+    labelText: "Enable",
+    labelFor: "enable",
+    id: "enable",
+    name: "enable",
+    type: "checkbox",
+    autoComplete: "enable",
+    isRequired: true,
+    placeholder: "Enable",
+    category: "settings.access.role",
+  },
+];

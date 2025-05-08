@@ -1,15 +1,31 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=fallback");
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=fallback"); */
 
 /* @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities'; */
+
 @import "tailwindcss";
 
 /* @tailwind base;
-@tailwind components; */
+@tailwind components; 
+@import "tailwindcss/preflight";*/
 @tailwind utilities;
 
-/* @import "tailwindcss/preflight"; */
+@font-face {
+  font-family: "geistMono";
+  src: url("/fonts/GeistMonoVF.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "geistSans";
+  src: url("/fonts/GeistVF.woff") format("woff");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 /* Additional styles */
 @import "./additional-styles/utility-patterns.css";

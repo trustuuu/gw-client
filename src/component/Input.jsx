@@ -1,5 +1,5 @@
 const fixedInputClass =
-  "rounded-md appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-gray-300 dark:accent-pink-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm";
+  "rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-gray-300 dark:accent-pink-100 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm";
 
 export default function Input({
   handleChange,
@@ -16,7 +16,7 @@ export default function Input({
   company,
   reseller,
 }) {
-  const showItem = "my-5 flex items-center";
+  const showItem = "my-5 flex items-center text-pretty";
   const hiddenItem = "my-5 flex items-center invisible";
 
   let inputContext = null;
@@ -31,7 +31,9 @@ export default function Input({
           onChange={handleChange}
           required={isRequired}
           placeholder={placeholder}
-          className={customClass ? customClass : fixedInputClass + customClass}
+          className={
+            customClass ? fixedInputClass + customClass : fixedInputClass
+          }
         ></textarea>
       );
       break;
@@ -44,7 +46,9 @@ export default function Input({
           onChange={handleChange}
           required={isRequired}
           placeholder={placeholder}
-          className={customClass ? customClass : fixedInputClass + customClass}
+          className={
+            customClass ? fixedInputClass + customClass : fixedInputClass
+          }
         >
           {list.map((l) => {
             return <option value={l.key}>{l.value}</option>;
@@ -65,7 +69,9 @@ export default function Input({
           name={name}
           type={type}
           required={isRequired}
-          className={customClass ? customClass : fixedInputClass + customClass}
+          className={
+            customClass ? fixedInputClass + customClass : fixedInputClass
+          }
           placeholder={placeholder}
           checked={value}
         />
@@ -84,7 +90,7 @@ export default function Input({
     >
       <label
         htmlFor={labelFor}
-        className="text-pretty ms-2 text-sm font-medium text-gray-900 dark:text-gray-100 min-w-40 max-w-48 "
+        className="text-wrap ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-48 max-w-48 "
       >
         {labelText}
       </label>

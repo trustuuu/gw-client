@@ -1,4 +1,4 @@
-import { uniOAuthServer } from "./igw-api";
+import { uniDirServer, uniOAuthServer } from "./igw-api";
 import { httpClient } from "./httpClient";
 
 const url = `${uniOAuthServer.Endpoint}`;
@@ -50,11 +50,20 @@ const remove = async (data) => {
   }
 };
 
+const purgeCors = async (companyId, domainId, id) => {
+  const data = { client_id: id };
+  return await httpClient.post(
+    `${uniDirServer.Endpoint}/companys/${companyId}/domainNames/${domainId}/purge/cors`,
+    data
+  );
+};
+
 const applicationApi = {
   get,
   getWhere,
   create,
   update,
   remove,
+  purgeCors,
 };
 export default applicationApi;

@@ -5,7 +5,6 @@ import Checkbox from "../../component/Checkbox";
 function Apis({ apis, parentCallback, onClickView, onClickEdit, customClass }) {
   const [checkedItems, setCheckedItems] = useState([]);
   const [selected, setSelected] = useState(null);
-  console.log("apis items", apis);
   const handleChangeCheck = function (e) {
     const item = e.target.name;
     const isChecked = e.target.checked;
@@ -36,7 +35,7 @@ function Apis({ apis, parentCallback, onClickView, onClickEdit, customClass }) {
               <div className="grow flex">
                 <div className="self-center uppercase w-1/6 min-w-48">Name</div>
                 <div className="text-left uppercase justify-self-start w-4/6">
-                  Identifier
+                  Audience
                 </div>
                 <div className="shrink-0 self-end ml-2 w-1/6">
                   <a
@@ -87,7 +86,7 @@ function Apis({ apis, parentCallback, onClickView, onClickEdit, customClass }) {
                         {api ? api.name : ""}
                       </div>
                       <div className="text-left justify-self-start w-4/6">
-                        {api ? api.identifier : ""}
+                        {api ? api.audience : ""}
                       </div>
                     </div>
                     {onClickEdit ? (

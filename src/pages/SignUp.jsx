@@ -23,7 +23,7 @@ export default function SignUp() {
   const handleChange = (e, currentFields, itemState, setState) => {
     const currentItem = currentFields.filter((f) => f.id === e.target.id)[0];
     const itemValue =
-      e.target.value === "true" || e.target.value === "false"
+      e.target.type === "checkbox" //e.target.value === "true" || e.target.value === "false"
         ? e.target.checked
         : currentItem.valueType !== undefined &&
           currentItem.valueType === "array"

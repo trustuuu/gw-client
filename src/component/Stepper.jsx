@@ -52,9 +52,9 @@ const Stepper = ({ steps, handleSubmit }) => {
           </div>
         ))}
       </div>
-      <div className="w-full flex items-center">
+      <div className="w-full mt-4 flex items-center h-[400px] overflow-auto bg-slate-800">
         {steps?.map((step, i) => (
-          <div className="w-full" id={i}>
+          <div className="w-full px-4" id={i}>
             {currentStep - 1 === i && step.page}
           </div>
         ))}
@@ -62,7 +62,7 @@ const Stepper = ({ steps, handleSubmit }) => {
       {error ? (
         <div className="w-full flex items-center text-red-500">{error}</div>
       ) : null}
-      <div className="w-full flex justify-between">
+      <div className="w-full mt-4 flex justify-between">
         {!complete && currentStep > 1 && (
           <button
             className={fixedButtonClass}

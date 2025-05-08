@@ -1,17 +1,22 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import TabHeader from "../../component/tabs/TabHeader";
 import TabBody from "../../component/tabs/TabBody";
-import CompanyPage from "../Company/CompanyPage";
 import DomainPage from "../Domain/DomainPage";
 import ApiPost from "./ApiPost";
 import ApiPermissionScopePage from "./ApiPermissionScopePage";
+import ApiAppRolePage from "./ApiAppRolePage";
+import { useAuth } from "../../component/AuthContext";
 
 function ApiView() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { api: apiState } = location.state ? location.state : {};
+  const { api: apiAuth } = useAuth();
+  const api = apiState ? apiState : apiAuth;
+  if (!api) navigate("/apis");
 
-  const { url, company, domain, api, mode } = location.state;
   const data = [
     {
       title: "Quick Start",
@@ -27,10 +32,14 @@ function ApiView() {
       title: "Settings",
       content: <ApiPost mode="view" api={api} />,
     },
-
     {
       title: "Permission",
       content: <ApiPermissionScopePage mode="edit" api={api} />,
+      closeButton: true,
+    },
+    {
+      title: "App Roles",
+      content: <ApiAppRolePage mode="edit" api={api} />,
       closeButton: true,
     },
     {

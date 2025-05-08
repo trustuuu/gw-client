@@ -23,7 +23,6 @@ async function refreshAccessToken() {
       withCredentials: true, // ✅ 쿠키 자동 포함!
       //credentials: "include",
     });
-
     return res.data.accessToken;
   } catch (err) {
     console.error("🔴 Refresh token failed:", err);
