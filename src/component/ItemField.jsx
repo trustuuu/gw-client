@@ -1,10 +1,8 @@
 import Input from "./Input";
 import ItemView from "./ItemView";
 
-const customClassEdit =
-  "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 dark:bg-gray-800 bg-gray-400 text-gray-800 placeholder-gray-300";
-const customClass =
-  "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 dark:bg-gray-300 ";
+const customClassEdit = "ms-2 text-sm font-medium placeholder-gray-300";
+const customClass = "ms-2 text-sm font-medium ";
 
 export default function ItemField({
   item,

@@ -19,11 +19,10 @@ function GroupPage({
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { company, domain } = useAuth();
+  const { company, domain, setIsLoading } = useAuth();
   const [groups, setGroups] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -59,7 +58,7 @@ function GroupPage({
   };
 
   const onClickDel = async function () {
-    //const group = await groupApi.get(company.id, domain.id, checkedItems);
+    setIsLoading(true);
     await groupApi.update(
       company.id,
       domain.id,
@@ -69,12 +68,15 @@ function GroupPage({
     );
     setCheckedItems([]);
     await getGroups();
+    setIsLoading(false);
   };
 
   const onClickPurge = async function () {
+    setIsLoading(true);
     await groupApi.remove(company.id, domain.id, checkedItems);
     setCheckedItems([]);
     await getGroups();
+    setIsLoading(false);
   };
 
   const onClickView = (item) => {
@@ -155,8 +157,8 @@ function GroupPage({
     "w-30 ml-8 bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
-      <header className="px-5 py-4 border-slate-100 dark:border-slate-700 relative inline-flex">
+    <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
+      <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex">
         {/* <h2 className="font-semibold text-slate-800 dark:text-slate-100">Manage Domain</h2> */}
         {showTool && (
           <>
@@ -188,7 +190,6 @@ function GroupPage({
           parentCallback={handleCallback}
           onClickView={onClickView}
           onClickEdit={onClickEdit}
-          loading={isLoading}
           noDetailView={noDetailView}
         />
         <Pagination

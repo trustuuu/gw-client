@@ -9,11 +9,12 @@ import Modal from "../../component/Modal";
 import apiApi from "../../api/api-api";
 import ApiPermissions from "../Api/ApiPermissions";
 import Apis from "../Api/Apis";
+import { useAuth } from "../../component/AuthContext";
 
 function UserPermissionScopePage() {
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -25,7 +26,7 @@ function UserPermissionScopePage() {
 
   const [scopes, setScopes] = useState([]);
 
-  const [apiScopes, setApiScopes] = useState([]);
+  //const [apiScopes, setApiScopes] = useState([]);
   const [excludeScopes, setExcludeScopes] = useState([]);
   const [apis, setApis] = useState([]);
   const [currentApi, setCurrentApi] = useState([]);
@@ -49,7 +50,7 @@ function UserPermissionScopePage() {
       (item) => !scopes.map((e) => e.id).includes(`${api.id}#${item.id}`)
     );
 
-    setApiScopes(allScopes.data);
+    //setApiScopes(allScopes.data);
     setExcludeScopes(nonExistScopes);
     return allScopes.data;
   };
@@ -67,6 +68,7 @@ function UserPermissionScopePage() {
     setModalOpen(true);
   };
   const onClickDel = async function () {
+    setIsLoading(true);
     await userApi.removePermissionScopes(
       company.id,
       domain.id,
@@ -75,8 +77,10 @@ function UserPermissionScopePage() {
     );
     setCheckedItems([]);
     await getUserScopes();
+    setIsLoading(false);
   };
   const onClickAdd = async function () {
+    setIsLoading(true);
     await userApi.addPermissionScopes(
       company.id,
       domain.id,
@@ -88,6 +92,7 @@ function UserPermissionScopePage() {
     setCheckedItems([]);
     await getUserScopes();
     await getApiPermissions(currentApi);
+    setIsLoading(false);
     setModalOpen(false);
   };
   const onCloseScopeModal = async function () {
@@ -115,8 +120,8 @@ function UserPermissionScopePage() {
   }, []);
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
-      <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex items-center justify-between">
+    <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
+      <header className="w-full px-5 py-4 relative inline-flex items-center justify-between">
         <div className="space-y-4 ml-10">
           <label
             htmlFor="description"
@@ -162,10 +167,10 @@ function UserPermissionScopePage() {
           onClose={onCloseScopeModal}
           optionBtnLabel="Add"
           onOptionBtnClick={onClickAdd}
-          customClassName="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm "
+          customClassName="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm "
         >
           <div className="flex flex-wrap">
-            <div className="flex-1 min-w-[300px] flex flex-col w-1/3  bg-blue-800 p-4">
+            <div className="flex-1 min-w-[300px] flex flex-col w-1/3 p-4">
               <div>
                 <Apis
                   apis={apis}
@@ -190,7 +195,7 @@ function UserPermissionScopePage() {
                 />
               </div>
             </div>
-            <div className="flex-1 min-w-[300px] flex flex-col w-2/3 bg-green-800 p-4">
+            <div className="flex-1 min-w-[300px] flex flex-col w-2/3 p-4">
               <div>
                 <ApiPermissions
                   scopes={excludeScopes}

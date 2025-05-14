@@ -5,7 +5,7 @@ import userApi from "../../api/user-api";
 import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
 import ItemView from "../../component/ItemView";
-import md5 from "blueimp-md5";
+import { useAuth } from "../../component/AuthContext";
 
 const fields = userFields;
 let fieldsState = {};
@@ -14,6 +14,7 @@ fields.forEach(
 );
 
 export default function UserPost() {
+  const { setIsLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -34,7 +35,9 @@ export default function UserPost() {
   };
 
   const handleSubmit = (event) => {
+    setIsLoading(true);
     createItem();
+    setIsLoading(false);
     event.preventDefault();
   };
 
@@ -77,7 +80,9 @@ export default function UserPost() {
   };
 
   const handleSave = async (event) => {
+    setIsLoading(true);
     saveItem();
+    setIsLoading(false);
     event.preventDefault();
   };
 
@@ -95,10 +100,8 @@ export default function UserPost() {
     }
   };
 
-  const customClassEdit =
-    "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";
-  const customClass =
-    "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 min-w-80 dark:bg-gray-300 ";
+  const customClassEdit = "ms-2 text-sm font-medium min-w-80 ";
+  const customClass = "ms-2 text-sm font-medium min-w-80 ";
   if (mode === "new" || mode === "edit") {
     return (
       <div className="flex justify-center">

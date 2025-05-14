@@ -10,10 +10,11 @@ import GroupPage from "./GroupPage";
 import TabHeader from "../../component/tabs/TabHeader";
 import TabBody from "../../component/tabs/TabBody";
 import Modal from "../../component/Modal";
+import { useAuth } from "../../component/AuthContext";
 
 function GroupMemberPage() {
   const location = useLocation();
-
+  const { setIsLoading } = useAuth();
   const { company, domain, group } = location.state;
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
@@ -22,7 +23,6 @@ function GroupMemberPage() {
   const [checkedItems, setCheckedItems] = useState([]);
   const [userCheckedItems, setUserCheckedItems] = useState([]);
   const [groupCheckedItems, setGroupCheckedItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -54,18 +54,19 @@ function GroupMemberPage() {
     setGroupCheckedItems(groupCheckedItems);
   };
 
-  const onClickAdd = async function (e) {
+  const onClickAdd = async function () {
     setModalOpen(true);
     // await groupApi.addMembers(company.id, domain.id, group.id, {...member, id:member.permission});
     // setMember({permission:'', description:''});
     // await getGroupMembers();
   };
 
-  const onCloseMemberModal = async function (e) {
+  const onCloseMemberModal = async function () {
     setModalOpen(false);
   };
 
-  const onAddMemberClick = async function (e) {
+  const onAddMemberClick = async function () {
+    setIsLoading(true);
     let newMembers = userCheckedItems.map((u) => {
       return { id: u.id, displayName: u.displayName, type: "user" };
     });
@@ -78,13 +79,15 @@ function GroupMemberPage() {
 
     await groupApi.addMembers(company.id, domain.id, group.id, newMembers);
     await getGroupMembers();
+    setIsLoading(false);
     setModalOpen(false);
   };
 
-  const onClickDel = async function (e) {
-    //const member = await apiApi.get(company.id, domain.id, checkedItems);
+  const onClickDel = async function () {
+    setIsLoading(true);
     await groupApi.removeMembers(company.id, domain.id, group.id, checkedItems);
     await getGroupMembers();
+    setIsLoading(false);
   };
 
   const getGroupMembers = async () => {
@@ -150,7 +153,6 @@ function GroupMemberPage() {
         <GroupMember
           members={currentPosts}
           parentCallback={handleCallback}
-          loading={isLoading}
           onClickDel={onClickDel}
         />
         <Pagination

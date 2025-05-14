@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import Checkbox from "../../component/Checkbox";
 
-function GroupMember({ members, parentCallback, onClickView, onClickEdit }) {
+function GroupMember({ members, parentCallback }) {
   const [checkedItems, setCheckedItems] = useState([]);
 
   const handleChangeCheck = function (e) {

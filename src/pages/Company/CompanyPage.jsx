@@ -13,11 +13,11 @@ function CompanyPage() {
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { user, company, rootCompany, saveCompany, saveDomain } = useAuth();
+  const { user, company, rootCompany, saveCompany, saveDomain, setIsLoading } =
+    useAuth();
   const [companies, setCompanies] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -38,7 +38,7 @@ function CompanyPage() {
     setCheckedItems(childCheckedItems);
   };
 
-  const onClickNew = function (e) {
+  const onClickNew = function () {
     navigate("/onboarding-company-new", {
       state: {
         mode: "new",
@@ -48,10 +48,12 @@ function CompanyPage() {
     });
   };
 
-  const onClickDel = async function (e) {
+  const onClickDel = async function () {
+    setIsLoading(true);
     await companyApi.remove(checkedItems);
     setCheckedItems([]);
     await getCompanies();
+    setIsLoading(false);
   };
 
   const onClickView = (item) => {
@@ -75,11 +77,15 @@ function CompanyPage() {
   };
 
   const onClickSwithToManage = async function () {
+    setIsLoading(true);
     await switchCompany(checkedItems[0]);
+    setIsLoading(false);
   };
 
   const onClickParentCompany = async function () {
+    setIsLoading(true);
     await switchCompany(company.parent);
+    setIsLoading(false);
   };
 
   const switchCompany = async (companyId) => {
@@ -150,8 +156,8 @@ function CompanyPage() {
   const switchParentClass = switchCompanyClass + "w-30 ml-12";
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
-      <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700 inline-flex items-center justify-start">
+    <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
+      <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex">
         {/* <h2 className="font-semibold text-slate-800 dark:text-slate-100">Manage Company</h2> */}
         {user.type === "reseller" || user.type === "root" ? (
           <>
@@ -184,8 +190,8 @@ function CompanyPage() {
       </header>
       <div className="p-3">
         {/* Current Company */}
-        <div>
-          <header className="text-xs uppercase text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700 dark:bg-opacity-50 rounded-sm font-semibold p-2">
+        <div className="shadow-lg rounded-sm mb-10">
+          <header className="text-xs uppercase dark:bg-opacity-50 rounded-sm font-semibold p-2">
             Current Company
           </header>
           <ul className="my-1">
@@ -199,7 +205,7 @@ function CompanyPage() {
                   <path d="M18 10c-4.4 0-8 3.1-8 7s3.6 7 8 7h.6l5.4 2v-4.4c1.2-1.2 2-2.8 2-4.6 0-3.9-3.6-7-8-7zm4 10.8v2.3L18.9 22H18c-3.3 0-6-2.2-6-5s2.7-5 6-5 6 2.2 6 5c0 2.2-2 3.8-2 3.8z" />
                 </svg>
               </div>
-              <div className="grow flex items-center border-b border-slate-100 dark:border-slate-700 text-sm py-2">
+              <div className="grow flex items-center text-sm py-2">
                 <div className="grow flex">
                   <div className="self-center uppercase w-1/6 min-w-48">
                     {company ? company.name : ""}
@@ -226,7 +232,6 @@ function CompanyPage() {
           parentCallback={handleCallback}
           onClickView={onClickView}
           onClickEdit={onClickEdit}
-          loading={isLoading}
         />
         <Pagination
           postsPerPage={postsPerPage}

@@ -6,6 +6,8 @@ import SidebarApi from "../component/SidebarApi";
 import Header from "../component/Header";
 import { useAuth } from "../component/AuthContext";
 import { useLocation } from "react-router-dom";
+import LoadingWrapper from "../component/LoadingWrapper";
+import SidebarApplications from "../component/SidebarApplication";
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -17,6 +19,13 @@ function Layout() {
     if (location.pathname.startsWith("/apis-")) {
       return (
         <SidebarApi sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      );
+    } else if (location.pathname.startsWith("/applications-")) {
+      return (
+        <SidebarApplications
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
       );
     } else {
       return (
@@ -55,7 +64,9 @@ function Layout() {
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         <div className="font-geist px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-          <RoutesMain />
+          <LoadingWrapper>
+            <RoutesMain />
+          </LoadingWrapper>
         </div>
       </div>
     </div>

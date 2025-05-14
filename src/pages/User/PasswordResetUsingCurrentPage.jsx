@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
+import userApi from "../../api/user-api";
+import { useAuth } from "../../component/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const PasswordResetUsingCurrentPage = () => {
   const [email, setEmail] = useState("");
@@ -7,7 +9,9 @@ const PasswordResetUsingCurrentPage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
+  const { user, setIsLoading } = useAuth();
 
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -16,12 +20,14 @@ const PasswordResetUsingCurrentPage = () => {
       return;
     }
 
+    setIsLoading(true);
     try {
-      await axios.post("/api/update-password", {
+      await userApi.resetPassword(user.companyId, user.domainId, {
         email,
-        currentPassword,
+        password: currentPassword,
         newPassword,
       });
+      navigate("/users");
       setStatusMessage("Password has been updated successfully!");
       setEmail("");
       setCurrentPassword("");
@@ -29,12 +35,15 @@ const PasswordResetUsingCurrentPage = () => {
       setConfirmNewPassword("");
     } catch (error) {
       console.error("Error updating password:", error);
-      setStatusMessage("Failed to update password. Please try again.");
+      setStatusMessage(
+        `Failed to update password. Please try again. ${error.response.data}`
+      );
     }
+    setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:text-slate-500 dark:bg-slate-700/50 ">
+    <div className="min-h-screen flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded shadow-md w-full max-w-md"

@@ -31,12 +31,12 @@ function ApiPermissions({
     <div className="p-3">
       {/* Apis */}
       <div>
-        <header className="text-xs uppercase text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700 dark:bg-opacity-50 rounded-sm font-semibold p-2">
+        <header className="text-xs uppercase dark:bg-opacity-50 rounded-sm font-semibold p-2">
           Permission Scopes
         </header>
         <ul className={customClass ? customClass : "my-1 overflow-y-auto"}>
           {/* Item */}
-          <li className="flex px-2">
+          <li className="flex px-2 font-bold">
             <div className="self-center mr-7"></div>
             <div className="grow flex items-center border-b border-slate-100 dark:border-slate-700 text-sm py-2">
               <div className="grow flex">
@@ -46,14 +46,16 @@ function ApiPermissions({
                 <div className="text-left uppercase justify-self-start w-4/6">
                   Description
                 </div>
-                <div className="shrink-0 self-end ml-2 w-1/6">
-                  <a
-                    className="font-medium uppercase text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400"
-                    href="#0"
-                  >
-                    Action
-                  </a>
-                </div>
+                {onClickDel ? (
+                  <div className="shrink-0 self-end ml-2 w-1/6">
+                    <a
+                      className="font-medium uppercase text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400"
+                      href="#0"
+                    >
+                      Action
+                    </a>
+                  </div>
+                ) : null}
               </div>
             </div>
           </li>

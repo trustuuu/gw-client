@@ -23,6 +23,7 @@ async function refreshAccessToken() {
       withCredentials: true, // ✅ 쿠키 자동 포함!
       //credentials: "include",
     });
+    //res.status(404).json({ error: "Not Found" });
     return res.data.accessToken;
   } catch (err) {
     console.error("🔴 Refresh token failed:", err);
@@ -53,6 +54,9 @@ httpClient.interceptors.response.use(
         };
         return httpClient(originalRequest); // 원래 요청 다시 시도
       } catch (refreshErr) {
+        if (refreshErr.response.status == 404) {
+          sessionStorage.clear();
+        }
         console.log("refreshErr", refreshErr);
         return Promise.reject(refreshErr); // 실패 시 전파
       }

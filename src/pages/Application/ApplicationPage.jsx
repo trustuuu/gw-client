@@ -14,13 +14,13 @@ function ApplicationPage({ status }) {
   const navigate = useNavigate();
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
-  const { company, domain } = useAuth();
+  const { company, domain, path, setPath, setIsLoading, setApplication } =
+    useAuth();
   const [applications, setApplications] = useState([]);
   const [domainId, setDomainId] = useState(domain.id);
   const [checkedItems, setCheckedItems] = useState([]);
   const [domains, setDomains] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -42,7 +42,7 @@ function ApplicationPage({ status }) {
     setCheckedItems(childCheckedItems);
   };
 
-  const onClickNew = function (e) {
+  const onClickNew = function () {
     navigate("/applications-new", {
       state: {
         company: company,
@@ -52,15 +52,18 @@ function ApplicationPage({ status }) {
     });
   };
 
-  const onClickDel = async function (e) {
-    //const application = await applicationApi.get(company.id, domain.id, checkedItems, header);
+  const onClickDel = async function () {
+    setIsLoading(true);
     await applicationApi.remove(checkedItems);
     setCheckedItems([]);
     await getApplications();
+    setIsLoading(false);
   };
 
   const onClickView = (item) => {
-    navigate("/applications-view", {
+    setApplication(item);
+    setPath({ ...path, subTitle: item.client_name });
+    navigate("/applications-brief", {
       state: {
         company: company,
         domain: domain,
@@ -82,7 +85,9 @@ function ApplicationPage({ status }) {
   };
 
   const onChangeDomain = (item) => {
+    setIsLoading(true);
     if (domainId != item) getApplications(item);
+    setIsLoading(false);
   };
 
   const getApplications = async (domId) => {
@@ -112,32 +117,8 @@ function ApplicationPage({ status }) {
     setIsLoading(false);
   }, [domains]);
 
-  // const delSvg = (
-  //   <svg
-  //     className="w-4 h-4 mr-2"
-  //     width="24"
-  //     height="24"
-  //     viewBox="0 0 24 24"
-  //     strokeWidth="2"
-  //     stroke="currentColor"
-  //     fill="none"
-  //     strokeLinecap="round"
-  //     strokeLinejoin="round"
-  //   >
-  //     {" "}
-  //     <path stroke="none" d="M0 0h24v24H0z" />{" "}
-  //     <line x1="4" y1="7" x2="20" y2="7" />{" "}
-  //     <line x1="10" y1="11" x2="10" y2="17" />{" "}
-  //     <line x1="14" y1="11" x2="14" y2="17" />{" "}
-  //     <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />{" "}
-  //     <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-  //   </svg>
-  // );
-  // const purgeClass =
-  //   "w-30 ml-8 bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
-
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
+    <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
       <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex">
         {/* <h2 className="font-semibold text-slate-800 dark:text-slate-100">Manage Domain</h2> */}
         <Toolbox
@@ -168,7 +149,6 @@ function ApplicationPage({ status }) {
           parentCallback={handleCallback}
           onClickView={onClickView}
           onClickEdit={onClickEdit}
-          loading={isLoading}
         />
         <Pagination
           postsPerPage={postsPerPage}

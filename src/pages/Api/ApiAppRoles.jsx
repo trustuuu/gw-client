@@ -35,12 +35,12 @@ function ApiAppRoles({
     <div className="p-3">
       {/* Apis */}
       <div>
-        <header className="text-xs uppercase text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700 dark:bg-opacity-50 rounded-sm font-semibold p-2">
+        <header className="text-xs uppercase dark:bg-opacity-50 rounded-sm font-semibold p-2">
           App Roles
         </header>
         <ul className={customClass ? customClass : "my-1 overflow-y-auto"}>
           {/* Item */}
-          <li className="grid grid-cols-20 gap-2 px-2 py-2 border-b text-sm font-semibold uppercase text-slate-700 dark:text-slate-300">
+          <li className="grid grid-cols-20 gap-2 px-2 py-2 border-b border-slate-100 dark:border-slate-700 text-sm font-semibold uppercase">
             <div className="col-span-1"></div>
             <div className="col-span-4">Display Name</div>
             <div className="col-span-4">Description</div>
@@ -59,7 +59,7 @@ function ApiAppRoles({
                   key={role.id}
                   className={`${
                     selectedRole.id === role.id ? "bg-indigo-400" : ""
-                  } grid grid-cols-20 gap-2 px-2 py-2 border-b text-sm hover:bg-indigo-100 dark:hover:bg-indigo-400`}
+                  } grid grid-cols-20 gap-2 p-2 text-sm hover:bg-indigo-100 dark:hover:bg-indigo-400`}
                   onClick={signleMode ? () => singleSelect(role) : null}
                 >
                   <div className="self-center mr-3 col-span-1">

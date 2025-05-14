@@ -16,7 +16,7 @@ let fieldsState = {};
 function ApiAppRolePage({ mode, api: apiState }) {
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
-  const { api: apiAuth } = useAuth();
+  const { api: apiAuth, setIsLoading } = useAuth();
   const api = apiState ? apiState : apiAuth;
 
   const [roleMode, setRoleMode] = useState(mode);
@@ -27,7 +27,6 @@ function ApiAppRolePage({ mode, api: apiState }) {
     value: "",
   });
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -77,6 +76,7 @@ function ApiAppRolePage({ mode, api: apiState }) {
   };
 
   const onClickNew = async function () {
+    setIsLoading(true);
     const surfix = generateString(5);
     await apiApi.createAppRole(api.id, {
       ...itemState,
@@ -85,6 +85,7 @@ function ApiAppRolePage({ mode, api: apiState }) {
     setRole({ displayName: "", description: "", value: "" });
     setItemState({ displayName: "", description: "", value: "" });
     await getApiroles();
+    setIsLoading(false);
     setModalOpen(false);
   };
 
@@ -96,22 +97,28 @@ function ApiAppRolePage({ mode, api: apiState }) {
   };
 
   const onClickApply = async function () {
+    setIsLoading(true);
     await apiApi.updateAppRole(api.id, itemState);
     setRole({ displayName: "", description: "", value: "" });
     setItemState({ displayName: "", description: "", value: "" });
     await getApiroles();
+    setIsLoading(false);
     setModalOpen(false);
   };
 
   const onClickDel = async function (e) {
     //const api = await apiApi.get(company.id, domain.id, checkedItems);
+    setIsLoading(true);
     await apiApi.removeAppRole(api.id, e.id);
     await getApiroles();
+    setIsLoading(false);
   };
 
   const onClickDelMulti = async function () {
+    setIsLoading(true);
     await apiApi.removeAppRole(api.id, checkedItems);
     await getApiroles();
+    setIsLoading(false);
   };
 
   const getApiroles = async () => {
@@ -149,12 +156,12 @@ function ApiAppRolePage({ mode, api: apiState }) {
   }, []);
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
+    <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
       <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex items-center justify-between">
         <div className="space-y-4 ml-10">
           <label
             htmlFor="description"
-            className="text-pretty ms-2 text-sm font-medium text-gray-900 dark:text-gray-100 min-w-48 max-w-48 "
+            className="text-pretty ms-2 text-sm font-medium min-w-48 max-w-48 "
           ></label>
           <br />
           <Toolbox
@@ -171,7 +178,6 @@ function ApiAppRolePage({ mode, api: apiState }) {
         <ApiAppRoles
           roles={currentPosts}
           parentCallback={handleCallback}
-          loading={isLoading}
           onClickDel={onClickDel}
           onClickEdit={onClickEdit}
         />

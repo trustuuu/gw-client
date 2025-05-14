@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 
-function SidebarApi({ sidebarOpen, setSidebarOpen }) {
+function SidebarApplications({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { pathname } = location;
@@ -15,11 +15,10 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   );
-  const { api, domain } = useAuth();
-
+  const { application, domain } = useAuth();
   useEffect(() => {
-    if (!api) {
-      navigate("/apis");
+    if (!application) {
+      navigate("/applications");
     }
   }, []);
 
@@ -97,7 +96,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
             </svg>
           </button>
           {/* Logo */}
-          {/* <NavLink end to="/" className="block">
+          <NavLink end to="/" className="block">
             <svg width="32" height="32" viewBox="0 0 32 32">
               <defs>
                 <linearGradient
@@ -135,7 +134,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                 fill="url(#logo-b)"
               />
             </svg>
-          </NavLink> */}
+          </NavLink>
         </div>
 
         {/* Links */}
@@ -153,14 +152,14 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                 <div>{domain ? domain.name : ""}</div>
               </span>
               <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                <div>[{api ? api.name : ""}]</div>
+                <div>[{application ? application.client_name : ""}]</div>
               </span>
             </h3>
             <ul className="mt-3 ">
               {/* Dashboard */}
               <SidebarLinkGroup
                 activecondition={
-                  pathname === "/" || pathname.includes("apis-brief")
+                  pathname === "/" || pathname.includes("applications-brief")
                 }
               >
                 {(handleClick, open) => {
@@ -169,7 +168,8 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                       <a
                         href="#0"
                         className={`block truncate transition duration-150 ${
-                          pathname === "/" || pathname.includes("apis-brief")
+                          pathname === "/" ||
+                          pathname.includes("applications-brief")
                             ? "text-slate-200 hover:text-slate-200"
                             : "text-slate-700 hover:text-white"
                         }`}
@@ -189,7 +189,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               <path
                                 className={`fill-current ${
                                   pathname === "/" ||
-                                  pathname.includes("apis-brief")
+                                  pathname.includes("applications-brief")
                                     ? "text-indigo-500"
                                     : "text-slate-400"
                                 }`}
@@ -198,7 +198,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               <path
                                 className={`fill-current ${
                                   pathname === "/" ||
-                                  pathname.includes("apis-brief")
+                                  pathname.includes("applications-brief")
                                     ? "text-indigo-600"
                                     : "text-slate-600"
                                 }`}
@@ -207,7 +207,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               <path
                                 className={`fill-current ${
                                   pathname === "/" ||
-                                  pathname.includes("apis-brief")
+                                  pathname.includes("applications-brief")
                                     ? "text-indigo-200"
                                     : "text-slate-400"
                                 }`}
@@ -236,7 +236,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/apis-brief"
+                              to="/applications-brief"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -255,9 +255,9 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                   );
                 }}
               </SidebarLinkGroup>
-              {/* Apis */}
+              {/* apps */}
               <SidebarLinkGroup
-                activecondition={pathname.includes("apis-view-")}
+                activecondition={pathname.includes("applications-view-")}
               >
                 {(handleClick, open) => {
                   return (
@@ -265,7 +265,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                       <a
                         href="#0"
                         className={`block text-slate-200 truncate transition duration-150 ${
-                          pathname.includes("apis-view-")
+                          pathname.includes("applications-view-")
                             ? "text-slate-200 hover:text-slate-200"
                             : "text-slate-700 hover:text-white"
                         }`}
@@ -329,7 +329,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/apis-view-post"
+                              to="/applications-view-setting"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -346,7 +346,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/apis-view-permission-scope"
+                              to="/applications-view-permission-scope"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -356,137 +356,6 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                             >
                               <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                 Permission
-                              </span>
-                            </NavLink>
-                          </li>
-                          <li className="mb-1 last:mb-0">
-                            <NavLink
-                              end
-                              to="/apis-view-apirole"
-                              className={({ isActive }) =>
-                                "block transition duration-150 truncate " +
-                                (isActive
-                                  ? "text-indigo-500"
-                                  : "text-slate-400 hover:text-slate-200")
-                              }
-                            >
-                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                App Roles
-                              </span>
-                            </NavLink>
-                          </li>
-                          <li className="mb-1 last:mb-0">
-                            <NavLink
-                              end
-                              to="/apis-view-users-groups"
-                              className={({ isActive }) =>
-                                "block transition duration-150 truncate " +
-                                (isActive
-                                  ? "text-indigo-500"
-                                  : "text-slate-400 hover:text-slate-200")
-                              }
-                            >
-                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                Users and Groups
-                              </span>
-                            </NavLink>
-                          </li>
-                        </ul>
-                      </div>
-                    </React.Fragment>
-                  );
-                }}
-              </SidebarLinkGroup>
-              {/* Groups */}
-              <SidebarLinkGroup activecondition={pathname.includes("groups")}>
-                {(handleClick, open) => {
-                  return (
-                    <React.Fragment>
-                      <a
-                        href="#0"
-                        className={`block text-slate-200 truncate transition duration-150 ${
-                          pathname.includes("group")
-                            ? "text-slate-200 hover:text-slate-200"
-                            : "text-slate-700 hover:text-white"
-                        }`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          sidebarExpanded
-                            ? handleClick()
-                            : setSidebarExpanded(true);
-                        }}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <svg
-                              className="shrink-0 h-6 w-6"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                className={`fill-current ${
-                                  pathname.includes("groups")
-                                    ? "text-indigo-500"
-                                    : "text-slate-600"
-                                }`}
-                                d="M18.974 8H22a2 2 0 012 2v6h-2v5a1 1 0 01-1 1h-2a1 1 0 01-1-1v-5h-2v-6a2 2 0 012-2h.974zM20 7a2 2 0 11-.001-3.999A2 2 0 0120 7zM2.974 8H6a2 2 0 012 2v6H6v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5H0v-6a2 2 0 012-2h.974zM4 7a2 2 0 11-.001-3.999A2 2 0 014 7z"
-                              />
-                              <path
-                                className={`fill-current ${
-                                  pathname.includes("groups")
-                                    ? "text-indigo-300"
-                                    : "text-slate-400"
-                                }`}
-                                d="M12 6a3 3 0 110-6 3 3 0 010 6zm2 18h-4a1 1 0 01-1-1v-6H6v-6a3 3 0 013-3h6a3 3 0 013 3v6h-3v6a1 1 0 01-1 1z"
-                              />
-                            </svg>
-                            <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                              Groups
-                            </span>
-                          </div>
-                          {/* Icon */}
-                          <div className="flex shrink-0 ml-2">
-                            <svg
-                              className={`w-3 h-3 shrink-0 ml-1 fill-current text-slate-400 ${
-                                open && "rotate-180"
-                              }`}
-                              viewBox="0 0 12 12"
-                            >
-                              <path d="M5.9 11.4L.5 6l1.4-1.4 4 4 4-4L11.3 6z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </a>
-                      <div className="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                        <ul className={`pl-9 mt-1 ${!open && "hidden"}`}>
-                          <li className="mb-1 last:mb-0">
-                            <NavLink
-                              end
-                              to="/groups"
-                              className={({ isActive }) =>
-                                "block transition duration-150 truncate " +
-                                (isActive
-                                  ? "text-indigo-500"
-                                  : "text-slate-400 hover:text-slate-200")
-                              }
-                            >
-                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                All groups
-                              </span>
-                            </NavLink>
-                          </li>
-                          <li className="mb-1 last:mb-0">
-                            <NavLink
-                              end
-                              to="/groups-deleted"
-                              className={({ isActive }) =>
-                                "block transition duration-150 truncate " +
-                                (isActive
-                                  ? "text-indigo-500"
-                                  : "text-slate-400 hover:text-slate-200")
-                              }
-                            >
-                              <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                Deleted groups
                               </span>
                             </NavLink>
                           </li>
@@ -526,4 +395,4 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
   );
 }
 
-export default SidebarApi;
+export default SidebarApplications;

@@ -11,7 +11,6 @@ import ButtonToolbox from "../../component/ButtonToolbox";
 
 function ApiRoleUsers({
   status,
-  showTool,
   excludes,
   parentCallback,
   noDetailView,
@@ -20,13 +19,12 @@ function ApiRoleUsers({
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { company, domain } = useAuth();
+  const { company, domain, setIsLoading } = useAuth();
   const [users, setUsers] = useState([]);
   const [checkedItems, setCheckedItems] = useState(
     selectedItems ? selectedItems : []
   );
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -78,38 +76,15 @@ function ApiRoleUsers({
     setIsLoading(false);
   }, [excludes]);
 
-  const delSvg = (
-    <svg
-      className="w-4 h-4 mr-2"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      strokeWidth="2"
-      stroke="currentColor"
-      fill="none"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      {" "}
-      <path stroke="none" d="M0 0h24v24H0z" />{" "}
-      <line x1="4" y1="7" x2="20" y2="7" />{" "}
-      <line x1="10" y1="11" x2="10" y2="17" />{" "}
-      <line x1="14" y1="11" x2="14" y2="17" />{" "}
-      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />{" "}
-      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-    </svg>
-  );
-
   return (
-    <div className="h-full col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
-      <header className="px-5 py-4 border-slate-100 dark:border-slate-700 relative inline-flex"></header>
+    <div className="h-full col-span-full xl:col-span-6 shadow-lg rounded-sm">
+      <header className="px-5 py-4 brelative inline-flex"></header>
       <div className="h-screen flex flex-col">
         {/* users */}
         <div className="flex-1">
           <Users
             users={currentPosts}
             parentCallback={handleCallback}
-            loading={isLoading}
             noDetailView={noDetailView}
             selectedItems={checkedItems}
           />

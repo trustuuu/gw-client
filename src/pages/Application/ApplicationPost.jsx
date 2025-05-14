@@ -7,6 +7,7 @@ import FormAction from "../../component/FormAction";
 import PanelExpandable from "../../component/PanelExpandable";
 import Stepper from "../../component/Stepper";
 import { generateString } from "../../utils/Utils";
+import { useAuth } from "../../component/AuthContext";
 
 const fields = applicationFields;
 const fields_basic = fields.filter((a) => a.category === "settings.basic");
@@ -31,12 +32,34 @@ fields.forEach(
   (field) => (fieldsState[field.id] = field.type === "checkbox" ? false : "")
 );
 
-export default function ApplicationPost() {
+export default function ApplicationPost(props) {
+  const { setIsLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [errorText, setError] = useState();
-  const { company, domain, application } = location.state;
-  const [mode, setMode] = useState(location.state.mode);
+  //const { company, domain, application } = location.state;
+
+  const {
+    company: companyState,
+    domain: domainState,
+    application: applicationState,
+  } = location.state
+    ? location.state
+    : { company: null, domain: null, application: null };
+  const {
+    company: companyAuth,
+    domain: domainAuth,
+    application: applicationAuth,
+  } = useAuth();
+  const application = applicationState ? applicationState : applicationAuth;
+  const company = companyState ? companyState : companyAuth;
+  const domain = domainState ? domainState : domainAuth;
+
+  const [mode, setMode] = useState(
+    location.state ? location.state.mode : props.mode
+  );
+  if (!mode) navigate("/application");
+
   const [itemState, setItemState] = useState(
     mode === "new"
       ? {
@@ -64,7 +87,9 @@ export default function ApplicationPost() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setIsLoading(true);
     createItem();
+    setIsLoading(false);
   };
 
   const populateItem = async (data) => {
@@ -109,20 +134,11 @@ export default function ApplicationPost() {
   };
 
   const handleSave = async (event) => {
+    setIsLoading(true);
     saveItem();
+    setIsLoading(false);
     event.preventDefault();
   };
-
-  // const handlePurchCors = async (event) => {
-  //   console.log(
-  //     "company.id, domain.id, application.id",
-  //     company.id,
-  //     domain.id,
-  //     application.id
-  //   );
-  //   await applicationApi.purgeCors(company.id, domain.id, application.id);
-  //   event.preventDefault();
-  // };
 
   const saveItem = async () => {
     try {
@@ -144,11 +160,6 @@ export default function ApplicationPost() {
       console.log(err);
     }
   };
-
-  // const customClassEdit =
-  //   "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";
-  // const customClass =
-  //   "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 min-w-80 dark:bg-gray-300 ";
 
   const steps = [
     {

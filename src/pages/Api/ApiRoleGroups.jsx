@@ -9,7 +9,6 @@ import groupApi from "../../api/group-api";
 
 function ApiRoleGroups({
   status,
-  showTool,
   excludes,
   parentCallback,
   noDetailView,
@@ -18,13 +17,12 @@ function ApiRoleGroups({
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { company, domain } = useAuth();
+  const { company, domain, setIsLoading } = useAuth();
   const [groups, setGroups] = useState([]);
   const [checkedItems, setCheckedItems] = useState(
     selectedItems ? selectedItems : []
   );
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -77,7 +75,7 @@ function ApiRoleGroups({
   }, [excludes]);
 
   return (
-    <div className="h-full col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
+    <div className="h-full col-span-full xl:col-span-6 shadow-lg rounded-sm">
       <header className="px-5 py-4 border-slate-100 dark:border-slate-700 relative inline-flex"></header>
       <div className="h-screen flex flex-col">
         {/* groups */}
@@ -85,7 +83,6 @@ function ApiRoleGroups({
           <Groups
             groups={currentPosts}
             parentCallback={handleCallback}
-            loading={isLoading}
             noDetailView={noDetailView}
             selectedItems={checkedItems}
           />

@@ -1,13 +1,21 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import TabHeader from "../../component/tabs/TabHeader";
 import TabBody from "../../component/tabs/TabBody";
 import ApplicationPost from "./ApplicationPost";
+import { useAuth } from "../../component/AuthContext";
 
 function ApplicationView() {
   const location = useLocation();
-  const { application } = location.state;
+  const navigate = useNavigate();
+  const { application: applicationState } = location.state
+    ? location.state
+    : {};
+  const { application: applicationAuth } = useAuth();
+  const application = applicationState ? applicationState : applicationAuth;
+
+  if (!application) navigate("/application");
   const data = [
     {
       title: "Quick Start",

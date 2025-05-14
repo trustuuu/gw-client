@@ -22,7 +22,7 @@ const Pagination = ({
     "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0";
 
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white dark:bg-slate-700 px-4 py-3 sm:px-6">
+    <div className="flex items-center justify-between border-t border-gray-200  px-4 py-3 sm:px-6">
       <div className="flex flex-1 justify-between sm:hidden">
         <Link
           to="#"
@@ -39,7 +39,7 @@ const Pagination = ({
       </div>
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm text-gray-700 dark:text-yellow-100">
+          <p className="text-sm ">
             Showing <span className="font-medium">{pageStart}</span> to{" "}
             <span className="font-medium">{pageEnd} pages </span> of{" "}
             <span className="font-medium">{pageNumbers.length}</span> results

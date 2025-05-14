@@ -1,5 +1,5 @@
 const fixedInputClass =
-  "rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-gray-300 dark:accent-pink-100 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm";
+  "rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-200 dark:placeholder-gray-500 dark:accent-pink-100 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm";
 
 export default function Input({
   handleChange,
@@ -90,7 +90,7 @@ export default function Input({
     >
       <label
         htmlFor={labelFor}
-        className="text-wrap ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-48 max-w-48 "
+        className="text-wrap ms-2 text-sm font-medium min-w-48 max-w-48 "
       >
         {labelText}
       </label>

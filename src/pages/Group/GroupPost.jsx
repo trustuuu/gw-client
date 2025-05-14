@@ -5,7 +5,7 @@ import groupApi from "../../api/group-api";
 import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
 import ItemView from "../../component/ItemView";
-import md5 from "blueimp-md5";
+import { useAuth } from "../../component/AuthContext";
 
 const fields = groupFields;
 let fieldsState = {};
@@ -14,6 +14,7 @@ fields.forEach(
 );
 
 export default function GroupPost() {
+  const { setIsLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [errorText, setError] = useState();
@@ -34,7 +35,9 @@ export default function GroupPost() {
   };
 
   const handleSubmit = (event) => {
+    setIsLoading(true);
     createItem();
+    setIsLoading(false);
     event.preventDefault();
   };
 
@@ -78,7 +81,9 @@ export default function GroupPost() {
   };
 
   const handleSave = async (event) => {
+    setIsLoading(true);
     saveItem();
+    setIsLoading(false);
     event.preventDefault();
   };
 

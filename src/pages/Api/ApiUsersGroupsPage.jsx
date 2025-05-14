@@ -13,10 +13,9 @@ import ApiRoleType from "./ApiRoleType";
 function ApiUsersGroupsPage({ api: apiState }) {
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
-  const { company, domain, api: apiAuth } = useAuth();
+  const { company, domain, api: apiAuth, setIsLoading } = useAuth();
   const api = apiState ? apiState : apiAuth;
-  console.log("api ==> ", api);
-  const [isLoading, setIsLoading] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -70,11 +69,14 @@ function ApiUsersGroupsPage({ api: apiState }) {
     setModalOpen(true);
   };
   const onClickDel = async function () {
+    setIsLoading(true);
     await apiApi.removeUsersAndGroups(api.id, checkedItems);
     setCheckedItems([]);
     await getApiUsersAngGroups();
+    setIsLoading(false);
   };
   const onClickAdd = async function () {
+    setIsLoading(true);
     const totalItems = [
       ...userCheckedItems.map((item) => {
         return {
@@ -111,6 +113,7 @@ function ApiUsersGroupsPage({ api: apiState }) {
     setGroupCheckedItems([]);
     setCheckedItems([]);
     await getApiUsersAngGroups();
+    setIsLoading(false);
     setModalOpen(false);
   };
   const onCloseScopeModal = async function () {
@@ -174,7 +177,7 @@ function ApiUsersGroupsPage({ api: apiState }) {
 
   return (
     <>
-      <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
+      <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
         <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex items-center justify-between">
           <div className="space-y-4 ml-10">
             <label
@@ -197,7 +200,6 @@ function ApiUsersGroupsPage({ api: apiState }) {
           <ApiUsersGroups
             apiUsersAndGroups={currentPosts}
             parentCallback={handleCallback}
-            loading={isLoading}
             onClickDel={onClickDel}
             initCheckedItems={checkedItems}
           />
@@ -224,7 +226,7 @@ function ApiUsersGroupsPage({ api: apiState }) {
           onClose={onCloseScopeModal}
           optionBtnLabel="Add"
           onOptionBtnClick={onClickAdd}
-          customClassName="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm "
+          customClassName="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm "
           fullWidth="w-full h-full flex-1 "
         >
           <div className="grid grid-cols-4 h-11/12">
@@ -247,7 +249,7 @@ function ApiUsersGroupsPage({ api: apiState }) {
               ))}
             </div>
             {selectedType === "Users" ? (
-              <div className="col-span-3 bg-green-800 p-2">
+              <div className="col-span-3 p-2">
                 <ApiRoleUsers
                   key="allUsers"
                   status="active"
@@ -259,7 +261,7 @@ function ApiUsersGroupsPage({ api: apiState }) {
               </div>
             ) : null}
             {selectedType === "Groups" ? (
-              <div className="col-span-3 bg-green-800 p-2">
+              <div className="col-span-3 p-2">
                 <ApiRoleGroups
                   key="allGroups"
                   status="active"
@@ -271,7 +273,7 @@ function ApiUsersGroupsPage({ api: apiState }) {
               </div>
             ) : null}
             {selectedType === "Roles" ? (
-              <div className="col-span-3 bg-green-800 p-2">
+              <div className="col-span-3 p-2">
                 {/* roles */}
                 <ApiRoleType
                   mode={currentPosts}

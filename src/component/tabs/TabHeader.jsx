@@ -19,8 +19,8 @@ export default function TabHeader({
                                         py-2 px-4 mr-2  
                                         ${
                                           visibleTab === index
-                                            ? "bg-gray-200 text-gray-800 dark:text-gray-200 dark:bg-gray-400"
-                                            : "bg-gray-200 text-gray-200 dark:text-gray-800 dark:bg-gray-600"
+                                            ? "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200"
+                                            : "bg-gray-200 text-gray-400 dark:bg-gray-900 dark:text-gray-500"
                                         }`}
               onClick={() => setVisibleTab(index)}
             >

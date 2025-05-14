@@ -54,7 +54,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
     <div>
       {/* Sidebar backdrop (mobile only) */}
       <div
-        className={`fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
+        className={`fixed inset-0 bg-slate-800 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
           sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         aria-hidden="true"
@@ -64,7 +64,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
       <div
         id="sidebar"
         ref={sidebar}
-        className={`flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 bg-white dark:bg-[#182235] *:text-black *:dark:text-white p-4 transition-all duration-200 ease-in-out ${
+        className={`flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 *:text-black *:dark:text-white p-4 transition-all duration-200 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-64"
         }`}
       >
@@ -159,10 +159,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     <React.Fragment>
                       <a
                         href="#0"
-                        className={`block text-slate-200 truncate transition duration-150 ${
+                        className={`block truncate transition duration-150 ${
                           pathname === "/" || pathname.includes("dashboard")
-                            ? "hover:text-slate-200"
-                            : "hover:text-white"
+                            ? "text-slate-200 hover:text-slate-200"
+                            : "text-slate-700 hover:text-white"
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -205,7 +205,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                 d="M12 15c-1.654 0-3-1.346-3-3 0-.462.113-.894.3-1.285L6 6l4.714 3.301A2.973 2.973 0 0112 9c1.654 0 3 1.346 3 3s-1.346 3-3 3z"
                               />
                             </svg>
-                            <span className="text-black dark:text-white text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                            <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                               Dashboard
                             </span>
                           </div>
@@ -253,10 +253,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     <React.Fragment>
                       <a
                         href="#0"
-                        className={`block text-slate-200 truncate transition duration-150 ${
+                        className={`block truncate transition duration-150 ${
                           pathname.includes("users")
-                            ? "hover:text-slate-200"
-                            : "hover:text-white"
+                            ? "text-slate-200 hover:text-slate-200"
+                            : "text-slate-700 hover:text-white"
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -296,7 +296,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                 d="M13 15.047V24l10.573-7.181A.999.999 0 0024 16V8l-11 7.047z"
                               />
                             </svg>
-                            <span className="text-black dark:text-white text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                            <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                               Users
                             </span>
                           </div>
@@ -367,7 +367,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/resetpw"
+                              to="/users-resetpw"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -393,10 +393,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     <React.Fragment>
                       <a
                         href="#0"
-                        className={`block text-slate-200 truncate transition duration-150 ${
+                        className={`block truncate transition duration-150 ${
                           pathname.includes("group")
-                            ? "hover:text-slate-200"
-                            : "hover:text-white"
+                            ? "text-slate-200 hover:text-slate-200"
+                            : "text-slate-700 hover:text-slate-400"
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -428,7 +428,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                 d="M12 6a3 3 0 110-6 3 3 0 010 6zm2 18h-4a1 1 0 01-1-1v-6H6v-6a3 3 0 013-3h6a3 3 0 013 3v6h-3v6a1 1 0 01-1 1z"
                               />
                             </svg>
-                            <span className="text-black dark:text-white text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                            <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                               Groups
                             </span>
                           </div>
@@ -487,17 +487,19 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               </SidebarLinkGroup>
               {/* Enterprise Applications */}
               <SidebarLinkGroup
-                activecondition={pathname.includes("applications")}
+                activecondition={
+                  pathname.includes("applications") || pathname.includes("apis")
+                }
               >
                 {(handleClick, open) => {
                   return (
                     <React.Fragment>
                       <a
                         href="#0"
-                        className={`block text-slate-200 truncate transition duration-150 ${
+                        className={`block truncate transition duration-150 ${
                           pathname.includes("applications")
-                            ? "hover:text-slate-200"
-                            : "hover:text-white"
+                            ? "text-slate-200 hover:text-slate-200"
+                            : "text-slate-700 hover:text-white"
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -514,7 +516,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                             >
                               <path
                                 className={`fill-current ${
-                                  pathname.includes("applications")
+                                  pathname.includes("applications") ||
+                                  pathname.includes("apis")
                                     ? "text-indigo-300"
                                     : "text-slate-400"
                                 }`}
@@ -522,7 +525,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                               />
                               <path
                                 className={`fill-current ${
-                                  pathname.includes("applications")
+                                  pathname.includes("applications") ||
+                                  pathname.includes("apis")
                                     ? "text-indigo-500"
                                     : "text-slate-700"
                                 }`}
@@ -530,14 +534,15 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                               />
                               <path
                                 className={`fill-current ${
-                                  pathname.includes("applications")
+                                  pathname.includes("applications") ||
+                                  pathname.includes("apis")
                                     ? "text-indigo-600"
                                     : "text-slate-600"
                                 }`}
                                 d="M6.939 15.007A5.861 5.861 0 0 1 6 11.829c0-2.937 2.167-5.376 5-5.85V0C4.85.507 0 5.614 0 11.83c0 2.695.922 5.174 2.456 7.17l4.483-3.993Z"
                               />
                             </svg>
-                            <span className="text-black dark:text-white text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                            <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                               Enterprise Applications
                             </span>
                           </div>
@@ -600,10 +605,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     <React.Fragment>
                       <a
                         href="#0"
-                        className={`block text-slate-200 truncate transition duration-150 ${
+                        className={`block truncate transition duration-150 ${
                           pathname.includes("tasks")
-                            ? "hover:text-slate-200"
-                            : "hover:text-white"
+                            ? "text-slate-200 hover:text-slate-200"
+                            : "text-slate-700 hover:text-white"
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -643,7 +648,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                 d="M15 10.586L16.414 12 11 17.414 7.586 14 9 12.586l2 2zM5 0h14v4H5z"
                               />
                             </svg>
-                            <span className="text-black dark:text-white text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                            <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                               Tasks
                             </span>
                           </div>
@@ -703,16 +708,16 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               {/* Messages */}
               <li
                 className={`px-3 py-2 rounded-sm mb-0.5 last:mb-0 ${
-                  pathname.includes("messages") && "bg-slate-900"
+                  pathname.includes("messages") && "bg-slate-600"
                 }`}
               >
                 <NavLink
                   end
                   to="/messages"
-                  className={`block text-slate-200 truncate transition duration-150 ${
+                  className={`block truncate transition duration-150 ${
                     pathname.includes("messages")
-                      ? "hover:text-slate-200"
-                      : "hover:text-white"
+                      ? "text-slate-200 hover:text-slate-200"
+                      : "text-slate-700 hover:text-white"
                   }`}
                 >
                   <div className="flex items-center justify-between">
@@ -735,7 +740,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                           d="M11 1C5.477 1 1 4.582 1 9c0 1.797.75 3.45 2 4.785V19l4.833-2.416C8.829 16.85 9.892 17 11 17c5.523 0 10-3.582 10-8s-4.477-8-10-8z"
                         />
                       </svg>
-                      <span className="text-black dark:text-white text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                      <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                         Messages
                       </span>
                     </div>
@@ -757,8 +762,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                         href="#0"
                         className={`block text-slate-200 truncate transition duration-150 ${
                           pathname.includes("settings")
-                            ? "hover:text-slate-200"
-                            : "hover:text-white"
+                            ? "text-slate-200 hover:text-slate-200"
+                            : "text-slate-700 hover:text-white"
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -806,7 +811,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                 d="M19.707 9.292a3.012 3.012 0 00-1.415 1.415L13.286 5.7c-.4.195-.84.298-1.286.3a3 3 0 113-3 2.969 2.969 0 01-.3 1.286l5.007 5.006z"
                               />
                             </svg>
-                            <span className="text-black dark:text-white text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                            <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                               Settings
                             </span>
                           </div>
@@ -860,7 +865,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/settings/apps"
+                              to="/settings/applications"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -950,8 +955,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     <React.Fragment>
                       <a
                         href="#0"
-                        className={`block text-slate-200 truncate transition duration-150 ${
-                          open ? "hover:text-slate-200" : "hover:text-white"
+                        className={`block truncate transition duration-150 ${
+                          open
+                            ? "text-slate-700 hover:text-slate-200"
+                            : "text-slate-700 hover:text-white"
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -975,7 +982,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                 d="M15 12L8 6v5H0v2h8v5z"
                               />
                             </svg>
-                            <span className="text-black dark:text-white text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                            <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                               Authentication
                             </span>
                           </div>
@@ -1045,8 +1052,10 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     <React.Fragment>
                       <a
                         href="#0"
-                        className={`block text-slate-200 truncate transition duration-150 ${
-                          open ? "hover:text-slate-200" : "hover:text-white"
+                        className={`block truncate transition duration-150 ${
+                          open
+                            ? "text-slate-700 hover:text-slate-200"
+                            : "text-slate-700 hover:text-white"
                         }`}
                         onClick={(e) => {
                           e.preventDefault();
@@ -1078,7 +1087,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                                 d="M5 9a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm14 0a4 4 0 1 1 0-8 4 4 0 0 1 0 8ZM5 23a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm14 0a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z"
                               />
                             </svg>
-                            <span className="text-black dark:text-white text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
+                            <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                               Onboarding
                             </span>
                           </div>

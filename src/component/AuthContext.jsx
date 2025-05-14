@@ -44,6 +44,10 @@ const AuthContextProvider = ({ children }) => {
   const [role, setRole] = useState();
   const [scope, setScope] = useState();
   const [api, setApi] = useState();
+  const [application, setApplication] = useState();
+
+  const [path, setPath] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [codeVerifier, setCodeVerifier] = usePersistedState("session", null);
 
   // Set HTTP header if present
@@ -90,12 +94,18 @@ const AuthContextProvider = ({ children }) => {
   const contextValue = {
     saveCodeVerifier: setCodeVerifier,
     setApi,
+    setApplication,
     saveRole: setRole,
     saveScope: setScope,
+    setPath,
+    setIsLoading,
     codeVerifier,
     api,
+    application,
     role,
     scope,
+    path,
+    isLoading,
   };
 
   return (

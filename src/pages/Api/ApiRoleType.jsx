@@ -5,20 +5,19 @@ import ApiAppRoles from "./ApiAppRoles";
 import apiApi from "../../api/api-api";
 import { useAuth } from "../../component/AuthContext";
 
-function ApiRoleType({ mode, api: apiState, parentCallback }) {
+function ApiRoleType({ api: apiState, parentCallback }) {
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
-  const { api: apiAuth } = useAuth();
+  const { api: apiAuth, setIsLoading } = useAuth();
   const api = apiState ? apiState : apiAuth;
 
   const [roles, setRoles] = useState([]);
-  const [role, setRole] = useState({
-    displayName: "",
-    description: "",
-    value: "",
-  });
+  // const [role, setRole] = useState({
+  //   displayName: "",
+  //   description: "",
+  //   value: "",
+  // });
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -48,7 +47,7 @@ function ApiRoleType({ mode, api: apiState, parentCallback }) {
 
   const handleCallback = (role) => {
     parentCallback(role);
-    setRole(role);
+    //setRole(role);
   };
 
   useEffect(() => {
@@ -58,15 +57,14 @@ function ApiRoleType({ mode, api: apiState, parentCallback }) {
   }, []);
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
-      <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex items-center justify-between"></header>
+    <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
+      <header className="w-full px-5 py-4 relative inline-flex items-center justify-between"></header>
       <div className="h-screen flex flex-col">
         <div className="flex-1">
           {/* roles */}
           <ApiAppRoles
             roles={currentPosts}
             parentCallback={handleCallback}
-            loading={isLoading}
             signleMode={true}
           />
         </div>

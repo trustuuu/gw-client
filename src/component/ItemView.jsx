@@ -101,7 +101,7 @@ export default function ItemView({
     >
       <label
         htmlFor={labelFor}
-        className="text-wrap ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-48 max-w-48 "
+        className="text-wrap ms-2 text-sm font-medium min-w-48 max-w-48 "
       >
         {labelText}
       </label>

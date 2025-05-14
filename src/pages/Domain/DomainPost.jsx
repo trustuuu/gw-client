@@ -22,7 +22,7 @@ export default function Domain() {
   const [itemState, setItemState] = useState(
     mode == "new" ? { ...fieldsState } : { ...domain }
   );
-  const { saveDomain } = useAuth();
+  const { saveDomain, setIsLoading } = useAuth();
 
   const handleChange = (e) => {
     setItemState({
@@ -35,7 +35,9 @@ export default function Domain() {
   };
 
   const handleSubmit = (event) => {
+    setIsLoading(true);
     createDomain();
+    setIsLoading(false);
     event.preventDefault();
   };
 
@@ -75,7 +77,9 @@ export default function Domain() {
   };
 
   const handleSave = async (event) => {
+    setIsLoading(true);
     saveItem();
+    setIsLoading(false);
     event.preventDefault();
   };
 

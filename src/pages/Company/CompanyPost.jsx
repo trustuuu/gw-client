@@ -5,6 +5,7 @@ import companyApi from "../../api/company-api";
 import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
 import ItemView from "../../component/ItemView";
+import { useAuth } from "../../component/AuthContext";
 
 const fields = companyFields;
 let fieldsState = {};
@@ -13,11 +14,11 @@ fields.forEach(
 );
 
 export default function CompanyPost() {
+  const { setIsLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  //const com = !companyId ? companyId : companyId;
   const [errorText, setError] = useState();
-  const { header, url, company, parent } = location.state;
+  const { header, company, parent } = location.state;
   const [mode, setMode] = useState(location.state.mode);
   const [itemState, setItemState] = useState(
     mode == "new" ? { ...fieldsState, type: "customer" } : { ...company }
@@ -34,14 +35,15 @@ export default function CompanyPost() {
   };
 
   const handleSubmit = (event) => {
+    setIsLoading(true);
     createItem();
+    setIsLoading(false);
     event.preventDefault();
   };
 
   const createItem = async () => {
     try {
-      const data = { ...itemState, id: itemState.name };
-      const result = await companyApi.create(
+      await companyApi.create(
         { ...itemState, id: itemState.name, parent: parent.id },
         header
       );
@@ -67,7 +69,9 @@ export default function CompanyPost() {
   };
 
   const handleSave = async (event) => {
+    setIsLoading(true);
     saveItem();
+    setIsLoading(false);
     event.preventDefault();
   };
 

@@ -13,11 +13,10 @@ function DomainPage() {
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { company, domain, saveDomain } = useAuth();
+  const { company, domain, saveDomain, setIsLoading } = useAuth();
   const [domains, setDomains] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -41,7 +40,7 @@ function DomainPage() {
     setCheckedItems(childCheckedItems);
   };
 
-  const onClickNew = function (e) {
+  const onClickNew = function () {
     navigate("/onboarding-domain-new", {
       state: {
         company: company,
@@ -50,10 +49,12 @@ function DomainPage() {
       },
     });
   };
-  const onClickDel = async function (e) {
+  const onClickDel = async function () {
+    setIsLoading(true);
     await domainApi.remove(company.id, checkedItems);
     setCheckedItems([]);
     await getDomains();
+    setIsLoading(false);
   };
 
   const onClickView = (item) => {
@@ -79,6 +80,7 @@ function DomainPage() {
   };
 
   const onClickPrimary = async function () {
+    setIsLoading(true);
     await domainApi.setPrimary(company.id, checkedItems[0].id);
     const domainSession = {
       id: checkedItems[0].id,
@@ -87,6 +89,7 @@ function DomainPage() {
     };
     saveDomain(domainSession);
     setCheckedItems([]);
+    setIsLoading(false);
   };
 
   const getDomains = async () => {
@@ -134,8 +137,8 @@ function DomainPage() {
     " w-40 h-10 ml-4 bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700">
-      <header className="px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex">
+    <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
+      <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex">
         {/* <h2 className="font-semibold text-slate-800 dark:text-slate-100">Manage Domain</h2> */}
         <Toolbox
           onClickNew={onClickNew}
@@ -152,8 +155,8 @@ function DomainPage() {
       </header>
       <div className="p-3">
         {/* Current Company */}
-        <div>
-          <header className="text-xs uppercase text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-700 dark:bg-opacity-50 rounded-sm font-semibold p-2">
+        <div className="shadow-lg rounded-sm mb-10">
+          <header className="text-xs uppercase dark:bg-opacity-50 rounded-sm font-semibold p-2">
             Current Domain
           </header>
           <ul className="my-1">
@@ -167,7 +170,7 @@ function DomainPage() {
                   <path d="M18 10c-4.4 0-8 3.1-8 7s3.6 7 8 7h.6l5.4 2v-4.4c1.2-1.2 2-2.8 2-4.6 0-3.9-3.6-7-8-7zm4 10.8v2.3L18.9 22H18c-3.3 0-6-2.2-6-5s2.7-5 6-5 6 2.2 6 5c0 2.2-2 3.8-2 3.8z" />
                 </svg>
               </div>
-              <div className="grow flex items-center border-b border-slate-100 dark:border-slate-700 text-sm py-2">
+              <div className="grow flex items-center text-sm py-2">
                 <div className="grow flex">
                   <div className="self-center uppercase w-1/6 min-w-48">
                     {domain ? domain.name : ""}
@@ -194,7 +197,6 @@ function DomainPage() {
           parentCallback={handleCallback}
           onClickView={onClickView}
           onClickEdit={onClickEdit}
-          loading={isLoading}
           parentItems={checkedItems}
         />
         <Pagination

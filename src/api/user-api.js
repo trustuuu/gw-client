@@ -31,6 +31,20 @@ const update = async (companyId, domainId, data) => {
     );
 };
 
+const resetPassword = async (companyId, domainId, data) => {
+  return await httpClient.put(
+    `${userUrl(companyId, domainId)}/${data.email}/resetPassword`,
+    data
+  );
+};
+
+const verifyUser = async (companyId, domainId, email, data) => {
+  return await httpClient.post(
+    `${userUrl(companyId, domainId)}/${email}`,
+    data
+  );
+};
+
 const remove = async (companyId, domainId, data) => {
   if (typeof data === "string") {
     return await httpClient.delete(`${userUrl(companyId, domainId)}/${data}`);
@@ -80,5 +94,7 @@ const userApi = {
   getPermissionScopes,
   addPermissionScopes,
   removePermissionScopes,
+  verifyUser,
+  resetPassword,
 };
 export default userApi;
