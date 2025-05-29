@@ -1,5 +1,6 @@
 import axios from "axios";
 import { uniDirServer } from "../api/igw-api";
+import { navigate } from "../component/navigate";
 
 const httpClient = axios.create();
 
@@ -26,6 +27,10 @@ async function refreshAccessToken() {
     //res.status(404).json({ error: "Not Found" });
     return res.data.accessToken;
   } catch (err) {
+    if (err.response.status == 404) {
+      sessionStorage.clear();
+      navigate("/login");
+    }
     console.error("🔴 Refresh token failed:", err);
     throw err;
   }
@@ -35,6 +40,7 @@ httpClient.interceptors.response.use(
   (response) => response, // 성공 응답 그대로 반환
   async (error) => {
     const originalRequest = error.config;
+
     // 401 + 아직 retry 안 했으면
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -56,6 +62,7 @@ httpClient.interceptors.response.use(
       } catch (refreshErr) {
         if (refreshErr.response.status == 404) {
           sessionStorage.clear();
+          navigate("/login");
         }
         console.log("refreshErr", refreshErr);
         return Promise.reject(refreshErr); // 실패 시 전파

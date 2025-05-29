@@ -105,14 +105,7 @@ export default function CompanyPost() {
                 key={field.id}
                 handleChange={handleChange}
                 value={itemState[field.id]}
-                labelText={field.labelText}
-                labelFor={field.labelFor}
-                id={field.id}
-                name={field.name}
-                type={field.type}
-                isRequired={field.isRequired}
-                placeholder={field.placeholder}
-                list={field.list}
+                field={field}
                 customClass={
                   field.customClass ? field.customClass : customClass
                 }
@@ -147,14 +140,7 @@ export default function CompanyPost() {
                 key={field.id}
                 handleChange={handleChange}
                 value={itemState[field.id]}
-                labelText={field.labelText}
-                labelFor={field.labelFor}
-                id={field.id}
-                name={field.name}
-                type={field.type}
-                isRequired={field.isRequired}
-                placeholder={field.placeholder}
-                list={field.list}
+                field={field}
                 customClass={
                   field.customClass ? field.customClass : customClassEdit
                 }

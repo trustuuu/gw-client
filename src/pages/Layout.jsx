@@ -5,9 +5,10 @@ import SidebarApi from "../component/SidebarApi";
 // import SidebarOrg from "../component/SidebarOrg";
 import Header from "../component/Header";
 import { useAuth } from "../component/AuthContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import LoadingWrapper from "../component/LoadingWrapper";
 import SidebarApplications from "../component/SidebarApplication";
+import { setNavigate } from "../component/navigate";
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -33,6 +34,12 @@ function Layout() {
       );
     }
   };
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setNavigate(navigate); // Set it once on app load
+  }, [navigate]);
 
   useEffect(() => {
     if (localStorage.theme === "dark" || !("theme" in localStorage)) {

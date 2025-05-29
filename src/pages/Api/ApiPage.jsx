@@ -42,7 +42,8 @@ function ApiPage({ status }) {
   };
 
   const onClickNew = function () {
-    navigate("/apisnew", {
+    setApi({ name: "" });
+    navigate("/apis-view-post", {
       state: {
         company: company,
         domain: domain,
@@ -68,7 +69,7 @@ function ApiPage({ status }) {
         company: company,
         domain: domain,
         api: item,
-        mode: "view",
+        mode: "overview",
       },
     });
   };

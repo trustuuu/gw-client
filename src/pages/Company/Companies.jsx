@@ -78,7 +78,7 @@ function Companies({
                       onClick={onClickView.bind(this, company)}
                     >
                       <div className="self-center uppercase w-1/6 min-w-48">
-                        {company ? company.id : ""}
+                        {company ? company.name : ""}
                       </div>
                       <div className="text-left justify-self-start w-4/6">
                         {company ? company.description : ""}

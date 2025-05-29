@@ -5,20 +5,23 @@ export default function ItemView({
   Item,
   handleChange,
   value,
-  labelText,
-  labelFor,
-  id,
-  name,
-  type,
-  isRequired = false,
-  placeholder,
+  field,
   customClass,
-  list,
   company,
   reseller,
 }) {
   const showItem = "my-5 flex items-center text-pretty";
   const hiddenTiem = "my-5 flex items-center invisible ";
+  const {
+    labelText,
+    labelFor,
+    id,
+    name,
+    type,
+    isRequired = false,
+    placeholder,
+    list,
+  } = field;
   let inputContext = null;
 
   switch (type) {

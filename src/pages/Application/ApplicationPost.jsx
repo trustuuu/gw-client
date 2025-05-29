@@ -58,13 +58,14 @@ export default function ApplicationPost(props) {
   const [mode, setMode] = useState(
     location.state ? location.state.mode : props.mode
   );
-  if (!mode) navigate("/application");
+
+  if (!mode) navigate("/applications");
 
   const [itemState, setItemState] = useState(
     mode === "new"
       ? {
           ...fieldsState,
-          client_id: String(32),
+          client_id: generateString(32),
           client_secret: generateString(32),
           app_type: "SPA",
           permissions_consent_screen: true,
@@ -72,17 +73,34 @@ export default function ApplicationPost(props) {
       : application
   );
 
-  const handleChange = (e) => {
-    const currentItem = fields.filter((f) => f.id === e.target.id)[0];
-    const itemValue =
-      e.target.type === "checkbox" //e.target.value === "true" || e.target.value === "false"
-        ? e.target.checked
-        : currentItem.valueType !== undefined &&
-          currentItem.valueType === "array"
-        ? e.target.value.split(/\r\n|\n|\r/)
-        : e.target.value;
+  const handleChange = (e, childValue) => {
+    const targetId = e.target.getAttribute("parentid")
+      ? e.target.getAttribute("parentid")
+      : e.target.id;
+    const currentItem = fields.filter((f) => f.id === targetId)[0];
 
-    setItemState({ ...itemState, [e.target.id]: itemValue });
+    if (!childValue) {
+      const itemValue =
+        e.target.type === "checkbox"
+          ? e.target.checked
+          : currentItem.valueType !== undefined &&
+            currentItem.valueType === "array"
+          ? e.target.value.split(/\r\n|\n|\r/)
+          : e.target.value;
+      setItemState({ ...itemState, [targetId]: itemValue });
+    } else {
+      if (currentItem.valueType === "array") {
+        if (!itemState[targetId].find((i) => i === childValue)) {
+          setItemState({
+            ...itemState,
+            [targetId]: [...(itemState[targetId] || []), childValue],
+          });
+        }
+      } else {
+        setItemState({ ...itemState, [targetId]: childValue });
+      }
+      return;
+    }
   };
 
   const handleSubmit = (event) => {
@@ -111,7 +129,7 @@ export default function ApplicationPost(props) {
       });
 
       await applicationApi.create(data);
-      navigate(-1);
+      navigate("/applications");
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.client_name} already exist!`);
@@ -124,7 +142,9 @@ export default function ApplicationPost(props) {
 
   const handleCancel = (event) => {
     setMode("view");
-    //navigate(-1);
+    if (event.target.innerText === "Close") navigate("/applications");
+    if (mode === "new" && event.target.innerText === "Cancel")
+      navigate("/applications");
     event.preventDefault();
   };
 
@@ -142,15 +162,16 @@ export default function ApplicationPost(props) {
 
   const saveItem = async () => {
     try {
-      await applicationApi.update({
+      const app = await applicationApi.update({
         ...itemState,
         companyId: company.id,
         domain: domain.id,
       });
 
       await applicationApi.purgeCors(company.id, domain.id, application.id);
-
-      navigate(-1);
+      setItemState(app.data);
+      setMode("view");
+      //navigate("/applications");
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.client_name} already exist!`);
@@ -244,7 +265,7 @@ export default function ApplicationPost(props) {
             {displayPanel(
               "Basic Information",
               fields_basic.filter((f) => f.id !== "domain"),
-              application,
+              itemState,
               itemState,
               handleChange,
               mode
@@ -252,7 +273,7 @@ export default function ApplicationPost(props) {
             {displayPanel(
               "Application Properties",
               fields_settings_properties,
-              application,
+              itemState,
               itemState,
               handleChange,
               mode
@@ -260,7 +281,7 @@ export default function ApplicationPost(props) {
             {displayPanel(
               "Application URIs",
               fields_settings_uris,
-              application,
+              itemState,
               itemState,
               handleChange,
               mode
@@ -268,7 +289,7 @@ export default function ApplicationPost(props) {
             {displayPanel(
               "ID Tokken",
               fields_settings_idToken,
-              application,
+              itemState,
               itemState,
               handleChange,
               mode
@@ -276,7 +297,7 @@ export default function ApplicationPost(props) {
             {displayPanel(
               "Refresh Tokken Rotation",
               fields_settings_refreshTokenRotation,
-              application,
+              itemState,
               itemState,
               handleChange,
               mode
@@ -284,7 +305,7 @@ export default function ApplicationPost(props) {
             {displayPanel(
               "efresh Tokken Expiration",
               fields_settings_refreshTokenExpiration,
-              application,
+              itemState,
               itemState,
               handleChange,
               mode
@@ -306,7 +327,9 @@ export default function ApplicationPost(props) {
         ) : (
           <div className="flex justify-center">
             <div className="mr-3">
-              <FormAction handleSubmit={handleEdit} text="Edit" />
+              {mode !== "overview" ? (
+                <FormAction handleSubmit={handleEdit} text="Edit" />
+              ) : null}
             </div>
             <div>
               <FormAction handleSubmit={handleCancel} text="Close" />
@@ -335,7 +358,9 @@ const displayPanel = (title, fields, item, itemState, handleChange, mode) => {
               item={item}
               handleChange={handleChange}
               value={
-                field.valueType === "array" && itemState[field.id]
+                field.valueType === "array" &&
+                itemState[field.id] &&
+                Array.isArray(itemState[field.id])
                   ? itemState[field.id].join("\r\n")
                   : itemState[field.id]
               }

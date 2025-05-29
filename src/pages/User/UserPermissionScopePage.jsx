@@ -14,7 +14,7 @@ import { useAuth } from "../../component/AuthContext";
 function UserPermissionScopePage() {
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
-  const [isLoading, setIsLoading] = useAuth();
+  const { isLoading, setIsLoading } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);

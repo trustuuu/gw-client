@@ -27,6 +27,7 @@ export const applicationFields = [
     id: "client_id",
     name: "client_id",
     type: "text",
+    readOnly: true,
     autoComplete: "client_id",
     isRequired: false,
     placeholder: "Client Id",
@@ -76,7 +77,7 @@ export const applicationFields = [
     placeholder: "Application Logo",
     list: [
       { key: "SPA", value: "Single Page Web Applications" },
-      { key: "native", value: "Regular Web Applications" },
+      { key: "web", value: "Regular Web Applications" },
       { key: "native", value: "Native" },
       { key: "machine", value: "Machine to Machine Applications" },
     ],
@@ -200,18 +201,43 @@ export const applicationFields = [
     labelFor: "grant_types",
     id: "grant_types",
     name: "grant_types",
-    type: "select",
-    list: [
-      // { key: "implicit", value: "Implicit" },
-      { key: "authorization_code", value: "Authorization Code" },
-      { key: "refresh_token", value: "Refresh Token" },
-      { key: "client_credentials", value: "Client Credentials" },
-      // { key: "password", value: "Password" },
-      { key: "MFA", value: "MFA" },
-      // { key: "passwordless_otp", value: "Passwordless OTP" },
-    ],
+    type: "textarea",
+    valueType: "array",
+    source: {
+      labelText: "",
+      labelFor: "grant_types",
+      id: "grant_types_select",
+      parentId: "grant_types",
+      name: "grant_types_select",
+      type: "select",
+      list: [
+        // { key: "implicit", value: "Implicit" },
+        { key: "authorization_code", value: "Authorization Code" },
+        { key: "refresh_token", value: "Refresh Token" },
+        { key: "client_credentials", value: "Client Credentials" },
+        // { key: "password", value: "Password" },
+        { key: "MFA", value: "MFA" },
+        // { key: "passwordless_otp", value: "Passwordless OTP" },
+      ],
+      autoComplete: "grant_types",
+      isRequired: true,
+      placeholder: "Grant Types",
+      category: "settings.advanced",
+      handleChange: (handleChange) => {
+        return (e) => {
+          // const fields = applicationFields;
+          // const targetId = e.target.getAttribute("parentid")
+          //   ? e.target.getAttribute("parentid")
+          //   : e.target.id;
+          // const currentItem = fields.filter((f) => f.id === targetId)[0];
+          const itemValue = e.target.value;
+          handleChange(e, itemValue);
+          return itemValue;
+        };
+      },
+    },
     autoComplete: "grant_types",
-    isRequired: true,
+    isRequired: false,
     placeholder: "Grant Types",
     category: "settings.advanced",
   },

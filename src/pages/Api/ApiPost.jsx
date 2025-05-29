@@ -90,7 +90,7 @@ export default function ApiPost(props) {
         domain: domain.id,
       });
       await apiApi.create(data);
-      navigate(-1);
+      navigate("/apis");
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);
@@ -246,7 +246,9 @@ export default function ApiPost(props) {
         ) : (
           <div className="flex justify-center">
             <div className="mr-3">
-              <FormAction handleSubmit={handleEdit} text="Edit" />
+              {mode !== "overview" ? (
+                <FormAction handleSubmit={handleEdit} text="Edit" />
+              ) : null}
             </div>
             <div>
               <FormAction handleSubmit={handleCancel} text="Close" />

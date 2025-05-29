@@ -19,14 +19,7 @@ export default function ItemField({
       key={field.id}
       handleChange={handleChange}
       value={value}
-      labelText={field.labelText}
-      labelFor={field.labelFor}
-      id={field.id}
-      name={field.name}
-      type={field.type}
-      isRequired={field.isRequired}
-      placeholder={field.placeholder}
-      list={field.list}
+      field={field}
       customClass={
         field.customClass
           ? field.customClass
@@ -40,14 +33,7 @@ export default function ItemField({
       key={field.id}
       handleChange={handleChange}
       value={value}
-      labelText={field.labelText}
-      labelFor={field.labelFor}
-      id={field.id}
-      name={field.name}
-      type={field.type}
-      isRequired={field.isRequired}
-      placeholder={field.placeholder}
-      list={field.list}
+      field={field}
       customClass={
         field.customClass
           ? field.customClass

@@ -138,11 +138,7 @@ function RoutesMain() {
       <Route
         path="/applications-brief"
         element={
-          <RouteWithTitle
-            title="Applications | View"
-            parentPath="applications"
-            subTitle=""
-          >
+          <RouteWithTitle title="View" parentPath="applications" subTitle="">
             <ApplicationView key="appView" mode="view" />
           </RouteWithTitle>
         }
@@ -151,7 +147,7 @@ function RoutesMain() {
         path="/applications-view-setting"
         element={
           <RouteWithTitle
-            title="Applciation"
+            title="Properties"
             parentPath="applications"
             subTitle=""
           >
@@ -162,7 +158,7 @@ function RoutesMain() {
       <Route
         path="/applications-view-post"
         element={
-          <RouteWithTitle title="Applciation" parentPath="applications">
+          <RouteWithTitle title="New" parentPath="applications">
             <ApplicationPost key="appNew" mode="new" />
           </RouteWithTitle>
         }
@@ -171,7 +167,7 @@ function RoutesMain() {
         path="/applications-view-permission-scope"
         element={
           <RouteWithTitle
-            title="Applciation | Permission Scope"
+            title="Permission Scope"
             parentPath="applications"
             subTitle=""
           >
@@ -193,7 +189,7 @@ function RoutesMain() {
       <Route
         path="/apis-overview"
         element={
-          <RouteWithTitle title="Api | Overview" parentPath="apis" subTitle="">
+          <RouteWithTitle title="Overview" parentPath="apis" subTitle="">
             <ApiOverview key="apiOverview" />
           </RouteWithTitle>
         }
@@ -201,15 +197,15 @@ function RoutesMain() {
       <Route
         path="/apis-brief"
         element={
-          <RouteWithTitle title="Api | View" parentPath="apis" subTitle="">
-            <ApiView key="apiView" mode="view" />
+          <RouteWithTitle title="View" parentPath="apis" subTitle="">
+            <ApiView key="apiView" mode="overview" />
           </RouteWithTitle>
         }
       />
       <Route
         path="/apis-view-post"
         element={
-          <RouteWithTitle title="Api" parentPath="apis" subTitle="">
+          <RouteWithTitle title="Properties" parentPath="apis" subTitle="">
             <ApiPost key="apiPost" mode="view" />
           </RouteWithTitle>
         }
@@ -218,7 +214,7 @@ function RoutesMain() {
         path="/apis-view-permission-scope"
         element={
           <RouteWithTitle
-            title="Api | Permission Scope"
+            title="Permission Scope"
             parentPath="apis"
             subTitle=""
           >
@@ -229,7 +225,7 @@ function RoutesMain() {
       <Route
         path="/apis-view-apirole"
         element={
-          <RouteWithTitle title="Api | Role" parentPath="apis" subTitle="">
+          <RouteWithTitle title="Roles" parentPath="apis" subTitle="">
             <ApiAppRolePage key="apiAppRoles" mode="edit" />
           </RouteWithTitle>
         }
@@ -238,7 +234,7 @@ function RoutesMain() {
         path="/apis-view-users-groups"
         element={
           <RouteWithTitle
-            title="Api | Users and Groups"
+            title="Users and Groups"
             parentPath="apis"
             subTitle=""
           >
@@ -249,7 +245,7 @@ function RoutesMain() {
       <Route
         path="/apisnew"
         element={
-          <RouteWithTitle title="Api | New">
+          <RouteWithTitle title="New">
             <ApiView key="apiNew" mode="new" />
           </RouteWithTitle>
         }
@@ -294,6 +290,25 @@ function RoutesMain() {
           </RouteWithTitle>
         }
       />
+
+      <Route
+        path="/authentication-resetpw"
+        element={
+          <RouteWithTitle title="Password Reset">
+            <PasswordResetUsingCurrentPage />
+          </RouteWithTitle>
+        }
+      />
+
+      <Route
+        path="/authentication-swith-user"
+        element={
+          <RouteWithTitle title="Swith user">
+            <LogInPage />
+          </RouteWithTitle>
+        }
+      />
+
       <Route
         path="/resetpw-send"
         element={

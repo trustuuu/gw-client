@@ -52,7 +52,7 @@ const Stepper = ({ steps, handleSubmit }) => {
           </div>
         ))}
       </div>
-      <div className="w-full mt-4 flex items-center h-[400px] overflow-auto bg-slate-800">
+      <div className="w-full mt-4 flex items-center h-[400px] overflow-auto">
         {steps?.map((step, i) => (
           <div className="w-full px-4" id={i}>
             {currentStep - 1 === i && step.page}

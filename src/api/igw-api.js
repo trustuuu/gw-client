@@ -18,6 +18,7 @@ export const authServer = {
   authorizationEndpoint: import.meta.env.VITE_UNIDIR_AUTHORIZATIONENDPOINT,
   tokenEndpoint: import.meta.env.VITE_UNIDIR_TOKENENDPOINT,
   authLogin: import.meta.env.VITE_UNIDIR_AUTHLOGIN,
+  signup: import.meta.env.VITE_UNIDIR_SIGNUP,
 };
 
 export const uniDirServer = {

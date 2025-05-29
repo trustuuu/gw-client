@@ -23,7 +23,9 @@ export default function DisplayPanel(
                 item={item}
                 handleChange={handleChange}
                 value={
-                  field.valueType === "array" && itemState[field.id]
+                  field.valueType === "array" &&
+                  itemState[field.id] &&
+                  Array.isArray(itemState[field.id])
                     ? itemState[field.id].join("\r\n")
                     : itemState[field.id]
                 }

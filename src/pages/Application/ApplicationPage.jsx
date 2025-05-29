@@ -43,7 +43,8 @@ function ApplicationPage({ status }) {
   };
 
   const onClickNew = function () {
-    navigate("/applications-new", {
+    setApplication({ app_type: "SPA" });
+    navigate("/applications-view-post", {
       state: {
         company: company,
         domain: domain,
@@ -68,13 +69,13 @@ function ApplicationPage({ status }) {
         company: company,
         domain: domain,
         application: item,
-        mode: "view",
+        mode: "overview",
       },
     });
   };
 
   const onClickEdit = (item) => {
-    navigate("/applications-new", {
+    navigate("/applications-view-post", {
       state: {
         company: company,
         domain: domain,
@@ -84,11 +85,11 @@ function ApplicationPage({ status }) {
     });
   };
 
-  const onChangeDomain = (item) => {
-    setIsLoading(true);
-    if (domainId != item) getApplications(item);
-    setIsLoading(false);
-  };
+  // const onChangeDomain = (item) => {
+  //   setIsLoading(true);
+  //   if (domainId != item) getApplications(item);
+  //   setIsLoading(false);
+  // };
 
   const getApplications = async (domId) => {
     try {
@@ -128,7 +129,8 @@ function ApplicationPage({ status }) {
           visibleNew={status == "active"}
           disabledDel={checkedItems.length < 1}
         />
-        <div className="w-full grid justify-items-end">
+        {/* Temporary commented */}
+        {/* <div className="w-full grid justify-items-end">
           {domains.length > 0 ? (
             <Dropdown
               label="Domains"
@@ -140,7 +142,7 @@ function ApplicationPage({ status }) {
           ) : (
             <></>
           )}
-        </div>
+        </div> */}
       </header>
       <div className="w-full p-3">
         {/* applications */}

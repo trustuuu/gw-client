@@ -26,26 +26,26 @@ function ApiView() {
                     for the view layer of a Model View Controller(MVC) architecture. 
                     Before you start learning ReactJS, we assume that you have knowledge of 
                     HTML, CSS and JavaScript.`,
-      closeButton: true,
+      closeButton: false,
     },
     {
       title: "Settings",
-      content: <ApiPost mode="view" api={api} />,
+      content: <ApiPost mode="overview" api={api} />,
     },
     {
       title: "Permission",
-      content: <ApiPermissionScopePage mode="edit" api={api} />,
-      closeButton: true,
+      content: <ApiPermissionScopePage mode="overview" api={api} />,
+      closeButton: false,
     },
     {
       title: "App Roles",
-      content: <ApiAppRolePage mode="edit" api={api} />,
-      closeButton: true,
+      content: <ApiAppRolePage mode="overview" api={api} />,
+      closeButton: false,
     },
     {
       title: "Domain",
-      content: <DomainPage />,
-      closeButton: true,
+      content: <DomainPage mode="overview" />,
+      closeButton: false,
     },
   ];
 

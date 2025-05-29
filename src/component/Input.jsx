@@ -4,37 +4,64 @@ const fixedInputClass =
 export default function Input({
   handleChange,
   value,
-  labelText,
-  labelFor,
-  id,
-  name,
-  type,
-  isRequired = false,
-  placeholder,
+  field,
   customClass,
-  list,
   company,
   reseller,
 }) {
   const showItem = "my-5 flex items-center text-pretty";
   const hiddenItem = "my-5 flex items-center invisible";
 
+  const {
+    labelText,
+    labelFor,
+    id,
+    parentId,
+    name,
+    type,
+    isRequired = false,
+    placeholder,
+    list,
+    source,
+    readOnly,
+  } = field;
   let inputContext = null;
   switch (type) {
     case "textarea":
       inputContext = (
-        <textarea
-          rows={5}
-          id={id}
-          name={name}
-          value={value}
-          onChange={handleChange}
-          required={isRequired}
-          placeholder={placeholder}
-          className={
-            customClass ? fixedInputClass + customClass : fixedInputClass
-          }
-        ></textarea>
+        <div className="flex flex-col">
+          {source ? (
+            <Input
+              company={company}
+              key={source.id}
+              handleChange={source.handleChange(handleChange)}
+              //listener={}
+              value={value}
+              field={source}
+              parentField={field}
+              customClass={
+                source.customClass
+                  ? source.customClass
+                  : customClass +
+                    `${source.type == "checkbox" ? " max-w-4 " : " min-w-80 "}`
+              }
+              reseller={source.reseller}
+            />
+          ) : null}
+          <textarea
+            //disabled={source ? true : false}
+            rows={5}
+            id={id}
+            name={name}
+            value={value}
+            onChange={handleChange}
+            required={isRequired}
+            placeholder={placeholder}
+            className={
+              customClass ? fixedInputClass + customClass : fixedInputClass
+            }
+          ></textarea>
+        </div>
       );
       break;
 
@@ -42,6 +69,7 @@ export default function Input({
       inputContext = list ? (
         <select
           id={id}
+          parentid={parentId}
           name={name}
           onChange={handleChange}
           required={isRequired}
@@ -51,7 +79,14 @@ export default function Input({
           }
         >
           {list.map((l) => {
-            return <option value={l.key}>{l.value}</option>;
+            return (
+              <option
+                value={l.key}
+                selected={l.key === value ? "selected" : ""}
+              >
+                {l.value}
+              </option>
+            );
           })}
         </select>
       ) : (
@@ -74,6 +109,7 @@ export default function Input({
           }
           placeholder={placeholder}
           checked={value}
+          readOnly={readOnly ? true : ""}
         />
       );
   }
@@ -88,12 +124,14 @@ export default function Input({
           : showItem
       }
     >
-      <label
-        htmlFor={labelFor}
-        className="text-wrap ms-2 text-sm font-medium min-w-48 max-w-48 "
-      >
-        {labelText}
-      </label>
+      {labelText ? (
+        <label
+          htmlFor={labelFor}
+          className="text-wrap ms-2 text-sm font-medium min-w-48 max-w-48 "
+        >
+          {labelText}
+        </label>
+      ) : null}
       {inputContext}
     </div>
   );

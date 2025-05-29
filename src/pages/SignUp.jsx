@@ -12,6 +12,7 @@ import FormAction from "../component/FormAction";
 import userApi from "../api/user-api";
 import companyApi from "../api/company-api";
 import domainApi from "../api/domain-api";
+import { authServer } from "../api/igw-api";
 
 export default function SignUp() {
   const [userState, setUserState] = useState({});
@@ -44,23 +45,65 @@ export default function SignUp() {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    delete userState.confirmPassword;
 
-    const com = await companyApi.create({
-      ...companyState,
-      id: companyState.name,
-      type: "customer",
-    });
-    const dom = await domainApi.create(com.data.id, {
-      ...domainState,
-      id: domainState.name,
-    });
-    await userApi.create(com.data.id, dom.data.id, {
-      ...userState,
-      id: userState.username,
-      root: true,
+    await fetch(authServer.signup, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        data: {
+          company: {
+            ...companyState,
+            id: companyState.name,
+            type: "customer",
+          },
+          domain: {
+            ...domainState,
+            id: domainState.name,
+          },
+          user: {
+            ...userState,
+            id: userState.username,
+            root: true,
+          },
+        },
+      }),
     });
     navigate("/login");
+    // delete userState.confirmPassword;
+
+    // const com = await companyApi.create(
+    //   {
+    //     ...companyState,
+    //     id: companyState.name,
+    //     type: "customer",
+    //   },
+    //   {
+    //     skipInterceptor: true,
+    //   }
+    // );
+    // const dom = await domainApi.create(
+    //   com.data.id,
+    //   {
+    //     ...domainState,
+    //     id: domainState.name,
+    //   },
+    //   {
+    //     skipInterceptor: true,
+    //   }
+    // );
+    // await userApi.create(
+    //   com.data.id,
+    //   dom.data.id,
+    //   {
+    //     ...userState,
+    //     id: userState.username,
+    //     root: true,
+    //   },
+    //   {
+    //     skipInterceptor: true,
+    //   }
+    // );
+    //navigate("/login");
   };
 
   const handleCancel = (event) => {

@@ -9,12 +9,12 @@ const LogOutPage = () => {
   const { saveUser, saveClient, saveCompany, saveDomain } = useAuth();
 
   const signOut = () => {
-    if (!cookies.IsRemember) {
-      saveUser(null);
-      saveClient(null);
-      saveCompany(null);
-      saveDomain(null);
-    }
+    //if (!cookies.IsRemember) {
+    saveUser(null);
+    saveClient(null);
+    saveCompany(null);
+    saveDomain(null);
+    //}
     navigate("/");
   };
   return (
