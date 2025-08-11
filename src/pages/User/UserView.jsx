@@ -9,7 +9,7 @@ import UserPermissionScopePage from "./UserPermissionScopePage";
 function UserView() {
   const location = useLocation();
 
-  const { company, domain, user, mode } = location.state;
+  const { company, domain, user, mode } = location.state || {};
 
   const data = [
     {

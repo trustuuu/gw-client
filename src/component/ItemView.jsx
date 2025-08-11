@@ -21,6 +21,7 @@ export default function ItemView({
     isRequired = false,
     placeholder,
     list,
+    component,
   } = field;
   let inputContext = null;
 

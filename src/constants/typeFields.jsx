@@ -1,0 +1,37 @@
+export const typeFields = [
+  {
+    labelText: "Primary",
+    labelFor: "primary",
+    id: "primary",
+    name: "primary",
+    type: "checkbox",
+    autoComplete: "primary",
+    isRequired: false,
+    placeholder: "Primary",
+  },
+  {
+    labelText: "Type",
+    labelFor: "type",
+    id: "type",
+    name: "type",
+    type: "select",
+    autoComplete: "type",
+    isRequired: false,
+    placeholder: "Type",
+    list: [
+      { key: "work", value: "Work" },
+      { key: "home", value: "Home" },
+      { key: "other", value: "Other" },
+    ],
+  },
+  {
+    labelText: "Value",
+    labelFor: "value",
+    id: "value",
+    name: "value",
+    type: "text",
+    autoComplete: "value",
+    isRequired: true,
+    placeholder: "Value",
+  },
+];

@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { userFields } from "../../constants/formFields";
+import { useEffect, useState } from "react";
+import { userFields } from "../../constants/userFields";
 import { useNavigate, useLocation } from "react-router-dom";
 import userApi from "../../api/user-api";
 import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
 import ItemView from "../../component/ItemView";
 import { useAuth } from "../../component/AuthContext";
+import DivExpand from "../../component/DivExpand";
 
 const fields = userFields;
 let fieldsState = {};
@@ -19,11 +20,16 @@ export default function UserPost() {
   const navigate = useNavigate();
 
   const [errorText, setError] = useState();
-  const { company, domain, user } = location.state;
+  const { company, domain, user } = location.state || {};
   const [mode, setMode] = useState(location.state.mode);
   const [itemState, setItemState] = useState(
     mode == "new" ? fieldsState : user
   );
+
+  // useEffect(()=>{
+  //   setItemState(user);
+  // }, [user])
+
   const handleChange = (e) => {
     setItemState({
       ...itemState,
@@ -34,6 +40,9 @@ export default function UserPost() {
     });
   };
 
+  const changeSubprops = (propName, item) => {
+    setItemState((prev) => ({ ...prev, [propName]: item }));
+  };
   const handleSubmit = (event) => {
     setIsLoading(true);
     createItem();
@@ -57,11 +66,12 @@ export default function UserPost() {
         return;
       }
       let data = await populateItem(itemState);
+
       await userApi.create(company.id, domain.id, data);
       navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {
-        setError(`duplicated error: ${itemState.username} already exist!`);
+        setError(`duplicated error: ${itemState.userName} already exist!`);
       } else {
         setError(err.message);
       }
@@ -70,6 +80,11 @@ export default function UserPost() {
   };
 
   const handleCancel = (event) => {
+    setMode("view");
+    event.preventDefault();
+  };
+
+  const handleClose = (event) => {
     navigate(-1);
     event.preventDefault();
   };
@@ -92,14 +107,14 @@ export default function UserPost() {
       navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {
-        setError(`duplicated error: ${itemState.username} already exist!`);
+        setError(`duplicated error: ${itemState.userName} already exist!`);
       } else {
         setError(err.message);
       }
       console.log(err);
     }
   };
-
+  console.log("user in UserPost", user);
   const customClassEdit = "ms-2 text-sm font-medium min-w-80 ";
   const customClass = "ms-2 text-sm font-medium min-w-80 ";
   if (mode === "new" || mode === "edit") {
@@ -112,7 +127,7 @@ export default function UserPost() {
               (field.hiddenUpdate || field.hiddenUpdate !== undefined) &&
               mode === "edit" ? (
                 <></>
-              ) : (
+              ) : field.type !== "component" ? (
                 <Input
                   company={company}
                   key={field.id}
@@ -124,6 +139,42 @@ export default function UserPost() {
                   }
                   reseller={field.reseller}
                 />
+              ) : Array.isArray(itemState[field.id]) ? (
+                <DivExpand
+                  title={`${
+                    field.id.charAt(0).toUpperCase() + field.id.slice(1)
+                  } ${
+                    Array.isArray(itemState[field.id])
+                      ? "(" + itemState[field.id].length + ")"
+                      : ""
+                  }`}
+                  initOpen={field.initOpen}
+                >
+                  {field.component({
+                    mode: mode,
+                    values: itemState[field.id],
+                    handleChange: changeSubprops,
+                    propName: field.id,
+                  })}
+                </DivExpand>
+              ) : (
+                <DivExpand
+                  title={`${
+                    field.id.charAt(0).toUpperCase() + field.id.slice(1)
+                  } ${
+                    Array.isArray(itemState[field.id])
+                      ? "(" + itemState[field.id].length + ")"
+                      : ""
+                  }`}
+                  initOpen={field.initOpen}
+                >
+                  {field.component({
+                    mode: mode,
+                    values: itemState[field.id],
+                    handleChange: changeSubprops,
+                    propName: field.id,
+                  })}
+                </DivExpand>
               )
             )}
           </div>
@@ -149,7 +200,8 @@ export default function UserPost() {
           <div className="space-y-4">
             {fields.map((field) =>
               field.hiddenDisplay ||
-              field.hiddenDisplay !== undefined ? null : (
+              field.hiddenDisplay !== undefined ? null : field.type !==
+                "component" ? (
                 <ItemView
                   Item={user}
                   company={company}
@@ -161,6 +213,24 @@ export default function UserPost() {
                     field.customClass ? field.customClass : customClassEdit
                   }
                 />
+              ) : (
+                <DivExpand
+                  title={`${
+                    field.id.charAt(0).toUpperCase() + field.id.slice(1)
+                  } ${
+                    Array.isArray(itemState[field.id])
+                      ? "(" + itemState[field.id].length + ")"
+                      : ""
+                  }`}
+                  initOpen={field.initOpen}
+                >
+                  {field.component({
+                    mode: mode,
+                    values: itemState[field.id],
+                    handleChange: changeSubprops,
+                    propName: field.id,
+                  })}
+                </DivExpand>
               )
             )}
           </div>
@@ -169,7 +239,7 @@ export default function UserPost() {
               <FormAction handleSubmit={handleEdit} text="Edit" />
             </div>
             <div>
-              <FormAction handleSubmit={handleCancel} text="Close" />
+              <FormAction handleSubmit={handleClose} text="Close" />
             </div>
           </div>
         </form>

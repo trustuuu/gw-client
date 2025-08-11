@@ -101,10 +101,8 @@ export default function GroupPost() {
     }
   };
 
-  const customClassEdit =
-    "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";
-  const customClass =
-    "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 min-w-80 dark:bg-gray-300 ";
+  const customClassEdit = "ms-2 text-sm font-medium min-w-80 ";
+  const customClass = "ms-2 text-sm font-medium min-w-80 ";
   if (mode == "new" || mode == "edit") {
     return (
       <div className="flex justify-center">

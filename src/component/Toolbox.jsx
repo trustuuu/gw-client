@@ -9,6 +9,8 @@ function Toolbox({
   NewButtonLabel,
   DelButtonLabel,
   visibleNew,
+  customClass,
+  disableCaption,
 }) {
   //https://www.tailwindtoolbox.com/icons
   const delSvg = (
@@ -64,19 +66,21 @@ function Toolbox({
     <div className="relative inline-flex">
       {visibleNew || visibleNew == undefined ? (
         <ButtonToolbox
-          text={NewButtonLabel ? NewButtonLabel : "New"}
+          text={disableCaption ? "" : NewButtonLabel ? NewButtonLabel : "New"}
           svg={newSvg}
           clickHandle={onClickNew}
           disabled={disabledNew}
+          customClass={customClass}
         />
       ) : (
         <></>
       )}
       <ButtonToolbox
-        text={DelButtonLabel ? DelButtonLabel : "Delete"}
+        text={disableCaption ? "" : DelButtonLabel ? DelButtonLabel : "Delete"}
         svg={delSvg}
         clickHandle={onClickDel}
         disabled={disabledDel}
+        customClass={customClass}
       />
     </div>
   );

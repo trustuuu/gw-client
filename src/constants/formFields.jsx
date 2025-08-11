@@ -24,13 +24,13 @@ const loginFields = [
 const signupFields = [
   {
     labelText: "Username",
-    labelFor: "username",
-    id: "username",
-    name: "username",
+    labelFor: "userName",
+    id: "userName",
+    name: "userName",
     type: "text",
-    autoComplete: "username",
+    autoComplete: "userName",
     isRequired: true,
-    placeholder: "Username",
+    placeholder: "userName",
   },
   {
     labelText: "Email",
@@ -163,74 +163,6 @@ const companyFields = [
   },
 ];
 
-const userFields = [
-  {
-    labelText: "User Name",
-    labelFor: "username",
-    id: "username",
-    name: "username",
-    type: "text",
-    autoComplete: "username",
-    isRequired: true,
-    placeholder: "User Name",
-  },
-  {
-    labelText: "Display Name",
-    labelFor: "displayName",
-    id: "displayName",
-    name: "displayName",
-    type: "text",
-    autoComplete: "displayName",
-    isRequired: true,
-    placeholder: "Display Name",
-  },
-  {
-    labelText: "Notes",
-    labelFor: "notes",
-    id: "notes",
-    name: "notes",
-    type: "textarea",
-    autoComplete: "notes",
-    isRequired: false,
-    placeholder: "Notes",
-  },
-  {
-    labelText: "Email",
-    labelFor: "email",
-    id: "email",
-    name: "email",
-    type: "text",
-    autoComplete: "email",
-    isRequired: true,
-    placeholder: "Email",
-  },
-  {
-    labelText: "Password",
-    labelFor: "password",
-    id: "authVerification",
-    name: "authVerification",
-    type: "password",
-    autoComplete: "authVerification",
-    isRequired: true,
-    placeholder: "Password",
-    hiddenUpdate: true,
-    hiddenDisplay: true,
-  },
-  {
-    labelText: "Confirm Password",
-    labelFor: "confirmPassword",
-    id: "confirmPassword",
-    name: "confirmPassword",
-    type: "password",
-    autoComplete: "confirmPassword",
-    isRequired: true,
-    placeholder: "Confirm Password",
-    database: false,
-    hiddenUpdate: true,
-    hiddenDisplay: true,
-  },
-];
-
 const groupFields = [
   {
     labelText: "Group Name",
@@ -275,11 +207,4 @@ const groupFields = [
 ];
 
 //signingAlgorithm
-export {
-  loginFields,
-  signupFields,
-  domainFields,
-  companyFields,
-  userFields,
-  groupFields,
-};
+export { loginFields, signupFields, domainFields, companyFields, groupFields };

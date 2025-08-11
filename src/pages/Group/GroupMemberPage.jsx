@@ -138,8 +138,8 @@ function GroupMemberPage() {
   ];
 
   return (
-    <div className="col-span-full xl:col-span-6 bg-white dark:bg-slate-800 shadow-lg rounded-sm border border-slate-200 dark:border-slate-700 ">
-      <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex items-center justify-between">
+    <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm border border-slate-200 ">
+      <header className="w-full px-5 py-4 border-b border-slate-100 relative inline-flex items-center justify-between">
         <Toolbox
           NewButtonLabel="Add"
           onClickNew={onClickAdd}

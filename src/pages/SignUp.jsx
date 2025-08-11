@@ -62,7 +62,7 @@ export default function SignUp() {
           },
           user: {
             ...userState,
-            id: userState.username,
+            id: userState.userName,
             root: true,
           },
         },

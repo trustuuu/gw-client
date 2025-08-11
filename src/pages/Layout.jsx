@@ -45,9 +45,11 @@ function Layout() {
     if (localStorage.theme === "dark" || !("theme" in localStorage)) {
       document.querySelector("html").classList.add("dark");
       document.querySelector("html").style.colorScheme = "dark";
+      console.log("dark mode");
     } else {
       document.querySelector("html").classList.remove("dark");
       document.querySelector("html").style.colorScheme = "light";
+      console.log("light mode");
     }
 
     if (localStorage.getItem("sidebar-expanded") === "true") {
