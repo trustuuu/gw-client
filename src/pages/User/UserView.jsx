@@ -17,6 +17,7 @@ function UserView() {
       content: (
         <UserPost mode={mode} company={company} domain={domain} user={user} />
       ),
+      closeButton: false,
     },
     {
       title: "Permission Scope",

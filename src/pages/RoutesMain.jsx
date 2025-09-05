@@ -90,7 +90,7 @@ function RoutesMain() {
       <Route
         path="/users-deleted"
         element={
-          <RouteWithTitle title="User | Delete">
+          <RouteWithTitle title="Delete" parentPath="users" subTitle="">
             <UserPage key="deletedUsers" status="deleted" showTool={true} />
           </RouteWithTitle>
         }
@@ -98,7 +98,23 @@ function RoutesMain() {
       <Route
         path="/users-new"
         element={
-          <RouteWithTitle title="User | New">
+          <RouteWithTitle title="New" parentPath="users" subTitle="">
+            <UserView />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/users-view"
+        element={
+          <RouteWithTitle title="View" parentPath="users" subTitle="">
+            <UserView />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/users-edit"
+        element={
+          <RouteWithTitle title="Edit" parentPath="users" subTitle="">
             <UserView />
           </RouteWithTitle>
         }
@@ -114,7 +130,7 @@ function RoutesMain() {
       <Route
         path="/groups-deleted"
         element={
-          <RouteWithTitle title="Groups | Delete">
+          <RouteWithTitle title="Delete" parentPath="groups" subTitle="">
             <GroupPage key="deletedGroups" status="deleted" showTool={true} />
           </RouteWithTitle>
         }
@@ -122,7 +138,23 @@ function RoutesMain() {
       <Route
         path="/groups-new"
         element={
-          <RouteWithTitle title="Group | New">
+          <RouteWithTitle title="New" parentPath="groups" subTitle="">
+            <GroupView />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/groups-view"
+        element={
+          <RouteWithTitle title="View" parentPath="groups" subTitle="">
+            <GroupView />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/groups-edit"
+        element={
+          <RouteWithTitle title="Edit" parentPath="groups" subTitle="">
             <GroupView />
           </RouteWithTitle>
         }

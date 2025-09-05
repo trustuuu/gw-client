@@ -14,15 +14,15 @@ function GroupMember({ members, parentCallback }) {
     if (isChecked) {
       parentCallback([
         ...checkedItems,
-        ...members.filter((i) => i.id === item),
+        ...members.filter((i) => i.value === item),
       ]);
       setCheckedItems([
         ...checkedItems,
-        ...members.filter((i) => i.id === item),
+        ...members.filter((i) => i.value === item),
       ]);
     } else {
-      parentCallback(checkedItems.filter((i) => i.id !== item));
-      setCheckedItems(checkedItems.filter((i) => i.id !== item));
+      parentCallback(checkedItems.filter((i) => i.value !== item));
+      setCheckedItems(checkedItems.filter((i) => i.value !== item));
     }
   };
 
@@ -61,15 +61,15 @@ function GroupMember({ members, parentCallback }) {
               return (
                 <li
                   className="flex px-2 hover:bg-indigo-200 dark:hover:bg-indigo-400 hover:cursor-pointer"
-                  key={member.id}
+                  key={member.value}
                 >
                   <div className="self-center mr-3">
                     <Checkbox
-                      name={member.id}
-                      id={member.id}
+                      name={member.value}
+                      id={member.value}
                       checked={
-                        checkedItems.filter((i) => i.id === member.id).length >
-                        0
+                        checkedItems.filter((i) => i.value === member.value)
+                          .length > 0
                       }
                       onChange={handleChangeCheck}
                     />

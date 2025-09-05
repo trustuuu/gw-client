@@ -19,7 +19,7 @@ function GroupPage({
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { company, domain, setIsLoading } = useAuth();
+  const { company, domain, path, setPath, setIsLoading } = useAuth();
   const [groups, setGroups] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -80,7 +80,8 @@ function GroupPage({
   };
 
   const onClickView = (item) => {
-    navigate("/groups-new", {
+    setPath({ ...path, subTitle: item.displayName ?? item.name });
+    navigate("/groups-view", {
       state: {
         company: company,
         domain: domain,
@@ -91,7 +92,8 @@ function GroupPage({
   };
 
   const onClickEdit = (item) => {
-    navigate("/groups-new", {
+    setPath({ ...path, subTitle: item.displayName ?? item.name });
+    navigate("/groups-edit", {
       state: {
         company: company,
         domain: domain,
@@ -111,7 +113,7 @@ function GroupPage({
       let data = dom.data;
       if (excludes) {
         data = data.filter(
-          (item) => !excludes.map((e) => e.id).includes(item.id)
+          (item) => !excludes.map((e) => e.value).includes(item.id)
         );
       }
       setGroups(data);

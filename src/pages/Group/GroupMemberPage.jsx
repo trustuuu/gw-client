@@ -12,10 +12,11 @@ import TabBody from "../../component/tabs/TabBody";
 import Modal from "../../component/Modal";
 import { useAuth } from "../../component/AuthContext";
 
-function GroupMemberPage() {
-  const location = useLocation();
+function GroupMemberPage({ company, domain, group, refreshGroup }) {
+  //const location = useLocation();
   const { setIsLoading } = useAuth();
-  const { company, domain, group } = location.state;
+  //const { company, domain, group } = location.state;
+
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
 
@@ -33,6 +34,7 @@ function GroupMemberPage() {
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
+
   const currentPosts =
     members.length > 0 ? members.slice(indexOfFirstPost, indexOfLastPost) : [];
   const paginate = (pageNumber, startPage, endPage) => {
@@ -41,7 +43,9 @@ function GroupMemberPage() {
     setPageEnd(endPage);
   };
   //const focusInputRef = useRef(null);
-
+  useEffect(() => {
+    setMembers(group.members ?? []);
+  }, [group]);
   const handleCallback = (childCheckedItems) => {
     setCheckedItems(childCheckedItems);
   };
@@ -71,6 +75,7 @@ function GroupMemberPage() {
       return { id: u.id, displayName: u.displayName, type: "user" };
     });
     newMembers = [
+      ...members,
       ...newMembers,
       ...groupCheckedItems.map((g) => {
         return { id: g.id, displayName: g.displayName, type: "group" };
@@ -78,6 +83,7 @@ function GroupMemberPage() {
     ];
 
     await groupApi.addMembers(company.id, domain.id, group.id, newMembers);
+    //setMembers(addedMembers.data.members);
     await getGroupMembers();
     setIsLoading(false);
     setModalOpen(false);
@@ -90,14 +96,17 @@ function GroupMemberPage() {
     setIsLoading(false);
   };
 
+  // const getGroupMembers = async () => {
+  //   setMembers(group.members);
+  //   setPageEnd(
+  //     Math.ceil(group.members.length / postsPerPage) < pageDisplayCount
+  //       ? Math.ceil(group.members.length / postsPerPage)
+  //       : pageDisplayCount
+  //   );
+  // };
+
   const getGroupMembers = async () => {
-    const items = await groupApi.getMembers(company.id, domain.id, group.id);
-    setMembers(items.data);
-    setPageEnd(
-      Math.ceil(items.data.length / postsPerPage) < pageDisplayCount
-        ? Math.ceil(items.data.length / postsPerPage)
-        : pageDisplayCount
-    );
+    refreshGroup(group.id);
   };
 
   useEffect(() => {
@@ -127,7 +136,11 @@ function GroupMemberPage() {
           status="active"
           excludes={[
             ...members.filter((m) => m.type === "group"),
-            { id: group.id, displayName: group.displayName, type: "group" },
+            {
+              value: group.id,
+              $ref: `${company.id}/domains/${domain.id}/groups/${group.id}`,
+              type: "group",
+            },
           ]}
           parentCallback={groupHandleCallback}
           noDetailView={true}

@@ -19,7 +19,7 @@ function UserPage({
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { company, domain, setIsLoading } = useAuth();
+  const { company, domain, path, setPath, setIsLoading } = useAuth();
   const [users, setUsers] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -80,7 +80,8 @@ function UserPage({
   };
 
   const onClickView = (item) => {
-    navigate("/users-new", {
+    setPath({ ...path, subTitle: item.displayName });
+    navigate("/users-view", {
       state: {
         company: company,
         domain: domain,
@@ -91,7 +92,8 @@ function UserPage({
   };
 
   const onClickEdit = (item) => {
-    navigate("/users-new", {
+    setPath({ ...path, subTitle: item.displayName });
+    navigate("/users-edit", {
       state: {
         company: company,
         domain: domain,
@@ -111,7 +113,7 @@ function UserPage({
       let data = dom.data;
       if (excludes) {
         data = data.filter(
-          (item) => !excludes.map((e) => e.id).includes(item.id)
+          (item) => !excludes.map((e) => e.value).includes(item.id)
         );
       }
       setUsers(data);

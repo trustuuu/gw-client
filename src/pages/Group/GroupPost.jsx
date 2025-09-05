@@ -52,12 +52,11 @@ export default function GroupPost() {
 
   const createItem = async () => {
     try {
-      if (itemState.authVerification != itemState.confirmPassword) {
-        setError("Password mismatch!");
-        return;
-      }
+      // if (itemState.authVerification != itemState.confirmPassword) {
+      //   setError("Password mismatch!");
+      //   return;
+      // }
       let data = await populateItem({ ...itemState, id: itemState.name });
-
       await groupApi.create(company.id, domain.id, data, header);
       navigate(-1);
     } catch (err) {

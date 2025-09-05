@@ -1,20 +1,37 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
+function SafeLink({ to, children, ...props }) {
+  const location = useLocation();
+
+  const handleClick = (e) => {
+    if (location.pathname === to) {
+      e.preventDefault(); // ignore navigation
+    }
+  };
+
+  return (
+    <Link to={to} onClick={handleClick} {...props}>
+      {children}
+    </Link>
+  );
+}
+
 const PagePathHeader = () => {
   const location = useLocation();
   const { path } = useAuth();
+
   return (
     <div className="text-sm text-blue-400 p-2">
-      <Link className="lowercase" to="/">
+      <SafeLink className="lowercase" to="/">
         Home
-      </Link>
+      </SafeLink>
       {path && path.parentPath ? (
-        <Link className="lowercase" to={`/${path.parentPath}`}>
+        <SafeLink className="lowercase" to={`/${path.parentPath}`}>
           &nbsp;&gt;&nbsp;{path.parentPath}
-        </Link>
+        </SafeLink>
       ) : null}
-      <Link className="lowercase" to={`${location.pathname}`}>
+      <SafeLink className="lowercase" to={`${location.pathname}`}>
         {path ? (
           path.title !== "Home" ? (
             <>&nbsp;&gt;&nbsp;{path.title}</>
@@ -26,7 +43,7 @@ const PagePathHeader = () => {
         )}
 
         {path ? path.subTitle ? <>&nbsp;(&nbsp;{path.subTitle})</> : "" : ""}
-      </Link>
+      </SafeLink>
     </div>
   );
 };

@@ -64,7 +64,6 @@ httpClient.interceptors.response.use(
           sessionStorage.clear();
           navigate("/login");
         }
-        console.log("refreshErr", refreshErr);
         return Promise.reject(refreshErr); // 실패 시 전파
       }
     }

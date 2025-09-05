@@ -94,7 +94,7 @@ function Groups({
                       }
                     >
                       <div className="self-center  w-1/6 min-w-48">
-                        {group ? group.displayName : ""}
+                        {group ? group.displayName ?? group.name : ""}
                       </div>
                       <div className="text-left justify-self-start w-4/6">
                         {group ? group.email : ""}

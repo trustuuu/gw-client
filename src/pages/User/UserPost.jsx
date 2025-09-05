@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { userFields } from "../../constants/userFields";
 import { useNavigate, useLocation } from "react-router-dom";
 import userApi from "../../api/user-api";
@@ -79,10 +79,10 @@ export default function UserPost() {
     }
   };
 
-  const handleCancel = (event) => {
-    setMode("view");
-    event.preventDefault();
-  };
+  // const handleCancel = (event) => {
+  //   setMode("view");
+  //   event.preventDefault();
+  // };
 
   const handleClose = (event) => {
     navigate(-1);
@@ -114,7 +114,7 @@ export default function UserPost() {
       console.log(err);
     }
   };
-  console.log("user in UserPost", user);
+
   const customClassEdit = "ms-2 text-sm font-medium min-w-80 ";
   const customClass = "ms-2 text-sm font-medium min-w-80 ";
   if (mode === "new" || mode === "edit") {
@@ -141,6 +141,7 @@ export default function UserPost() {
                 />
               ) : Array.isArray(itemState[field.id]) ? (
                 <DivExpand
+                  key={`editDiv${field.id}`}
                   title={`${
                     field.id.charAt(0).toUpperCase() + field.id.slice(1)
                   } ${
@@ -159,6 +160,7 @@ export default function UserPost() {
                 </DivExpand>
               ) : (
                 <DivExpand
+                  key={`editDiv${field.id}`}
                   title={`${
                     field.id.charAt(0).toUpperCase() + field.id.slice(1)
                   } ${
@@ -186,7 +188,7 @@ export default function UserPost() {
               />
             </div>
             <div>
-              <FormAction handleSubmit={handleCancel} text="Cancel" />
+              <FormAction handleSubmit={handleClose} text="Cancel" />
             </div>
           </div>
         </form>
@@ -215,6 +217,7 @@ export default function UserPost() {
                 />
               ) : (
                 <DivExpand
+                  key={`viewDiv${field.id}`}
                   title={`${
                     field.id.charAt(0).toUpperCase() + field.id.slice(1)
                   } ${

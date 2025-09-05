@@ -83,12 +83,12 @@ export const userFields = [
     autoComplete: "addresses",
     isRequired: false,
     placeholder: "addresses",
-    component: ({ mode, addresses, handleChange, propName }) => {
+    component: ({ mode, values, handleChange, propName }) => {
       return (
         <AddressList
           key={propName}
           modeAddress={mode}
-          addresses={addresses}
+          addresses={values}
           handleChange={handleChange}
           propName={propName}
         />
