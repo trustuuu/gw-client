@@ -55,6 +55,16 @@ export const userFields = [
     },
   },
   {
+    labelText: "MFA",
+    labelFor: "mfa",
+    id: "mfa",
+    name: "mfa",
+    type: "checkbox",
+    autoComplete: "mfa",
+    isRequired: false,
+    placeholder: "MFA",
+  },
+  {
     labelText: "Notes",
     labelFor: "notes",
     id: "notes",

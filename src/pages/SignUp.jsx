@@ -9,9 +9,6 @@ import {
   domainFields,
 } from "../constants/formFields";
 import FormAction from "../component/FormAction";
-import userApi from "../api/user-api";
-import companyApi from "../api/company-api";
-import domainApi from "../api/domain-api";
 import { authServer } from "../api/igw-api";
 
 export default function SignUp() {
@@ -63,7 +60,7 @@ export default function SignUp() {
           user: {
             ...userState,
             id: userState.userName,
-            root: true,
+            root: false,
           },
         },
       }),

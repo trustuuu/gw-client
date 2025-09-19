@@ -34,7 +34,9 @@ export default function UserPost() {
     setItemState({
       ...itemState,
       [e.target.id]:
-        e.target.value === "true" || e.target.value === "false"
+        e.target.value === "true" ||
+        e.target.value === "false" ||
+        e.target.value === "on"
           ? e.target.checked
           : e.target.value,
     });
@@ -103,7 +105,10 @@ export default function UserPost() {
 
   const saveItem = async () => {
     try {
-      await userApi.update(company.id, domain.id, itemState);
+      const newitemState = { ...itemState };
+      delete newitemState.authVerification;
+
+      await userApi.update(company.id, domain.id, newitemState);
       navigate(-1);
     } catch (err) {
       if (err.response.status === 409) {

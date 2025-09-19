@@ -95,7 +95,7 @@ function UserPermissionScopePage() {
     setIsLoading(false);
     setModalOpen(false);
   };
-  const onCloseScopeModal = async function () {
+  const onCloseScopeModal = async () => {
     setModalOpen(false);
   };
   const getUserScopes = async () => {

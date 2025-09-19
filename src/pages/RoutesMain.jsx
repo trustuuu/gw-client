@@ -34,6 +34,7 @@ import ApiOverview from "./Api/ApiOverview";
 import ApiUsersGroupsPage from "./Api/ApiUsersGroupsPage";
 import RouteWithTitle from "./RouteWithTitle";
 import ApplicationPermissionScopePage from "./Application/ApplicationPermissionScopePage";
+import MFASettingPage from "./Settings/MFASettingPage";
 
 function RoutesMain() {
   return (
@@ -354,6 +355,14 @@ function RoutesMain() {
         element={
           <RouteWithTitle title="Password Reset Link">
             <PasswordResetFromLinkPage />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/settings-mfa"
+        element={
+          <RouteWithTitle title="MFA" parentPath="settings" subTitle="">
+            <MFASettingPage />
           </RouteWithTitle>
         }
       />

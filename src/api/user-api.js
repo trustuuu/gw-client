@@ -22,6 +22,7 @@ const create = async (companyId, domainId, data) => {
 };
 
 const update = async (companyId, domainId, data) => {
+  console.log("update", data);
   if (Array.isArray(data))
     return await httpClient.put(`${userUrl(companyId, domainId)}`, data);
   else

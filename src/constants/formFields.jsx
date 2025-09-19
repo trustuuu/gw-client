@@ -33,6 +33,16 @@ const signupFields = [
     placeholder: "userName",
   },
   {
+    labelText: "DisplayName",
+    labelFor: "displayName",
+    id: "displayName",
+    name: "displayName",
+    type: "text",
+    autoComplete: "displayName",
+    isRequired: true,
+    placeholder: "displayName",
+  },
+  {
     labelText: "Email",
     labelFor: "email",
     id: "email",
