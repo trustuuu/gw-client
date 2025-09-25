@@ -5,6 +5,7 @@ import TabHeader from "../../component/tabs/TabHeader";
 import TabBody from "../../component/tabs/TabBody";
 import ApplicationPost from "./ApplicationPost";
 import { useAuth } from "../../component/AuthContext";
+import ApplicationOverview from "./ApplicationOverview";
 
 function ApplicationView() {
   const location = useLocation();
@@ -19,12 +20,7 @@ function ApplicationView() {
   const data = [
     {
       title: "Quick Start",
-      content: `ReactJS is an open-source JavaScript library used to create 
-                    user interfaces in a declarative and efficient way. 
-                    It is a component-based front-end library responsible only
-                    for the view layer of a Model View Controller(MVC) architecture. 
-                    Before you start learning ReactJS, we assume that you have knowledge of 
-                    HTML, CSS and JavaScript.`,
+      content: <ApplicationOverview mode="view" application={application} />,
     },
     {
       title: "Settings",
