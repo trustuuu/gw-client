@@ -8,6 +8,7 @@ import ButtonToolbox from "../component/ButtonToolbox";
 import AuthFormHeader from "../component/AuthFormHeader";
 import { httpClient, setHttpClient } from "../api/httpClient";
 import { useCookies } from "react-cookie";
+import { jwtVerify, createRemoteJWKSet } from "jose";
 
 export default function AuthCallback() {
   const location = useLocation();
@@ -71,9 +72,26 @@ export default function AuthCallback() {
   }, []);
 
   const fetchDashboard = async (tokenJson) => {
+    // const id_tokenTemp = JSON.parse(
+    //   atob(tokenJson.data.id_token.split(".")[1])
+    // );
+    // console.log("id_tokenTemp", id_tokenTemp);
+    const JWKS = createRemoteJWKSet(new URL(import.meta.env.VITE_UNIDIR_JWKS));
+
+    const { payload: id_token } = await jwtVerify(
+      tokenJson.data.id_token,
+      JWKS,
+      {
+        issuer: import.meta.env.VITE_UNIDIR_ISSUER,
+        audience: import.meta.env.VITE_UNIDIR_CLIENT_ID,
+      }
+    );
+
+    console.log("tokenJson, payload", id_token);
+    // 디코딩 (단, 검증 없이 decode만 할 경우 주의 필요)
     const clientSession = {
-      companyId: tokenJson.data.client.companyId,
-      domainId: tokenJson.data.client.domain,
+      companyId: id_token.companyId,
+      domainId: id_token.domainId,
     };
     saveClient(clientSession);
     if (tokenJson.data.access_token) {
@@ -83,7 +101,7 @@ export default function AuthCallback() {
       };
       setHttpClient(header);
       const com = await httpClient.get(
-        `${uniDirServer.Endpoint}/companys/${tokenJson.data.user.companyId}`
+        `${uniDirServer.Endpoint}/companys/${id_token.companyId}`
       );
       const companySession = {
         id: com.data.id,
@@ -96,7 +114,7 @@ export default function AuthCallback() {
       //saveRootCompany(com.data);
 
       const dom = await httpClient.get(
-        `${uniDirServer.Endpoint}/companys/${tokenJson.data.client.companyId}/domainNames/${tokenJson.data.user.domainId}`
+        `${uniDirServer.Endpoint}/companys/${id_token.companyId}/domainNames/${id_token.domainId}`
       );
       const domainSession = {
         id: dom.data.id,
@@ -106,11 +124,11 @@ export default function AuthCallback() {
       saveDomain(domainSession);
 
       const userSession = {
-        id: tokenJson.data.user.id,
-        email: tokenJson.data.user.email,
-        companyId: tokenJson.data.user.companyId,
-        domainId: tokenJson.data.user.domainId,
-        root: tokenJson.data.user.root,
+        id: id_token.id,
+        email: id_token.email,
+        companyId: id_token.companyId,
+        domainId: id_token.domainId,
+        root: id_token.root,
         type: com.data.type ? com.data.type : "customer",
       };
       saveUser(userSession);
@@ -121,9 +139,9 @@ export default function AuthCallback() {
       const token_data = {
         companyId: com.data.id,
         domainId: dom.data.id,
-        email: tokenJson.data.user.email,
+        email: id_token.email,
         accessToken: tokenJson.data.access_token,
-        userId: tokenJson.data.user.id,
+        userId: id_token.id,
       };
 
       await httpClient.post(uniDirServer.callback, token_data, {
