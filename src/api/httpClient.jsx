@@ -53,7 +53,7 @@ httpClient.interceptors.response.use(
         } else {
           setAccessToken(newAccessToken);
         }
-        //originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         originalRequest.headers = {
           ...originalRequest.headers,
           Authorization: `Bearer ${newAccessToken}`,

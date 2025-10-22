@@ -35,6 +35,8 @@ import ApiUsersGroupsPage from "./Api/ApiUsersGroupsPage";
 import RouteWithTitle from "./RouteWithTitle";
 import ApplicationPermissionScopePage from "./Application/ApplicationPermissionScopePage";
 import MFASettingPage from "./Settings/MFASettingPage";
+import ChatBotPage from "./ChatBot/ChatBotPage";
+import ErrorBoundary from "../component/ErrorBoundary";
 
 function RoutesMain() {
   return (
@@ -366,6 +368,17 @@ function RoutesMain() {
           </RouteWithTitle>
         }
       />
+      <Route
+        path="/chatbot"
+        element={
+          <RouteWithTitle title="Chatting" parentPath="" subTitle="">
+            <ErrorBoundary>
+              <ChatBotPage />
+            </ErrorBoundary>
+          </RouteWithTitle>
+        }
+      />
+
       <Route
         path="/"
         element={
