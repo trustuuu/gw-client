@@ -11,7 +11,7 @@ const setHttpClient = (header) => {
 const setAccessToken = (token) => {
   //httpClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const header = {
-    "Access-Control-Allow-Origin": "*",
+    //"Access-Control-Allow-Origin": "*",
     Authorization: `Bearer ${token}`,
   };
   httpClient.defaults.headers = header;

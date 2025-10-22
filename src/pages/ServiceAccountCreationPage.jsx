@@ -34,10 +34,10 @@ export default function ServiceAccountCreationPage() {
       });
 
       const apiHeaders = {
-        "Access-Control-Allow-Origin": "*",
+        //"Access-Control-Allow-Origin": "*",
         Authorization: `Bearer ${tokenJson.data.access_token}`,
       };
-      const companys = await axios.get(apiEndpoint, { headers: apiHeaders });
+      //const companys = await axios.get(apiEndpoint, { headers: apiHeaders });
     })();
   });
 

@@ -96,7 +96,7 @@ export default function AuthCallback() {
     saveClient(clientSession);
     if (tokenJson.data.access_token) {
       const header = {
-        "Access-Control-Allow-Origin": "*",
+        //"Access-Control-Allow-Origin": "*",
         Authorization: `Bearer ${tokenJson.data.access_token}`,
       };
       setHttpClient(header);

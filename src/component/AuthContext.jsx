@@ -63,7 +63,7 @@ const AuthContextProvider = ({ children }) => {
   const saveAccessToken = (token) => {
     setAccessToken(token);
     const newHeader = {
-      "Access-Control-Allow-Origin": "*",
+      //"Access-Control-Allow-Origin": "*",
       Authorization: `Bearer ${token}`,
     };
     setHeader(newHeader);
