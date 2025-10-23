@@ -2,22 +2,17 @@ import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import "highlight.js/styles/github-dark.css"; // for code block styling
-
+import "highlight.js/styles/github-dark.css";
 import { httpClient } from "../../api/httpClient";
 
-/** ✅ Collapsible JSON Viewer */
 function JSONViewer({ data }) {
   const [collapsed, setCollapsed] = useState(false);
-
-  const toggle = () => setCollapsed((c) => !c);
-
   return (
     <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 font-mono text-sm text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700 overflow-x-auto">
       <div className="flex items-center justify-between">
         <span className="font-semibold">JSON Data</span>
         <button
-          onClick={toggle}
+          onClick={() => setCollapsed((c) => !c)}
           className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
         >
           {collapsed ? "Expand" : "Collapse"}
@@ -37,39 +32,26 @@ function MarkdownSafe({ content }) {
     return <div className="text-gray-400">⚠️ No content to display</div>;
   }
 
-  try {
-    return (
-      <div className="prose dark:prose-invert max-w-none">
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeHighlight]}
-        >
-          {content}
-        </ReactMarkdown>
-      </div>
-    );
-  } catch (err) {
-    console.error("[MarkdownSafe] render failed:", err);
-    return (
-      <div className="text-red-500 text-sm">
-        ⚠️ Error rendering message: {err.message}
-      </div>
-    );
-  }
+  return (
+    <div className="prose dark:prose-invert max-w-none">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeHighlight]}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
+  );
 }
 
-/** ✅ Unified Chat Message Renderer */
 function ChatMessage({ role, text, time }) {
   let content = null;
-
-  // Auto-detect JSON
   try {
     const json = JSON.parse(text);
     if (typeof json === "object") {
       content = <JSONViewer data={json} />;
     }
   } catch {
-    // not JSON — fallback to markdown
     content = <MarkdownSafe content={String(text ?? "")} />;
   }
 
@@ -91,27 +73,34 @@ function ChatMessage({ role, text, time }) {
   );
 }
 
-/** 💬 Main Chat Box */
-export default function ChatBotPage() {
-  const [messages, setMessages] = useState([]);
+export default function ChatBox() {
+  const [messages, setMessages] = useState(() => {
+    // Load history from localStorage (if any)
+    const saved = localStorage.getItem("chat_history");
+    return saved ? JSON.parse(saved) : [];
+  });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
 
   const scrollToBottom = () =>
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+
   useEffect(scrollToBottom, [messages]);
+
+  // 🔄 Persist messages on change
+  useEffect(() => {
+    localStorage.setItem("chat_history", JSON.stringify(messages));
+  }, [messages]);
 
   async function sendMessage() {
     const text = input.trim();
     if (!text || loading) return;
 
+    const now = new Date().toLocaleTimeString();
     setInput("");
     setLoading(true);
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", text, time: new Date().toLocaleTimeString() },
-    ]);
+    setMessages((prev) => [...prev, { role: "user", text, time: now }]);
 
     try {
       const url = `${import.meta.env.VITE_MCP_HTTP_URL}/chat`;
@@ -129,12 +118,11 @@ export default function ChatBotPage() {
         },
       ]);
     } catch (err) {
-      console.error(err);
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          text: `⚠️ Error: ${err?.message || "Unknown error"}`,
+          text: `⚠️ Error: ${err.message}`,
           time: new Date().toLocaleTimeString(),
         },
       ]);
@@ -143,23 +131,35 @@ export default function ChatBotPage() {
     }
   }
 
+  function clearHistory() {
+    if (window.confirm("Clear all chat history?")) {
+      localStorage.removeItem("chat_history");
+      setMessages([]);
+    }
+  }
+
   return (
     <div className="flex flex-col h-screen max-w-3xl mx-auto bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      <header className="p-4 border-b border-gray-200 dark:border-gray-700 text-center font-semibold">
-        🤖 UniDir Agent Chat
+      {/* Header */}
+      <header className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+        <h1 className="text-lg font-semibold">🤖 UniDir Agent Chat</h1>
+        <button
+          onClick={clearHistory}
+          className="text-xs px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600"
+        >
+          Clear
+        </button>
       </header>
 
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
-        {messages ? (
-          messages.map((m, i) => (
-            <ChatMessage key={i} role={m.role} text={m.text} time={m.time} />
-          ))
-        ) : (
-          <></>
-        )}
+        {messages.map((m, i) => (
+          <ChatMessage key={i} role={m.role} text={m.text} time={m.time} />
+        ))}
         <div ref={chatEndRef} />
       </div>
 
+      {/* Input */}
       <div className="border-t border-gray-200 dark:border-gray-700 p-4 flex gap-2">
         <input
           type="text"
