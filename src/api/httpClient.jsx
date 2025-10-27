@@ -1,23 +1,28 @@
 import axios from "axios";
-import { uniDirServer } from "../api/igw-api";
+import { authServer, uniDirServer } from "../api/igw-api";
 import { navigate } from "../component/navigate";
+import { getDeviceId, getUTC } from "../utils/Utils";
 
 const httpClient = axios.create();
+let serverSessionData = null;
 
-const setHttpClient = (header) => {
-  httpClient.defaults.headers = header;
+const setHttpClient = (headers) => {
+  httpClient.defaults.headers = headers;
 };
 // ✅ 초기 로그인 후 토큰 설정 예시
 const setAccessToken = (token) => {
   //httpClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  const header = {
+  const deviceId = getDeviceId();
+  const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
+  const headers = {
     //"Access-Control-Allow-Origin": "*",
+    [deviceHeader]: deviceId,
     Authorization: `Bearer ${token}`,
   };
-  httpClient.defaults.headers = header;
+  httpClient.defaults.headers = headers;
 };
 
-async function refreshAccessToken() {
+async function gethAccessToken() {
   try {
     const data = { companyId: "company", domainId: "domain", userId: "user" };
     const res = await httpClient.post(uniDirServer.session, data, {
@@ -25,7 +30,16 @@ async function refreshAccessToken() {
       //credentials: "include",
     });
     //res.status(404).json({ error: "Not Found" });
-    return res.data.accessToken;
+    serverSessionData = res.data;
+
+    const expires_in =
+      Math.floor(serverSessionData.accessToken.expires_in) <
+      Math.floor(getUTC() / 1000);
+    if (!expires_in) {
+      return serverSessionData.accessToken;
+    } else {
+      return null;
+    }
   } catch (err) {
     if (err.response.status == 404) {
       sessionStorage.clear();
@@ -34,6 +48,26 @@ async function refreshAccessToken() {
     console.error("🔴 Refresh token failed:", err);
     throw err;
   }
+}
+async function getRefreshToken() {
+  const axiosAuth = axios.create();
+  const deviceId = getDeviceId();
+  const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
+  const headers = {
+    [deviceHeader]: deviceId,
+  };
+  const body = {
+    client_id: import.meta.env.VITE_UNIDIR_CLIENT_ID,
+    grant_type: "refresh_token",
+    refresh_token: serverSessionData.refreshToken,
+  };
+
+  const tokenJson = await axiosAuth.post(authServer.tokenEndpoint, body, {
+    withCredentials: true,
+    headers: headers,
+  });
+
+  return tokenJson.data.access_token;
 }
 
 httpClient.interceptors.response.use(
@@ -45,7 +79,12 @@ httpClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const newAccessToken = await refreshAccessToken();
+        let newAccessToken = await gethAccessToken();
+        if (!newAccessToken) {
+          //await getRefreshToken();
+          newAccessToken = await getRefreshToken();
+        }
+
         if (httpClient.defaults.headers.common) {
           httpClient.defaults.headers.common[
             "Authorization"

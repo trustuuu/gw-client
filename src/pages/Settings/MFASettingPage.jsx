@@ -41,7 +41,6 @@ function MFASettingPage() {
       setOtpResult("Wrong!");
       setBtnLabel("Verify");
     }
-    console.log("confirm.status == 200", confirm.status == 200);
   };
   useEffect(() => {
     loadMfaImage();

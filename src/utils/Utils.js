@@ -156,3 +156,33 @@ export async function generateCodeChallenge(code_verifier) {
     .replace(/=+$/, "");
   return base64String;
 }
+
+export function getDeviceId() {
+  let deviceId = "defalut";
+  try {
+    deviceId = localStorage.getItem(import.meta.env.VITE_DEVICE_ID);
+    if (!deviceId) {
+      deviceId = crypto.randomUUID(); // or use a custom generator
+      localStorage.setItem(import.meta.env.VITE_DEVICE_ID, deviceId);
+    }
+  } catch (error) {
+    if (!deviceId) {
+      deviceId = "default";
+    }
+  }
+
+  return deviceId;
+}
+
+export function getUTC() {
+  const date = new Date();
+  const now_utc = Date.UTC(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+  return now_utc;
+}

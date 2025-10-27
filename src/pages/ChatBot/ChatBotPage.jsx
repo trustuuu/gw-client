@@ -107,7 +107,7 @@ export default function ChatBox() {
       const res = await httpClient.post(`${url}`, {
         message: text,
       });
-      console.log("res.data", res.data);
+      //console.log("res.data", res.data);
       const reply = res?.data?.reply ?? "No response";
       setMessages((prev) => [
         ...prev,

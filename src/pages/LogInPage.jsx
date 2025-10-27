@@ -31,6 +31,7 @@ export default function LogInPage() {
       date.getUTCMinutes(),
       date.getUTCSeconds()
     );
+
     const expires_in =
       Math.floor(cookies.tokenJson.data.expires_in) <
       Math.floor(now_utc / 1000);

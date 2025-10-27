@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { encodeClientCredentials, generateCodeVerifier } from "../utils/Utils";
+import {
+  encodeClientCredentials,
+  generateCodeVerifier,
+  getDeviceId,
+} from "../utils/Utils";
 import axios from "axios";
 import { useAuth } from "../component/AuthContext";
 import { client, authServer, uniDirServer } from "../api/igw-api";
@@ -35,9 +39,11 @@ export default function AuthCallback() {
   };
 
   saveCodeVerifier(null);
-
+  const deviceId = getDeviceId();
+  const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
   const headers = {
     "Content-Type": "application/x-www-form-urlencoded",
+    [deviceHeader]: deviceId,
     Authorization:
       "Basic " +
       encodeClientCredentials(client.client_id, client.client_secret),
@@ -87,7 +93,7 @@ export default function AuthCallback() {
       }
     );
 
-    console.log("tokenJson, payload", id_token);
+    //console.log("tokenJson, payload", id_token);
     // 디코딩 (단, 검증 없이 decode만 할 경우 주의 필요)
     const clientSession = {
       companyId: id_token.companyId,
@@ -95,11 +101,15 @@ export default function AuthCallback() {
     };
     saveClient(clientSession);
     if (tokenJson.data.access_token) {
-      const header = {
+      const deviceId = getDeviceId();
+      const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
+
+      const headers = {
         //"Access-Control-Allow-Origin": "*",
+        [deviceHeader]: deviceId,
         Authorization: `Bearer ${tokenJson.data.access_token}`,
       };
-      setHttpClient(header);
+      setHttpClient(headers);
       const com = await httpClient.get(
         `${uniDirServer.Endpoint}/companys/${id_token.companyId}`
       );
@@ -141,6 +151,8 @@ export default function AuthCallback() {
         domainId: dom.data.id,
         email: id_token.email,
         accessToken: tokenJson.data.access_token,
+        refreshToken: tokenJson.data.refresh_token,
+        idToken: tokenJson.data.id_token,
         userId: id_token.id,
       };
 
