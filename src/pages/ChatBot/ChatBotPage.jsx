@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom"; // ✅ import
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -75,20 +76,21 @@ function ChatMessage({ role, text, time }) {
 
 export default function ChatBox() {
   const [messages, setMessages] = useState(() => {
-    // Load history from localStorage (if any)
     const saved = localStorage.getItem("chat_history");
     return saved ? JSON.parse(saved) : [];
   });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
+  const navigate = useNavigate(); // ✅ initialize router navigation
+
+  const company = "myCompany";
+  const domain = "myDomain";
 
   const scrollToBottom = () =>
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-
   useEffect(scrollToBottom, [messages]);
 
-  // 🔄 Persist messages on change
   useEffect(() => {
     localStorage.setItem("chat_history", JSON.stringify(messages));
   }, [messages]);
@@ -104,11 +106,21 @@ export default function ChatBox() {
 
     try {
       const url = `${import.meta.env.VITE_MCP_HTTP_URL}/chat`;
-      const res = await httpClient.post(`${url}`, {
-        message: text,
-      });
-      //console.log("res.data", res.data);
+      const res = await httpClient.post(url, { message: text });
       const reply = res?.data?.reply ?? "No response";
+      console.log("reply", reply);
+      // 🧠 Example: trigger navigation if AI replies with a special keyword
+      if (reply.includes("path:")) {
+        navigate("/users-new", {
+          state: {
+            company,
+            domain,
+            mode: "new",
+          },
+        });
+        return;
+      }
+
       setMessages((prev) => [
         ...prev,
         {

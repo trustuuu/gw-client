@@ -215,6 +215,15 @@ export const applicationFields = [
         { key: "authorization_code", value: "Authorization Code" },
         { key: "refresh_token", value: "Refresh Token" },
         { key: "client_credentials", value: "Client Credentials" },
+        {
+          key: "urn:ietf:params:oauth:grant-type:device_code",
+          value: "Device Flows",
+        },
+        {
+          key: "urn:ietf:params:oauth:grant-type:token-exchange",
+          value: "Service token delegation",
+        },
+
         // { key: "password", value: "Password" },
         { key: "MFA", value: "MFA" },
         // { key: "passwordless_otp", value: "Passwordless OTP" },

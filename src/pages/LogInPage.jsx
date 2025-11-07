@@ -64,13 +64,12 @@ export default function LogInPage() {
       SameSite: "Strict", // prevent cross-site request
       //httpOnly: true
     });
-    setCookie("Email", formData.email, {
-      Expires: new Date(Date.now() + 3600 * 1000), // expires in 1 hour
-      Secure: true, // cookie will only be sent over HTTPS
-      SameSite: "Strict", // prevent cross-site request
-      //httpOnly: true
-    });
-    //e.preventDefault();
+    // setCookie("Email", formData.email, {
+    //   Expires: new Date(Date.now() + 3600 * 1000), // expires in 1 hour
+    //   Secure: true, // cookie will only be sent over HTTPS
+    //   SameSite: "Strict", // prevent cross-site request
+    //   //httpOnly: true
+    // });
   };
 
   const getExtraDataChange = (remember) => {
@@ -128,7 +127,7 @@ export default function LogInPage() {
           <div className="col-md-12 text-center ">
             <button
               type="submit"
-              className=" btn btn-block mybtn btn-primary tx-tfm"
+              className=" btn btn-block mybtn btn-primary tx-tfm hover:bg-blue-700 transition cursor-pointer"
             >
               Login
             </button>

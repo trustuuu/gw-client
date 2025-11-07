@@ -2,6 +2,7 @@ import igwLogo from "../images/igw_logo.png";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../component/AuthContext";
+import { igwApi } from "../api/igw-api";
 
 const LogOutPage = () => {
   const navigate = useNavigate();
@@ -10,10 +11,12 @@ const LogOutPage = () => {
 
   const signOut = () => {
     //if (!cookies.IsRemember) {
+    igwApi.logoutWithGoodWorks();
     saveUser(null);
     saveClient(null);
     saveCompany(null);
     saveDomain(null);
+    sessionStorage.clear();
     //}
     navigate("/");
   };

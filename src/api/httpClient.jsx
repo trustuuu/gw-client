@@ -9,13 +9,11 @@ let serverSessionData = null;
 const setHttpClient = (headers) => {
   httpClient.defaults.headers = headers;
 };
-// ✅ 초기 로그인 후 토큰 설정 예시
+
 const setAccessToken = (token) => {
-  //httpClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const deviceId = getDeviceId();
   const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
   const headers = {
-    //"Access-Control-Allow-Origin": "*",
     [deviceHeader]: deviceId,
     Authorization: `Bearer ${token}`,
   };
@@ -26,10 +24,8 @@ async function gethAccessToken() {
   try {
     const data = { companyId: "company", domainId: "domain", userId: "user" };
     const res = await httpClient.post(uniDirServer.session, data, {
-      withCredentials: true, // ✅ 쿠키 자동 포함!
-      //credentials: "include",
+      withCredentials: true, //Cookie included !
     });
-    //res.status(404).json({ error: "Not Found" });
     serverSessionData = res.data;
 
     const expires_in =
@@ -71,17 +67,16 @@ async function getRefreshToken() {
 }
 
 httpClient.interceptors.response.use(
-  (response) => response, // 성공 응답 그대로 반환
+  (response) => response, // Success and return repsonse
   async (error) => {
     const originalRequest = error.config;
 
-    // 401 + 아직 retry 안 했으면
+    // 401 + if retry never done.
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
         let newAccessToken = await gethAccessToken();
         if (!newAccessToken) {
-          //await getRefreshToken();
           newAccessToken = await getRefreshToken();
         }
 
@@ -97,13 +92,13 @@ httpClient.interceptors.response.use(
           ...originalRequest.headers,
           Authorization: `Bearer ${newAccessToken}`,
         };
-        return httpClient(originalRequest); // 원래 요청 다시 시도
+        return httpClient(originalRequest); // retry request
       } catch (refreshErr) {
         if (refreshErr.response.status == 404) {
           sessionStorage.clear();
           navigate("/login");
         }
-        return Promise.reject(refreshErr); // 실패 시 전파
+        return Promise.reject(refreshErr); // return fail
       }
     }
 

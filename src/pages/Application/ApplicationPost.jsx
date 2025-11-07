@@ -37,7 +37,6 @@ export default function ApplicationPost(props) {
   const location = useLocation();
   const navigate = useNavigate();
   const [errorText, setError] = useState();
-  //const { company, domain, application } = location.state;
 
   const {
     company: companyState,
@@ -90,10 +89,17 @@ export default function ApplicationPost(props) {
       setItemState({ ...itemState, [targetId]: itemValue });
     } else {
       if (currentItem.valueType === "array") {
-        if (!itemState[targetId].find((i) => i === childValue)) {
+        if (Array.isArray(itemState[targetId])) {
+          if (!itemState[targetId].find((i) => i === childValue)) {
+            setItemState({
+              ...itemState,
+              [targetId]: [...(itemState[targetId] || []), childValue],
+            });
+          }
+        } else {
           setItemState({
             ...itemState,
-            [targetId]: [...(itemState[targetId] || []), childValue],
+            [targetId]: [childValue],
           });
         }
       } else {
@@ -171,7 +177,6 @@ export default function ApplicationPost(props) {
       await applicationApi.purgeCors(company.id, domain.id, application.id);
       setItemState(app.data);
       setMode("view");
-      //navigate("/applications");
     } catch (err) {
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.client_name} already exist!`);
@@ -334,9 +339,6 @@ export default function ApplicationPost(props) {
             <div>
               <FormAction handleSubmit={handleCancel} text="Close" />
             </div>
-            {/* <div>
-              <FormAction handleSubmit={handlePurchCors} text="Push Origins" />
-            </div> */}
           </div>
         )}
       </form>

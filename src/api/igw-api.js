@@ -1,10 +1,11 @@
 import url from "url";
 import forEach from "lodash/forEach";
+import { httpClient } from "./httpClient";
 
 export const igwApi = {
   loginWithiGoodWorks,
+  logoutWithGoodWorks,
 };
-//export default igwApi;
 
 export const client = {
   client_id: import.meta.env.VITE_UNIDIR_CLIENT_ID,
@@ -45,6 +46,22 @@ function loginWithiGoodWorks() {
 
   window.location.href = authorizeUrl;
   return null;
+}
+
+async function logoutWithGoodWorks() {
+  // const inspect = await httpClient.post(
+  //   import.meta.env.VITE_UNIDIR_INTROSPECT,
+  //   { token: access_token },
+  //   {
+  //     withCredentials: true,
+  //   }
+  // );
+  // console.log("inspect", inspect);
+
+  return await httpClient.get(import.meta.env.VITE_UNIDIR_LOGOUT, {
+    withCredentials: true,
+    params: { redirect_url: import.meta.env.VITE_UNIDIR_LOGOUT_REDIRECT },
+  });
 }
 
 const buildUrl = function (base, options, hash) {

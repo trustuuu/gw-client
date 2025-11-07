@@ -20,8 +20,8 @@ export default function UserPost() {
   const navigate = useNavigate();
 
   const [errorText, setError] = useState();
-  const { company, domain, user } = location.state || {};
-  const [mode, setMode] = useState(location.state.mode);
+  const { company, domain, user, mode: initMode } = location.state || {};
+  const [mode, setMode] = useState(initMode ?? "new");
   const [itemState, setItemState] = useState(
     mode == "new" ? fieldsState : user
   );

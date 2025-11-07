@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import TabHeader from "../../component/tabs/TabHeader";
@@ -9,7 +9,14 @@ import UserPermissionScopePage from "./UserPermissionScopePage";
 function UserView() {
   const location = useLocation();
 
-  const { company, domain, user, mode } = location.state || {};
+  const { company, domain, user, mode: initMode } = location.state || {};
+  const [mode, setMode] = useState(initMode ?? "new");
+
+  useEffect(() => {
+    if (!mode) {
+      setMode("new");
+    }
+  }, [mode]);
 
   const data = [
     {

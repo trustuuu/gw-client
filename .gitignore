@@ -35,3 +35,8 @@ dist-ssr
 /node_modules
 /.pnp
 .pnp.js
+
+
+.gitconfig
+.gitconfig-company
+.gitconfig-personal

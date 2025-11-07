@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  encodeClientCredentials,
-  generateCodeVerifier,
-  getDeviceId,
-} from "../utils/Utils";
+import { encodeClientCredentials, getDeviceId } from "../utils/Utils";
 import axios from "axios";
 import { useAuth } from "../component/AuthContext";
 import { client, authServer, uniDirServer } from "../api/igw-api";
@@ -52,10 +48,6 @@ export default function AuthCallback() {
   useEffect(() => {
     (async function () {
       try {
-        // if (cookies.tokenJson) {
-        //   await fetchDashboard(cookies.tokenJson);
-        //   navigate("/dashboard");
-        // } else
         if (code) {
           const axiosAuth = axios.create();
           const tokenJson = await axiosAuth.post(
@@ -78,10 +70,6 @@ export default function AuthCallback() {
   }, []);
 
   const fetchDashboard = async (tokenJson) => {
-    // const id_tokenTemp = JSON.parse(
-    //   atob(tokenJson.data.id_token.split(".")[1])
-    // );
-    // console.log("id_tokenTemp", id_tokenTemp);
     const JWKS = createRemoteJWKSet(new URL(import.meta.env.VITE_UNIDIR_JWKS));
 
     const { payload: id_token } = await jwtVerify(
@@ -93,7 +81,6 @@ export default function AuthCallback() {
       }
     );
 
-    //console.log("tokenJson, payload", id_token);
     // 디코딩 (단, 검증 없이 decode만 할 경우 주의 필요)
     const clientSession = {
       companyId: id_token.companyId,
@@ -105,7 +92,6 @@ export default function AuthCallback() {
       const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
 
       const headers = {
-        //"Access-Control-Allow-Origin": "*",
         [deviceHeader]: deviceId,
         Authorization: `Bearer ${tokenJson.data.access_token}`,
       };
@@ -121,7 +107,6 @@ export default function AuthCallback() {
         type: com.data.type ? com.data.type : "customer",
       };
       saveCompany(companySession);
-      //saveRootCompany(com.data);
 
       const dom = await httpClient.get(
         `${uniDirServer.Endpoint}/companys/${id_token.companyId}/domainNames/${id_token.domainId}`
@@ -145,7 +130,6 @@ export default function AuthCallback() {
 
       setTitle("Logged In.");
 
-      // if (IsRemember) {
       const token_data = {
         companyId: com.data.id,
         domainId: dom.data.id,
@@ -160,7 +144,6 @@ export default function AuthCallback() {
         withCredentials: true,
         headers: headers,
       });
-      // }
     }
   };
   const onClicLogin = function () {
