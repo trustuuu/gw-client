@@ -105,6 +105,7 @@ function GroupPage({
 
   const getGroups = async () => {
     try {
+      setIsLoading(true);
       const condition =
         status === "active"
           ? ["status", "!=", "deleted"]
@@ -125,13 +126,14 @@ function GroupPage({
     } catch (error) {
       if (error.status === 401) navigate("/");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    setIsLoading(true);
+    //setIsLoading(true);
     getGroups();
     setDelBtnLabel(status === "active" ? "Delete" : "Recover");
-    setIsLoading(false);
+    //setIsLoading(false);
   }, [excludes]);
 
   const delSvg = (

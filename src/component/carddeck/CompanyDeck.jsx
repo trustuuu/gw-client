@@ -12,16 +12,29 @@ function CompanyDeck() {
   if (!user) {
     navigate("/");
   }
-  useEffect(() => {
-    setIsLoading(true);
-    companyApi
-      .getTenants(company.id)
-      .then((response) => setCompanies(response.data))
-      .catch((error) => {
-        if (error.status === 401) navigate("/");
-      });
+  const getCompany = async () => {
+    try {
+      setIsLoading(true);
+      const response = await companyApi.getTenants(company.id);
+      setCompanies(response.data);
+    } catch (error) {
+      if (error.status === 401) navigate("/");
+    }
     setIsLoading(false);
+  };
+  useEffect(() => {
+    getCompany();
   }, [user, navigate]);
+
+  const onClickView = (item) => {
+    navigate("/onboarding-company-new", {
+      state: {
+        company: item,
+        mode: "view",
+        parent: company,
+      },
+    });
+  };
 
   return (
     <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm ">
@@ -88,11 +101,11 @@ function CompanyDeck() {
                         <div className="text-left justify-self-start w-4/6">
                           {company ? company.description : ""}
                         </div>
-                        <div className="shrink-0 self-end ml-2 w-1/6">
-                          <a
-                            className="font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400"
-                            href="#0"
-                          >
+                        <div
+                          className="shrink-0 self-end ml-2 w-1/6"
+                          onClick={onClickView.bind(this, company)}
+                        >
+                          <a className="font-medium text-indigo-500 hover:text-yellow-600 hover:cursor-pointer dark:hover:text-yellow-400">
                             View
                           </a>
                         </div>

@@ -93,6 +93,7 @@ function ApiPage({ status }) {
 
   const getApis = async (domId) => {
     try {
+      setIsLoading(true);
       const items = await apiApi.get(company.id, domId, null, null);
 
       setApis(items.data);
@@ -110,13 +111,14 @@ function ApiPage({ status }) {
     } catch (error) {
       if (error.status === 401 || error.status === 404) navigate("/");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    setIsLoading(true);
+    //setIsLoading(true);
     getApis(domainId);
     setDelBtnLabel(status == "active" ? "Delete" : "Recover");
-    setIsLoading(false);
+    //setIsLoading(false);
   }, [domainId]);
 
   // const delSvg = (

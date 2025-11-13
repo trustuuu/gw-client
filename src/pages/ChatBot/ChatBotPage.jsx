@@ -1,45 +1,200 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ import
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { httpClient } from "../../api/httpClient";
 
-function JSONViewer({ data }) {
-  const [collapsed, setCollapsed] = useState(false);
+export function JSONViewer({ data }) {
+  const [collapsed, setCollapsed] = useState(
+    JSON.stringify(data).length > 400 // auto-collapse large data
+  );
+
+  // simple color-highlighting function
+  const syntaxHighlight = (json) => {
+    if (!json) return "";
+    json = JSON.stringify(json, null, 2);
+    return json
+      .replace(
+        /(&|<|>)/g,
+        (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])
+      )
+      .replace(
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+        (match) => {
+          let cls = "text-gray-200";
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) cls = "text-blue-400"; // key
+            else cls = "text-green-400"; // string
+          } else if (/true|false/.test(match)) cls = "text-orange-400";
+          else if (/null/.test(match)) cls = "text-pink-400";
+          else cls = "text-amber-300"; // number
+          return `<span class="${cls}">${match}</span>`;
+        }
+      );
+  };
+
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3 font-mono text-sm text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700 overflow-x-auto">
-      <div className="flex items-center justify-between">
-        <span className="font-semibold">JSON Data</span>
+    <div className="rounded-xl bg-gray-900 text-gray-100 border border-gray-700 shadow-inner">
+      <div className="flex justify-between items-center px-3 py-2 border-b border-gray-700 bg-gray-800 rounded-t-xl">
+        <span className="font-semibold text-sm">🧠 JSON Preview</span>
         <button
           onClick={() => setCollapsed((c) => !c)}
-          className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+          className="text-xs text-blue-400 hover:underline"
         >
           {collapsed ? "Expand" : "Collapse"}
         </button>
       </div>
+
       {!collapsed && (
-        <pre className="mt-2 whitespace-pre-wrap">
-          {JSON.stringify(data, null, 2)}
-        </pre>
+        <pre
+          className="text-sm px-4 py-3 font-mono overflow-x-auto whitespace-pre-wrap"
+          dangerouslySetInnerHTML={{ __html: syntaxHighlight(data) }}
+        />
       )}
     </div>
   );
 }
 
-function MarkdownSafe({ content }) {
+export function MarkdownSafe({ content }) {
   if (!content || typeof content !== "string") {
     return <div className="text-gray-400">⚠️ No content to display</div>;
   }
 
+  let clean = content;
+
+  try {
+    // Handle cases where backend returns JSON-stringified Markdown
+    while (clean.startsWith('"') && clean.endsWith('"')) {
+      clean = JSON.parse(clean);
+    }
+  } catch {
+    /* ignore */
+  }
+
+  // Decode escaped markdown symbols and line breaks
+  clean = clean
+    .replaceAll("\\n", "\n")
+    .replaceAll("\\|", "|")
+    .replaceAll("\\t", "\t")
+    .replaceAll("```", "")
+    .trim();
+
   return (
-    <div className="prose dark:prose-invert max-w-none">
+    <div
+      className="
+        prose prose-sm sm:prose-base dark:prose-invert max-w-none
+        prose-pre:bg-[#0d1117] prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-4 prose-pre:shadow-inner
+        prose-code:text-blue-600 dark:prose-code:text-blue-400 prose-code:font-mono prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+        prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:bg-gray-50 dark:prose-blockquote:bg-gray-800/50 prose-blockquote:rounded
+        prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:underline
+        prose-strong:text-gray-900 dark:prose-strong:text-white
+        prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-h4:text-base prose-p:my-1 prose-li:my-0.5
+      "
+    >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeHighlight]}
+        components={{
+          // 🧱 ChatGPT-style TABLE
+          table: ({ node, ...props }) => (
+            <div className="overflow-x-auto my-4 shadow-sm rounded-lg border border-gray-200 dark:border-gray-700 bg-gradient-to-b from-white to-gray-50 dark:from-gray-800 dark:to-gray-900">
+              <table
+                className="
+                  min-w-full border-collapse text-sm
+                  text-gray-800 dark:text-gray-200
+                  rounded-lg overflow-hidden
+                "
+                {...props}
+              />
+            </div>
+          ),
+          thead: ({ node, ...props }) => (
+            <thead
+              className="
+                bg-gray-100 dark:bg-gray-800
+                border-b border-gray-300 dark:border-gray-700
+              "
+              {...props}
+            />
+          ),
+          th: ({ node, ...props }) => (
+            <th
+              className="
+                px-4 py-2 text-left font-semibold
+                text-gray-700 dark:text-gray-200
+                border-r border-gray-300 dark:border-gray-700
+                whitespace-nowrap
+              "
+              {...props}
+            />
+          ),
+          tbody: ({ node, ...props }) => (
+            <tbody
+              className="divide-y divide-gray-200 dark:divide-gray-700"
+              {...props}
+            />
+          ),
+          tr: ({ node, ...props }) => (
+            <tr
+              className="
+                odd:bg-white even:bg-gray-50 dark:odd:bg-gray-800 dark:even:bg-gray-900
+                hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors
+              "
+              {...props}
+            />
+          ),
+          td: ({ node, ...props }) => (
+            <td
+              className="
+                px-4 py-2 border-t border-gray-200 dark:border-gray-700
+                text-gray-800 dark:text-gray-200
+                align-top whitespace-nowrap
+              "
+              {...props}
+            />
+          ),
+
+          pre: ({ children }) => (
+            <pre className="not-prose bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto">
+              {children}
+            </pre>
+          ),
+          code: ({ inline, children }) =>
+            inline ? (
+              <code className="px-1 rounded bg-gray-100">{children}</code>
+            ) : (
+              <code>{children}</code>
+            ),
+
+          // 🧠 ChatGPT-style LISTS
+          ul: ({ node, ...props }) => (
+            <ul
+              className="list-disc pl-5 space-y-1 marker:text-blue-500 dark:marker:text-blue-400"
+              {...props}
+            />
+          ),
+          ol: ({ node, ...props }) => (
+            <ol
+              className="list-decimal pl-5 space-y-1 marker:text-blue-500 dark:marker:text-blue-400"
+              {...props}
+            />
+          ),
+
+          // 💬 ChatGPT-style BLOCKQUOTE
+          blockquote: ({ node, ...props }) => (
+            <blockquote
+              className="
+                border-l-4 border-blue-500 pl-4 italic
+                bg-gray-50 dark:bg-gray-800/50
+                rounded-md my-3
+              "
+              {...props}
+            />
+          ),
+        }}
       >
-        {content}
+        {clean}
       </ReactMarkdown>
     </div>
   );
@@ -51,24 +206,35 @@ function ChatMessage({ role, text, time }) {
     const json = JSON.parse(text);
     if (typeof json === "object") {
       content = <JSONViewer data={json} />;
+      //console.log("JSONViewer", role, text, content);
     }
   } catch {
     content = <MarkdownSafe content={String(text ?? "")} />;
+    //console.log("MakrDown", role, text, content);
   }
+
+  const isUser = role === "user";
 
   return (
     <div
-      className={`flex ${role === "user" ? "justify-end" : "justify-start"}`}
+      className={`flex ${
+        isUser ? "justify-end" : "justify-start"
+      } transition-all`}
     >
       <div
-        className={`max-w-[80%] rounded-2xl px-4 py-2 shadow ${
-          role === "user"
-            ? "bg-blue-600 text-white rounded-br-none"
-            : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-bl-none"
-        }`}
+        className={`
+          max-w-[80%] rounded-2xl px-4 py-3 shadow-sm
+          ${
+            isUser
+              ? "bg-blue-600 text-white rounded-br-none"
+              : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-bl-none"
+          }
+        `}
       >
         {content}
-        <div className="text-xs text-gray-400 text-right mt-1">{time}</div>
+        <div className="text-xs text-gray-400 dark:text-gray-500 text-right mt-1">
+          {time}
+        </div>
       </div>
     </div>
   );
@@ -82,10 +248,6 @@ export default function ChatBox() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
-  const navigate = useNavigate(); // ✅ initialize router navigation
-
-  const company = "myCompany";
-  const domain = "myDomain";
 
   const scrollToBottom = () =>
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -109,17 +271,6 @@ export default function ChatBox() {
       const res = await httpClient.post(url, { message: text });
       const reply = res?.data?.reply ?? "No response";
       console.log("reply", reply);
-      // 🧠 Example: trigger navigation if AI replies with a special keyword
-      if (reply.includes("path:")) {
-        navigate("/users-new", {
-          state: {
-            company,
-            domain,
-            mode: "new",
-          },
-        });
-        return;
-      }
 
       setMessages((prev) => [
         ...prev,

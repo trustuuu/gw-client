@@ -27,7 +27,8 @@ async function gethAccessToken() {
       withCredentials: true, //Cookie included !
     });
     serverSessionData = res.data;
-
+    console.log("uniDirServer.session", uniDirServer.session);
+    console.log("serverSessionData", serverSessionData);
     const expires_in =
       Math.floor(serverSessionData.accessToken.expires_in) <
       Math.floor(getUTC() / 1000);

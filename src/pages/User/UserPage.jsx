@@ -105,6 +105,7 @@ function UserPage({
 
   const getUsers = async () => {
     try {
+      setIsLoading(true);
       const condition =
         status === "active"
           ? ["status", "!=", "deleted"]
@@ -122,16 +123,15 @@ function UserPage({
           ? Math.ceil(dom.data.length / postsPerPage)
           : pageDisplayCount
       );
+      setIsLoading(false);
     } catch (error) {
       if (error.status === 401) navigate("/");
     }
   };
 
   useEffect(() => {
-    setIsLoading(true);
     getUsers();
     setDelBtnLabel(status === "active" ? "Delete" : "Recover");
-    setIsLoading(false);
   }, [excludes]);
 
   const delSvg = (

@@ -18,6 +18,17 @@ function DomainDeck() {
       });
   }, [domain, navigate]);
 
+  const onClickView = (item) => {
+    navigate("/onboarding-domain-new", {
+      state: {
+        company: company,
+        domain: item,
+        mode: "view",
+        domainCount: domain ? domains.length : 0,
+      },
+    });
+  };
+
   return (
     <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
       <div className="p-3">
@@ -86,11 +97,11 @@ function DomainDeck() {
                           <div className="text-left justify-self-start w-4/6">
                             {domain ? domain.description : ""}
                           </div>
-                          <div className="shrink-0 self-end ml-2 w-1/6">
-                            <a
-                              className="font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400"
-                              href="#0"
-                            >
+                          <div
+                            className="shrink-0 self-end ml-2 w-1/6"
+                            onClick={onClickView.bind(this, domain)}
+                          >
+                            <a className="font-medium text-indigo-500 hover:text-yellow-600 hover:cursor-pointer dark:hover:text-yellow-400">
                               View
                             </a>
                           </div>

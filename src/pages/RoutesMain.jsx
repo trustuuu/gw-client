@@ -37,6 +37,7 @@ import ApplicationPermissionScopePage from "./Application/ApplicationPermissionS
 import MFASettingPage from "./Settings/MFASettingPage";
 import ChatBotPage from "./ChatBot/ChatBotPage";
 import ErrorBoundary from "../component/ErrorBoundary";
+import { RedirectMCPPage } from "./RedirectMCPPage";
 
 function RoutesMain() {
   return (
@@ -53,7 +54,7 @@ function RoutesMain() {
       <Route
         path="/onboarding-companies"
         element={
-          <RouteWithTitle title="Company">
+          <RouteWithTitle title="company">
             <CompanyPage />
           </RouteWithTitle>
         }
@@ -61,7 +62,11 @@ function RoutesMain() {
       <Route
         path="/onboarding-company-new"
         element={
-          <RouteWithTitle title="Company | New">
+          <RouteWithTitle
+            title="view"
+            parentPath="onboarding-companies"
+            subTitle="company"
+          >
             <CompanyPost />
           </RouteWithTitle>
         }
@@ -69,7 +74,7 @@ function RoutesMain() {
       <Route
         path="/onboarding-domains"
         element={
-          <RouteWithTitle title="Domain">
+          <RouteWithTitle title="domain">
             <DomainPage />
           </RouteWithTitle>
         }
@@ -77,7 +82,11 @@ function RoutesMain() {
       <Route
         path="/onboarding-domain-new"
         element={
-          <RouteWithTitle title="Domain | New">
+          <RouteWithTitle
+            title="view"
+            parentPath="onboarding-domains"
+            subTitle="domain"
+          >
             <DomainPost />
           </RouteWithTitle>
         }
@@ -371,9 +380,17 @@ function RoutesMain() {
       <Route
         path="/chatbot"
         element={
+          <RouteWithTitle title="Chatbot" parentPath="dashboard" subTitle="">
+            <ChatBotPage />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/redirect-mcp"
+        element={
           <RouteWithTitle title="Chatting" parentPath="" subTitle="">
             <ErrorBoundary>
-              <ChatBotPage />
+              <RedirectMCPPage />
             </ErrorBoundary>
           </RouteWithTitle>
         }

@@ -112,6 +112,7 @@ function CompanyPage() {
 
   const getCompanies = async () => {
     try {
+      setIsLoading(true);
       const coms = await companyApi.getTenants(company.id);
       setCompanies(coms.data);
       setPageEnd(
@@ -119,6 +120,7 @@ function CompanyPage() {
           ? Math.ceil(coms.data.length / postsPerPage)
           : pageDisplayCount
       );
+      setIsLoading(false);
     } catch (error) {
       if (error.status === 401) navigate("/");
     }
@@ -126,9 +128,7 @@ function CompanyPage() {
 
   useEffect(() => {
     // (async function() {
-    setIsLoading(true);
     getCompanies();
-    setIsLoading(false);
     // })();
   }, [company]);
 

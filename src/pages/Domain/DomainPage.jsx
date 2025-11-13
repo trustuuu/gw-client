@@ -94,6 +94,7 @@ function DomainPage() {
 
   const getDomains = async () => {
     try {
+      setIsLoading(true);
       const dom = await domainApi.get(company.id, null);
       setDomains(dom.data);
       setPageEnd(
@@ -110,12 +111,11 @@ function DomainPage() {
     } catch (error) {
       if (error.status === 401) navigate("/");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    setIsLoading(true);
     getDomains();
-    setIsLoading(false);
   }, []);
 
   const primarySvg = (

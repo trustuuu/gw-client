@@ -93,6 +93,7 @@ function ApplicationPage({ status }) {
 
   const getApplications = async (domId) => {
     try {
+      setIsLoading(true);
       const items = await applicationApi.get(company.id, domId, null, null);
       setApplications(items.data);
       setPageEnd(
@@ -109,13 +110,14 @@ function ApplicationPage({ status }) {
     } catch (error) {
       if (error.status === 401) navigate("/");
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
-    setIsLoading(true);
+    //setIsLoading(true);
     getApplications(domainId);
     setDelBtnLabel(status == "active" ? "Delete" : "Recover");
-    setIsLoading(false);
+    //setIsLoading(false);
   }, [domains]);
 
   return (
