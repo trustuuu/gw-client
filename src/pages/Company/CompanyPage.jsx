@@ -114,11 +114,6 @@ function CompanyPage() {
     try {
       setIsLoading(true);
       const coms = await companyApi.getTenants(company.id);
-      console.log(
-        "company.id, coms.data in getCompanies",
-        company.id,
-        coms.data
-      );
       setCompanies(coms.data);
       setPageEnd(
         Math.ceil(coms.data.length / postsPerPage) < pageDisplayCount

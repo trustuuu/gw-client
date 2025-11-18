@@ -103,7 +103,6 @@ export default function ChatBoxMarkdown() {
       const url = `${import.meta.env.VITE_MCP_HTTP_URL}/chat`;
       const res = await httpClient.post(url, { message: text });
       const reply = res?.data?.reply ?? "No response";
-      console.log("reply", reply);
 
       setMessages((prev) => [
         ...prev,
