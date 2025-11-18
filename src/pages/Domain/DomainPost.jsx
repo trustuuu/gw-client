@@ -67,8 +67,10 @@ export default function Domain() {
   };
 
   const handleCancel = (event) => {
-    navigate(-1);
     event.preventDefault();
+    if (window.history.length) {
+      navigate("/onboarding-domains");
+    } else navigate(-1);
   };
 
   const handleEdit = (event) => {

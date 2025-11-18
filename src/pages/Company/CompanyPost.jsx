@@ -59,8 +59,10 @@ export default function CompanyPost() {
   };
 
   const handleCancel = (event) => {
-    navigate(-1);
     event.preventDefault();
+    if (window.history.length) {
+      navigate("/onboarding-companies");
+    } else navigate(-1);
   };
 
   const handleEdit = async (event) => {

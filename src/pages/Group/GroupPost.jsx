@@ -70,8 +70,10 @@ export default function GroupPost() {
   };
 
   const handleCancel = (event) => {
-    navigate(-1);
     event.preventDefault();
+    if (window.history.length) {
+      navigate("/groups");
+    } else navigate(-1);
   };
 
   const handleEdit = async (event) => {

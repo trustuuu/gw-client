@@ -172,18 +172,23 @@ function DomainPage() {
               </div>
               <div className="grow flex items-center text-sm py-2">
                 <div className="grow flex">
-                  <div className="self-center uppercase w-1/6 min-w-48">
-                    {domain ? domain.name : ""}
+                  <div
+                    className="grow flex"
+                    onClick={onClickView.bind(this, company)}
+                  >
+                    <div className="self-center uppercase w-1/6 min-w-48">
+                      {domain ? domain.name : ""}
+                    </div>
+                    <div className="text-left justify-self-start w-4/6">
+                      {domain ? domain.description : ""}
+                    </div>
                   </div>
-                  <div className="text-left justify-self-start w-4/6">
-                    {domain ? domain.description : ""}
-                  </div>
-                  <div className="shrink-0 self-end ml-2 w-1/6">
-                    <a
-                      className="font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400"
-                      href="#0"
-                    >
-                      View
+                  <div
+                    className="shrink-0 self-end ml-2 w-1/6"
+                    onClick={onClickEdit.bind(this, domain)}
+                  >
+                    <a className="font-medium text-indigo-500 hover:text-yellow-600 hover:cursor-pointer dark:hover:text-yellow-400">
+                      Edit
                     </a>
                   </div>
                 </div>

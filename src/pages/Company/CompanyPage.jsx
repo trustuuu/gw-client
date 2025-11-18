@@ -114,6 +114,11 @@ function CompanyPage() {
     try {
       setIsLoading(true);
       const coms = await companyApi.getTenants(company.id);
+      console.log(
+        "company.id, coms.data in getCompanies",
+        company.id,
+        coms.data
+      );
       setCompanies(coms.data);
       setPageEnd(
         Math.ceil(coms.data.length / postsPerPage) < pageDisplayCount
@@ -159,7 +164,7 @@ function CompanyPage() {
     <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
       <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex">
         {/* <h2 className="font-semibold text-slate-800 dark:text-slate-100">Manage Company</h2> */}
-        {user.type === "reseller" || user.type === "root" ? (
+        {user && (user.type === "reseller" || user.type === "root") ? (
           <>
             <Toolbox
               onClickNew={onClickNew}
@@ -207,18 +212,23 @@ function CompanyPage() {
               </div>
               <div className="grow flex items-center text-sm py-2">
                 <div className="grow flex">
-                  <div className="self-center uppercase w-1/6 min-w-48">
-                    {company ? company.name : ""}
+                  <div
+                    className="grow flex"
+                    onClick={onClickView.bind(this, company)}
+                  >
+                    <div className="self-center uppercase w-1/6 min-w-48">
+                      {company ? company.name : ""}
+                    </div>
+                    <div className="text-left justify-self-start w-4/6">
+                      {company ? company.description : ""}
+                    </div>
                   </div>
-                  <div className="text-left justify-self-start w-4/6">
-                    {company ? company.description : ""}
-                  </div>
-                  <div className="shrink-0 self-end ml-2 w-1/6">
-                    <a
-                      className="font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400"
-                      href="#0"
-                    >
-                      View
+                  <div
+                    className="shrink-0 self-end ml-2 w-1/6"
+                    onClick={onClickEdit.bind(this, company)}
+                  >
+                    <a className="font-medium text-indigo-500 hover:text-yellow-600 hover:cursor-pointer dark:hover:text-yellow-400">
+                      Edit
                     </a>
                   </div>
                 </div>

@@ -87,8 +87,10 @@ export default function UserPost() {
   // };
 
   const handleClose = (event) => {
-    navigate(-1);
     event.preventDefault();
+    if (window.history.length) {
+      navigate("/users");
+    } else navigate(-1);
   };
 
   const handleEdit = async (event) => {

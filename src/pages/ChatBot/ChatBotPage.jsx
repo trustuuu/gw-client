@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { httpClient } from "../../api/httpClient";
+import { visit } from "unist-util-visit";
 
 export function JSONViewer({ data }) {
   const [collapsed, setCollapsed] = useState(
@@ -56,6 +57,47 @@ export function JSONViewer({ data }) {
   );
 }
 
+// Auto-detect raw URLs not formatted in Markdown
+function rehypeLinkify() {
+  return (tree) => {
+    visit(tree, "text", (node, index, parent) => {
+      if (!parent || parent.tagName === "a") return;
+
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const parts = node.value.split(urlRegex);
+
+      if (parts.length === 1) return;
+
+      const newNodes = [];
+
+      parts.forEach((part) => {
+        if (urlRegex.test(part)) {
+          newNodes.push({
+            type: "element",
+            tagName: "a",
+            properties: {
+              href: part,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: [
+                "text-blue-600",
+                "dark:text-blue-400",
+                "underline",
+                "hover:opacity-80",
+              ],
+            },
+            children: [{ type: "text", value: part }],
+          });
+        } else {
+          newNodes.push({ type: "text", value: part });
+        }
+      });
+
+      parent.children.splice(index, 1, ...newNodes);
+    });
+  };
+}
+
 export function MarkdownSafe({ content }) {
   if (!content || typeof content !== "string") {
     return <div className="text-gray-400">⚠️ No content to display</div>;
@@ -94,7 +136,7 @@ export function MarkdownSafe({ content }) {
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight]}
+        rehypePlugins={[rehypeHighlight, rehypeLinkify]}
         components={{
           // 🧱 ChatGPT-style TABLE
           table: ({ node, ...props }) => (
@@ -192,6 +234,15 @@ export function MarkdownSafe({ content }) {
               {...props}
             />
           ),
+          a: ({ href, children }) => (
+            <a
+              href={href}
+              rel="noopener noreferrer"
+              className="text-blue-600 dark:text-blue-400 underline hover:opacity-80"
+            >
+              {children}
+            </a>
+          ),
         }}
       >
         {clean}
@@ -206,11 +257,9 @@ function ChatMessage({ role, text, time }) {
     const json = JSON.parse(text);
     if (typeof json === "object") {
       content = <JSONViewer data={json} />;
-      //console.log("JSONViewer", role, text, content);
     }
   } catch {
     content = <MarkdownSafe content={String(text ?? "")} />;
-    //console.log("MakrDown", role, text, content);
   }
 
   const isUser = role === "user";
@@ -270,7 +319,6 @@ export default function ChatBox() {
       const url = `${import.meta.env.VITE_MCP_HTTP_URL}/chat`;
       const res = await httpClient.post(url, { message: text });
       const reply = res?.data?.reply ?? "No response";
-      console.log("reply", reply);
 
       setMessages((prev) => [
         ...prev,
