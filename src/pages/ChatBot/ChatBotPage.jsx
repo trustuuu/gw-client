@@ -197,17 +197,64 @@ export function MarkdownSafe({ content }) {
             />
           ),
 
-          pre: ({ children }) => (
-            <pre className="not-prose bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto">
-              {children}
-            </pre>
-          ),
-          code: ({ inline, children }) =>
-            inline ? (
-              <code className="px-1 rounded bg-gray-100">{children}</code>
-            ) : (
-              <code>{children}</code>
-            ),
+          pre: ({ children }) => {
+            // extract raw text inside the code block
+            const raw = children?.props?.children || "";
+
+            return (
+              <div className="relative group">
+                {/* Copy button */}
+                <button
+                  onClick={() => navigator.clipboard.writeText(raw)}
+                  className="
+          hidden group-hover:block
+          absolute top-2 right-2
+          text-xs px-2 py-1 rounded
+          bg-gray-700 text-white
+          hover:bg-gray-600
+        "
+                  title="Copy code"
+                >
+                  📋
+                </button>
+
+                <pre className="not-prose bg-gray-900 text-gray-100 p-4 rounded-xl overflow-x-auto">
+                  {children}
+                </pre>
+              </div>
+            );
+          },
+
+          code: ({ inline, children }) => {
+            const raw = children?.toString() || "";
+
+            if (inline) {
+              return (
+                <span className="relative group">
+                  <code className="px-1 rounded bg-gray-100 dark:bg-gray-800">
+                    {children}
+                  </code>
+
+                  {/* inline copy icon */}
+                  <button
+                    onClick={() => navigator.clipboard.writeText(raw)}
+                    className="
+            hidden group-hover:inline-block
+            absolute -top-5 right-0
+            text-xs px-2 py-0.5 rounded
+            bg-gray-700 text-white shadow
+            hover:bg-gray-600
+          "
+                    title="Copy code"
+                  >
+                    📋
+                  </button>
+                </span>
+              );
+            }
+
+            return <code>{children}</code>;
+          },
 
           // 🧠 ChatGPT-style LISTS
           ul: ({ node, ...props }) => (
@@ -288,9 +335,12 @@ function ChatMessage({ index, role, text, time, onDelete }) {
 
     // Long press
     longPressTimer.current = setTimeout(() => {
-      setConfirmOpen(true);
+      // If the bubble is swiped open → don't copy
+      if (swiped) return;
+
+      copyMessage(text);
       navigator.vibrate?.(10);
-    }, 500);
+    }, 600);
   };
 
   const onTouchMove = (e) => {
@@ -354,6 +404,23 @@ function ChatMessage({ index, role, text, time, onDelete }) {
 
   const isUser = role === "user";
 
+  const [copied, setCopied] = useState(false);
+  function copyMessage(rawText) {
+    let output = rawText;
+
+    // If the text is JSON encoded, format it nicely
+    try {
+      const json = JSON.parse(rawText);
+      output = JSON.stringify(json, null, 2);
+    } catch {
+      // not JSON → leave raw
+    }
+
+    navigator.clipboard.writeText(output);
+
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1200);
+  }
   return (
     <div
       className={`group flex ${
@@ -405,6 +472,18 @@ function ChatMessage({ index, role, text, time, onDelete }) {
           🗑
         </button>
 
+        {/* Desktop hover copy icon */}
+        <button
+          onClick={() => copyMessage(text)}
+          className="
+    absolute -top-2 -right-10 hidden group-hover:block
+    bg-gray-500 hover:bg-gray-600 text-white rounded-full
+    p-1 text-xs shadow
+  "
+          title="Copy text"
+        >
+          📋
+        </button>
         {/* Confirm popup */}
         {confirmOpen && (
           <div
@@ -441,7 +520,18 @@ function ChatMessage({ index, role, text, time, onDelete }) {
             </div>
           </div>
         )}
-
+        {copied && (
+          <div
+            className="
+      absolute -top-8 right-0
+      bg-black text-white text-xs
+      px-2 py-1 rounded shadow
+      animate-fadeIn
+    "
+          >
+            Copied!
+          </div>
+        )}
         {content}
         <div className="text-xs text-gray-400 dark:text-gray-500 text-right mt-1">
           {time}
