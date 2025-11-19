@@ -251,7 +251,97 @@ export function MarkdownSafe({ content }) {
   );
 }
 
-function ChatMessage({ role, text, time }) {
+function ChatMessage({ index, role, text, time, onDelete }) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [swiped, setSwiped] = useState(false); // bubble slid left
+  const ref = useRef(null);
+  const longPressTimer = useRef(null);
+
+  const touchStartX = useRef(0);
+  const touchCurrentX = useRef(0);
+  const touching = useRef(false);
+
+  /* -----------------------------
+     Close popover on click outside
+  ----------------------------- */
+  useEffect(() => {
+    function outside(e) {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setConfirmOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", outside);
+    document.addEventListener("touchstart", outside);
+    return () => {
+      document.removeEventListener("mousedown", outside);
+      document.removeEventListener("touchstart", outside);
+    };
+  }, []);
+
+  /* -----------------------------
+     Touch handlers for swipe + long press
+  ----------------------------- */
+  const onTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchCurrentX.current = touchStartX.current;
+    touching.current = true;
+
+    // Long press
+    longPressTimer.current = setTimeout(() => {
+      setConfirmOpen(true);
+      navigator.vibrate?.(10);
+    }, 500);
+  };
+
+  const onTouchMove = (e) => {
+    touchCurrentX.current = e.touches[0].clientX;
+    const diffX = touchCurrentX.current - touchStartX.current;
+
+    // Cancel long press if finger moves
+    if (Math.abs(diffX) > 10) {
+      clearTimeout(longPressTimer.current);
+    }
+
+    // Swipe left (show delete)
+    if (diffX < 0) {
+      const translate = Math.max(diffX, -80); // limit to -80px
+      ref.current.style.transform = `translateX(${translate}px)`;
+    }
+
+    // Swipe right (close)
+    if (diffX > 0 && swiped) {
+      const translate = Math.min(-80 + diffX, 0);
+      ref.current.style.transform = `translateX(${translate}px)`;
+    }
+  };
+
+  const onTouchEnd = () => {
+    touching.current = false;
+    clearTimeout(longPressTimer.current);
+
+    const diff = touchCurrentX.current - touchStartX.current;
+
+    // Swipe left threshold
+    if (diff < -40) {
+      setSwiped(true);
+      ref.current.style.transform = "translateX(-80px)";
+      return;
+    }
+
+    // Swipe right threshold (close)
+    if (diff > 40) {
+      setSwiped(false);
+      ref.current.style.transform = "translateX(0px)";
+      return;
+    }
+
+    // Not enough motion → reset
+    if (!swiped) ref.current.style.transform = "translateX(0px)";
+  };
+
+  /* -----------------------------
+     Render content
+  ----------------------------- */
   let content = null;
   try {
     const json = JSON.parse(text);
@@ -266,20 +356,92 @@ function ChatMessage({ role, text, time }) {
 
   return (
     <div
-      className={`flex ${
+      className={`group flex ${
         isUser ? "justify-end" : "justify-start"
-      } transition-all`}
+      } relative py-1`}
     >
+      {/* Delete button sliding behind bubble */}
+      {swiped && (
+        <button
+          onClick={() => {
+            ref.current.style.transform = "translateX(0px)";
+            setSwiped(false);
+            setConfirmOpen(true);
+          }}
+          className="
+            absolute right-0 top-1/2 -translate-y-1/2
+            bg-red-500 text-white px-4 py-2 rounded-lg shadow
+            active:bg-red-600 select-none
+          "
+        >
+          Delete
+        </button>
+      )}
+
+      {/* Bubble */}
       <div
+        ref={ref}
         className={`
-          max-w-[80%] rounded-2xl px-4 py-3 shadow-sm
+          relative max-w-[80%] rounded-2xl px-4 py-3 shadow-sm transition-transform duration-150
           ${
             isUser
               ? "bg-blue-600 text-white rounded-br-none"
               : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-bl-none"
           }
         `}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
+        {/* Desktop hover delete button */}
+        <button
+          onClick={() => setConfirmOpen(true)}
+          className="
+            absolute -top-2 -right-2 hidden group-hover:block
+            bg-red-500 hover:bg-red-600 text-white rounded-full
+            p-1 text-xs shadow
+          "
+        >
+          🗑
+        </button>
+
+        {/* Confirm popup */}
+        {confirmOpen && (
+          <div
+            className="
+              absolute z-50 top-0 right-8
+              bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100
+              border border-gray-300 dark:border-gray-600
+              rounded-lg p-3 shadow-xl w-40 animate-fadeIn
+            "
+          >
+            <div className="text-sm font-medium mb-2">Delete message?</div>
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setConfirmOpen(false)}
+                className="
+                text-xs px-2 py-1 rounded bg-gray-200 dark:bg-gray-600
+                hover:bg-gray-300 dark:hover:bg-gray-500
+              "
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setConfirmOpen(false);
+                  onDelete(index);
+                }}
+                className="
+                  text-xs px-2 py-1 rounded bg-red-500 text-white
+                  hover:bg-red-600
+                "
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
+
         {content}
         <div className="text-xs text-gray-400 dark:text-gray-500 text-right mt-1">
           {time}
@@ -297,6 +459,8 @@ export default function ChatBox() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
+  const containerRef = useRef(null);
+  const messageRefs = useRef({});
 
   const scrollToBottom = () =>
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -342,6 +506,33 @@ export default function ChatBox() {
     }
   }
 
+  function deleteMessage(index) {
+    const container = containerRef.current;
+
+    // next message index
+    const nextIndex = index + 1;
+
+    // find DOM element for next message BEFORE deletion
+    const nextMessageEl = messageRefs.current[nextIndex];
+
+    // Save its top position relative to container
+    let nextOffset = null;
+    if (nextMessageEl && container) {
+      nextOffset = nextMessageEl.offsetTop - container.scrollTop;
+    }
+
+    // Delete message
+    setMessages((prev) => prev.filter((_, i) => i !== index));
+
+    // After DOM updates...
+    setTimeout(() => {
+      const newNextEl = messageRefs.current[index]; // this is now the "shifted" next msg
+      if (newNextEl && container) {
+        container.scrollTop = newNextEl.offsetTop - nextOffset;
+      }
+    }, 0);
+  }
+
   function clearHistory() {
     if (window.confirm("Clear all chat history?")) {
       localStorage.removeItem("chat_history");
@@ -363,9 +554,20 @@ export default function ChatBox() {
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+      <div
+        className="flex-1 overflow-y-auto px-4 py-3 space-y-4"
+        ref={containerRef}
+      >
         {messages.map((m, i) => (
-          <ChatMessage key={i} role={m.role} text={m.text} time={m.time} />
+          <div key={i} ref={(el) => (messageRefs.current[i] = el)}>
+            <ChatMessage
+              index={i}
+              role={m.role}
+              text={m.text}
+              time={m.time}
+              onDelete={deleteMessage}
+            />
+          </div>
         ))}
         <div ref={chatEndRef} />
       </div>
