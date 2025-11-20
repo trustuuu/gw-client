@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
@@ -548,9 +548,40 @@ export default function ChatBox() {
   });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+
   const chatEndRef = useRef(null);
   const containerRef = useRef(null);
   const messageRefs = useRef({});
+  const headerRef = useRef(null);
+  const inputRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  // dynamic height value
+  const [scrollHeight, setScrollHeight] = useState(0);
+
+  // Auto-detect heights with ResizeObserver
+  useLayoutEffect(() => {
+    function computeHeight() {
+      const headerH = headerRef.current?.offsetHeight || 0;
+      const inputH = inputRef.current?.offsetHeight || 0;
+
+      const available = window.innerHeight - headerH - inputH;
+
+      setScrollHeight(available);
+    }
+
+    computeHeight();
+
+    const ro = new ResizeObserver(computeHeight);
+    ro.observe(document.body);
+
+    window.addEventListener("resize", computeHeight);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", computeHeight);
+    };
+  }, []);
 
   const scrollToBottom = () =>
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -631,14 +662,16 @@ export default function ChatBox() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen max-w-6xl mx-auto bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="flex flex-col h-[100dvh] w-full mx-auto bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative">
       {/* Header */}
       <header
+        ref={headerRef}
         className="
-                    p-4 border-b border-gray-200 dark:border-gray-700
-                    flex justify-between items-center
-                    sticky top-0 bg-gray-50 dark:bg-gray-900 z-10
-                  "
+          sticky top-0 z-20
+          p-4 border-b border-gray-200 dark:border-gray-700
+          bg-gray-50 dark:bg-gray-900
+          flex justify-between items-center
+        "
       >
         <h1 className="text-lg font-semibold">🤖 UniDir Agent Chat</h1>
         <button
@@ -651,8 +684,9 @@ export default function ChatBox() {
 
       {/* Messages */}
       <div
-        className="flex-1 overflow-y-auto px-4 py-3 space-y-4 pt-[72px]"
-        ref={containerRef}
+        ref={scrollRef}
+        className="overflow-y-auto px-4 space-y-4"
+        style={{ height: scrollHeight }}
       >
         {messages.map((m, i) => (
           <div key={i} ref={(el) => (messageRefs.current[i] = el)}>

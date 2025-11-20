@@ -67,10 +67,10 @@ function Layout() {
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       ) : null} */}
       {renderSidebar()}
-      <div className="relative flex flex-col flex-1 ">
+      <div className="relative flex flex-col flex-1 min-w-0">
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-        <div className="font-geist px-4 sm:px-6 lg:px-8 w-full max-w-9xl mx-auto overflow-y-auto overflow-x-hidden">
+        <div className="font-geist px-4 w-full flex-1 overflow-y-auto overflow-x-hidden">
           <LoadingWrapper>
             <RoutesMain />
           </LoadingWrapper>
