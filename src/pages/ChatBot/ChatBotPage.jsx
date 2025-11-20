@@ -631,9 +631,15 @@ export default function ChatBox() {
   }
 
   return (
-    <div className="flex flex-col h-screen max-w-3xl mx-auto bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="flex flex-col min-h-screen max-w-6xl mx-auto bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       {/* Header */}
-      <header className="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+      <header
+        className="
+                    p-4 border-b border-gray-200 dark:border-gray-700
+                    flex justify-between items-center
+                    sticky top-0 bg-gray-50 dark:bg-gray-900 z-10
+                  "
+      >
         <h1 className="text-lg font-semibold">🤖 UniDir Agent Chat</h1>
         <button
           onClick={clearHistory}
@@ -645,7 +651,7 @@ export default function ChatBox() {
 
       {/* Messages */}
       <div
-        className="flex-1 overflow-y-auto px-4 py-3 space-y-4"
+        className="flex-1 overflow-y-auto px-4 py-3 space-y-4 pt-[72px]"
         ref={containerRef}
       >
         {messages.map((m, i) => (

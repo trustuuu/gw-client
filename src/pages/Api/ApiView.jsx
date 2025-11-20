@@ -9,6 +9,7 @@ import ApiPermissionScopePage from "./ApiPermissionScopePage";
 import ApiAppRolePage from "./ApiAppRolePage";
 import { useAuth } from "../../component/AuthContext";
 import ApiOverview from "./ApiOverview";
+import ApiUsersGroupsPage from "./ApiUsersGroupsPage";
 
 function ApiView() {
   const location = useLocation();
@@ -39,8 +40,9 @@ function ApiView() {
       closeButton: false,
     },
     {
-      title: "Domain",
-      content: <DomainPage mode="overview" />,
+      title: "Users and Group",
+
+      content: <ApiUsersGroupsPage key="apiAppUsersGroups" mode="overview" />,
       closeButton: false,
     },
   ];

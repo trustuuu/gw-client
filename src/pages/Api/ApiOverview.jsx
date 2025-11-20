@@ -54,7 +54,7 @@ export default function ApiOverview(prop) {
     const el = document.createElement("div");
     el.textContent = msg;
     el.className =
-      "fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm px-3 py-2 rounded shadow z-50";
+      "fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-sm px-3 py-2 rounded shadow z-50";
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 1400);
   };
@@ -95,7 +95,7 @@ export default function ApiOverview(prop) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen">
       <Header apiName={api.name} mode={prop.mode} />
 
       <main className="mx-auto max-w-6xl px-4 pb-24">
@@ -187,22 +187,18 @@ export default function ApiOverview(prop) {
           >
             <div className="space-y-3">
               {api.scopes.length === 0 && (
-                <p className="text-sm text-slate-500">No scopes defined.</p>
+                <p className="text-sm ">No scopes defined.</p>
               )}
               <ul className="space-y-2">
                 {api.scopes.map((s) => (
                   <li
                     key={s.value}
-                    className="flex items-start justify-between gap-3 rounded-md border border-slate-200 bg-white p-3 shadow-sm"
+                    className="flex items-start justify-between gap-3 rounded-md border border-slate-200 p-3 shadow-sm"
                   >
                     <div>
-                      <div className="text-sm font-semibold text-slate-800">
-                        {s.value}
-                      </div>
+                      <div className="text-sm font-semibold ">{s.value}</div>
                       {s.description && (
-                        <div className="text-xs text-slate-500">
-                          {s.description}
-                        </div>
+                        <div className="text-xs ">{s.description}</div>
                       )}
                     </div>
                     {prop.mode != "view" ? (
@@ -268,7 +264,7 @@ export default function ApiOverview(prop) {
                   {api.allowedCorsOrigins.map((o) => (
                     <span
                       key={o}
-                      className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-700"
+                      className="rounded-md border border-slate-200 px-2 py-1 text-xs "
                     >
                       {o}
                     </span>
@@ -289,11 +285,11 @@ export default function ApiOverview(prop) {
               </div>
             ) : (
               <div>
-                <label className="mb-2 block text-xs font-medium text-slate-600">
+                <label className="mb-2 block text-xs font-medium ">
                   Enter one per line or comma‑separated
                 </label>
                 <textarea
-                  className="h-28 w-full resize-y rounded-md border border-slate-300 bg-white p-3 text-sm text-slate-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="h-28 w-full resize-y rounded-md border border-slate-300 p-3 text-sm  shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={corsText}
                   onChange={(e) => setCorsText(e.target.value)}
                 />
@@ -317,11 +313,11 @@ export default function ApiOverview(prop) {
             title="Test Call"
             subtitle="Try an authorization flow against this API"
           >
-            <p className="text-sm text-slate-600">
+            <p className="text-sm ">
               Use your Authorization Server to request an access token with
               audience:
             </p>
-            <code className="mt-2 block overflow-auto rounded-md bg-slate-900 p-3 text-xs text-slate-100">
+            <code className="mt-2 block overflow-auto rounded-md  p-3 text-xs ">
               {`curl --request POST \\
   --url https://your-tenant.example.com/oauth/v1/token \\
   --header 'content-type: application/json' \\
@@ -332,7 +328,7 @@ export default function ApiOverview(prop) {
     "grant_type": "client_credentials"
   }'`}
             </code>
-            <p className="mt-3 text-xs text-slate-500">
+            <p className="mt-3 text-xs">
               For SPA/Native apps, use Authorization Code + PKCE and set{" "}
               <code>audience</code> to this API identifier.
             </p>
@@ -344,7 +340,7 @@ export default function ApiOverview(prop) {
             title="Security Recommendations"
             subtitle="Hardening tips for APIs"
           >
-            <ul className="list-disc space-y-1 pl-6 text-sm text-slate-700">
+            <ul className="list-disc space-y-1 pl-6 text-sm ">
               <li>
                 Prefer <b>RS256</b> over HS256 for token signing.
               </li>
@@ -372,17 +368,15 @@ export default function ApiOverview(prop) {
 
 function Header({ apiName, mode }) {
   return (
-    <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur">
+    <header className="sticky top-0 z-10 border-b border-slate-200 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg  shadow-sm ">
             <span className="text-lg font-semibold">API</span>
           </div>
           <div>
-            <h1 className="text-base font-semibold text-slate-800">
-              API Overview
-            </h1>
-            <p className="text-xs text-slate-500">{apiName}</p>
+            <h1 className="text-base font-semibold">API Overview</h1>
+            <p className="text-xs ">{apiName}</p>
           </div>
         </div>
         {mode != "view" ? (
@@ -400,10 +394,10 @@ function Header({ apiName, mode }) {
 
 function Card({ title, subtitle, children }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-slate-200 p-5 shadow-sm">
       <div className="mb-4">
-        <h2 className="text-sm font-semibold text-slate-800">{title}</h2>
-        {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
+        <h2 className="text-sm font-semibold ">{title}</h2>
+        {subtitle && <p className="text-xs ">{subtitle}</p>}
       </div>
       {children}
     </div>
@@ -413,7 +407,7 @@ function Card({ title, subtitle, children }) {
 function Field({ label, children }) {
   return (
     <div className="mb-4">
-      <div className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">
+      <div className="mb-1 text-xs font-medium uppercase tracking-wide">
         {label}
       </div>
       {children}
@@ -450,11 +444,11 @@ function Button({
 function Toggle({ label, checked, onChange, disabled, mode }) {
   return (
     <label
-      className={`flex items-center justify-between gap-4 rounded-lg border border-slate-200 bg-white p-3 shadow-sm ${
+      className={`flex items-center justify-between gap-4 rounded-lg border border-slate-200 p-3 shadow-sm ${
         disabled ? "opacity-60" : ""
       }`}
     >
-      <span className="text-sm text-slate-700">{label}</span>
+      <span className="text-sm ">{label}</span>
       <button
         type="button"
         onClick={mode != "view" ? () => !disabled && onChange(!checked) : null}
