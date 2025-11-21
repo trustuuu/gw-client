@@ -662,7 +662,7 @@ export default function ChatBox() {
   }
 
   return (
-    <div className="flex flex-col h-[100dvh] w-full mx-auto bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative">
+    <div className="flex flex-col h-[90dvh] w-full mx-auto bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative">
       {/* Header */}
       <header
         ref={headerRef}

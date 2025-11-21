@@ -15,6 +15,7 @@ function Layout() {
   const { user } = useAuth();
   const location = useLocation();
 
+  const isChatRoute = location.pathname.startsWith("/chatbot");
   const renderSidebar = () => {
     if (!user) return null;
     if (location.pathname.startsWith("/apis-")) {
@@ -70,7 +71,11 @@ function Layout() {
       <div className="relative flex flex-col flex-1 min-w-0">
         <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-        <div className="font-geist px-4 w-full flex-1 overflow-y-auto overflow-x-hidden">
+        <div
+          className={`font-geist px-4 w-full flex-1 overflow-y-auto overflow-x-hidden ${
+            isChatRoute ? "overflow-y-hidden" : "overflow-y-auto"
+          }`}
+        >
           <LoadingWrapper>
             <RoutesMain />
           </LoadingWrapper>

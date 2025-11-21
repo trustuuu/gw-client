@@ -25,17 +25,15 @@ It supports **all standard OAuth 2.0 and OpenID Connect flows**, **Machine-to-Ma
   | **Device Authorization**                | For TV/CLI devices with no browser.                           | `/oauth2/device_authorization`, `/oauth2/token` |
   | **Refresh Token**                       | Obtain new access tokens without user re-login.               | `/oauth2/token`                                 |
   | **Token Exchange (RFC 8693)**           | Exchange one token for another (impersonation or delegation). | `/oauth2/token`                                 |
-  | **Implicit (deprecated)**               | For legacy browser apps (not recommended).                    | `/oauth2/authorize`                             |
 
 | Endpoint                   | Purpose                                     |
 | -------------------------- | ------------------------------------------- |
 | `/oauth2/authorize`        | Start authorization (browser redirect flow) |
 | `/oauth2/token`            | Issue tokens for all grant types            |
 | `/oauth2/introspect`       | Validate token metadata                     |
-| `/oauth2/revoke`           | Revoke tokens                               |
+| `/oauth2/revoke`           | Revoke tokens (to be added)                 |
 | `/oauth2/jwks.json`        | Public signing keys                         |
 | `/t/:tenantId/scim/v2/...` | Directory endpoints                         |
-| `/mcp/query`               | AI MCP endpoint for agent queries           |
 
 flowchart TD
 A[User / AI Client] -->|OAuth2 + MCP| B[UniDir OAuth Server]
@@ -66,6 +64,8 @@ E --> F[External APIs / Knowledge / Identity Providers]
   - Built-in **MCP (Model Context Protocol)** adapter for connecting LLM-based agents
   - Agents can query or mutate directory data conversationally
   - Example: _“List all active users in iGoodWorks tenant”_ → structured API response
+  - ![Example](docs/AgentChat.png)
+  - ![Example](docs/AgentChatUser.png)
   <!-- - 🔄 **Event & Automation Hooks**
   - Webhooks, Pub/Sub, and Durable Task support for sync automation
 - 🧱 **Extensible via Plugins**
