@@ -45,8 +45,10 @@ function ApplicationPermissionScopePage({ application: appState }) {
   };
 
   const getApis = async () => {
+    setIsLoading(true);
     const allApis = await apiApi.get(company.id, domain.id, null, null);
     setApis(allApis.data);
+    setIsLoading(false);
   };
   const getApiPermissions = async (api) => {
     setCurrentApi(api);
@@ -87,6 +89,7 @@ function ApplicationPermissionScopePage({ application: appState }) {
   };
 
   const getAppScopes = async () => {
+    setIsLoading(true);
     if (!application || !application.id) return;
 
     const items = await applicationApi.getPermissions(application.id);
@@ -96,6 +99,7 @@ function ApplicationPermissionScopePage({ application: appState }) {
         ? Math.ceil(items.data.length / postsPerPage)
         : pageDisplayCount
     );
+    setIsLoading(false);
   };
 
   const onClickAdd = async function () {
@@ -114,10 +118,8 @@ function ApplicationPermissionScopePage({ application: appState }) {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     getAppScopes();
     getApis();
-    setIsLoading(false);
   }, []);
 
   return (

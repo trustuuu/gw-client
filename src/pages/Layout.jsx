@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import LoadingWrapper from "../component/LoadingWrapper";
 import SidebarApplications from "../component/SidebarApplication";
 import { setNavigate } from "../component/navigate";
+import SidebarUsers from "../component/SidebarUser";
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -18,6 +19,7 @@ function Layout() {
   const isChatRoute = location.pathname.startsWith("/chatbot");
   const renderSidebar = () => {
     if (!user) return null;
+
     if (location.pathname.startsWith("/apis-")) {
       return (
         <SidebarApi sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -25,6 +27,13 @@ function Layout() {
     } else if (location.pathname.startsWith("/applications-")) {
       return (
         <SidebarApplications
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
+      );
+    } else if (location.pathname.startsWith("/users-")) {
+      return (
+        <SidebarUsers
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

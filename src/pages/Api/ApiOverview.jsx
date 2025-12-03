@@ -14,7 +14,7 @@ import apiApi from "../../api/api-api";
 
 export default function ApiOverview(prop) {
   const [api, setApi] = useState({
-    name: prop.api.id, //"My Resource API",
+    name: prop.api.name, //"My Resource API",
     identifier: prop.api.identifier ? prop.api.identifier : "", //"https://api.example.com/",
     signingAlg: prop.api.signingAlgorithm ? prop.api.signingAlgorithm : "", //"RS256",
     accessTokenLifetime: prop.api.tokenExpiration

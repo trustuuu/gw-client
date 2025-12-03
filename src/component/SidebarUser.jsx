@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 
-function SidebarApi({ sidebarOpen, setSidebarOpen }) {
+function SidebarUsers({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { pathname } = location;
@@ -15,11 +15,10 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
   const [sidebarExpanded, setSidebarExpanded] = useState(
     storedSidebarExpanded === null ? false : storedSidebarExpanded === "true"
   );
-  const { api, domain } = useAuth();
-
+  const { activeUser: userAuth, user, domain, company } = useAuth();
   useEffect(() => {
-    if (!api) {
-      navigate("/apis");
+    if (!user) {
+      navigate("/users");
     }
   }, []);
 
@@ -97,7 +96,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
             </svg>
           </button>
           {/* Logo */}
-          {/* <NavLink end to="/" className="block">
+          <NavLink end to="/" className="block">
             <svg width="32" height="32" viewBox="0 0 32 32">
               <defs>
                 <linearGradient
@@ -135,7 +134,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                 fill="url(#logo-b)"
               />
             </svg>
-          </NavLink> */}
+          </NavLink>
         </div>
 
         {/* Links */}
@@ -153,14 +152,13 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                 <div>{domain ? domain.name : ""}</div>
               </span>
               <span className="lg:hidden lg:sidebar-expanded:block 2xl:block">
-                <div>[{api ? api.name : ""}]</div>
+                <div>[{userAuth ? userAuth.displayName : ""}]</div>
               </span>
             </h3>
             <ul className="mt-3 ">
-              {/* Dashboard */}
               <SidebarLinkGroup
                 activecondition={
-                  pathname === "/" || pathname.includes("apis-brief")
+                  pathname === "/" || pathname.includes("users-view")
                 }
               >
                 {(handleClick, open) => {
@@ -169,7 +167,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                       <a
                         href="#0"
                         className={`block truncate transition duration-150 ${
-                          pathname === "/" || pathname.includes("apis-brief")
+                          pathname === "/" || pathname.includes("users-view")
                             ? "text-slate-200 hover:text-slate-200"
                             : "text-slate-700 hover:text-white"
                         }`}
@@ -189,7 +187,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               <path
                                 className={`fill-current ${
                                   pathname === "/" ||
-                                  pathname.includes("apis-brief")
+                                  pathname.includes("users-view")
                                     ? "text-indigo-500"
                                     : "text-slate-400"
                                 }`}
@@ -198,7 +196,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               <path
                                 className={`fill-current ${
                                   pathname === "/" ||
-                                  pathname.includes("apis-brief")
+                                  pathname.includes("users-view")
                                     ? "text-indigo-600"
                                     : "text-slate-600"
                                 }`}
@@ -207,7 +205,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               <path
                                 className={`fill-current ${
                                   pathname === "/" ||
-                                  pathname.includes("apis-brief")
+                                  pathname.includes("users-view")
                                     ? "text-indigo-200"
                                     : "text-slate-400"
                                 }`}
@@ -215,7 +213,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               />
                             </svg>
                             <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                              Quick Start
+                              General
                             </span>
                           </div>
                           {/* Icon */}
@@ -236,7 +234,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/apis-brief"
+                              to="/users-view"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -255,17 +253,14 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                   );
                 }}
               </SidebarLinkGroup>
-              {/* Apis */}
-              <SidebarLinkGroup
-                activecondition={pathname.includes("apis-view-")}
-              >
+              <SidebarLinkGroup activecondition={pathname.includes("users")}>
                 {(handleClick, open) => {
                   return (
                     <React.Fragment>
                       <a
                         href="#0"
-                        className={`block text-slate-200 truncate transition duration-150 ${
-                          pathname.includes("apis-view-")
+                        className={`block truncate transition duration-150 ${
+                          pathname.includes("users")
                             ? "text-slate-200 hover:text-slate-200"
                             : "text-slate-700 hover:text-white"
                         }`}
@@ -329,7 +324,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/apis-view-post"
+                              to="/users-view-setting"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -346,7 +341,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/apis-view-permission-scope"
+                              to="/users-view-permission-scope"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -355,14 +350,14 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               }
                             >
                               <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                Permission
+                                Permission Scopes
                               </span>
                             </NavLink>
                           </li>
-                          <li className="mb-1 last:mb-0">
+                          {/* <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/apis-view-apirole"
+                              to="/ecommerce/orders"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -371,14 +366,14 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               }
                             >
                               <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                App Roles
+                                Sign-in logs
                               </span>
                             </NavLink>
-                          </li>
+                          </li> */}
                           <li className="mb-1 last:mb-0">
                             <NavLink
                               end
-                              to="/apis-view-users-groups"
+                              to="/users-view-external-identity-account"
                               className={({ isActive }) =>
                                 "block transition duration-150 truncate " +
                                 (isActive
@@ -387,7 +382,7 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
                               }
                             >
                               <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                                Users and Groups
+                                External Identity
                               </span>
                             </NavLink>
                           </li>
@@ -427,4 +422,4 @@ function SidebarApi({ sidebarOpen, setSidebarOpen }) {
   );
 }
 
-export default SidebarApi;
+export default SidebarUsers;

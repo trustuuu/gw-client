@@ -114,11 +114,13 @@ function ApplicationPage({ status }) {
   };
 
   useEffect(() => {
-    //setIsLoading(true);
     getApplications(domainId);
     setDelBtnLabel(status == "active" ? "Delete" : "Recover");
-    //setIsLoading(false);
-  }, [domains]);
+  }, []);
+
+  useEffect(() => {
+    if (domainId) getApplications(domainId);
+  }, [domainId]);
 
   return (
     <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">

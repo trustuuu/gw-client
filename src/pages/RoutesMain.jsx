@@ -38,6 +38,11 @@ import MFASettingPage from "./Settings/MFASettingPage";
 import ChatBotPage from "./ChatBot/ChatBotPage";
 import ErrorBoundary from "../component/ErrorBoundary";
 import { RedirectMCPPage } from "./RedirectMCPPage";
+import ApplicationTokenExchangePage from "./Application/ApplicationTokenExchangesPage";
+import ApplicationTokenExchangePost from "./Application/ApplicationTokenExchangePost";
+import UserPermissionScopePage from "./User/UserPermissionScopePage";
+import ExternalIdentityAccountsPage from "./User/ExternalIdentityAccountsPage";
+import ExternalIdentityAccountPost from "./User/ExternalIdentityAccountPost";
 
 function RoutesMain() {
   return (
@@ -119,7 +124,7 @@ function RoutesMain() {
         path="/users-view"
         element={
           <RouteWithTitle title="View" parentPath="users" subTitle="">
-            <UserView />
+            <UserView mode="view" />
           </RouteWithTitle>
         }
       />
@@ -127,7 +132,84 @@ function RoutesMain() {
         path="/users-edit"
         element={
           <RouteWithTitle title="Edit" parentPath="users" subTitle="">
-            <UserView />
+            <UserView mode="edit" />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/users-view-setting"
+        element={
+          <RouteWithTitle title="Properties" parentPath="users" subTitle="">
+            <UserPost mode="view" />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/users-view-permission-scope"
+        element={
+          <RouteWithTitle
+            title="Permission Scope"
+            parentPath="users"
+            subTitle=""
+          >
+            <UserPermissionScopePage key="appPermissionScope" mode="view" />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/users-view-external-identity-account"
+        element={
+          <RouteWithTitle
+            title="External Identity Accounts"
+            parentPath="users"
+            subTitle=""
+          >
+            <ExternalIdentityAccountsPage
+              key="userExternalAccount"
+              mode="view"
+            />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/users-external-account-new"
+        element={
+          <RouteWithTitle
+            title="External Identity Accounts"
+            parentPath="users"
+            subTitle=""
+          >
+            <ExternalIdentityAccountPost key="userExternalAccount" mode="new" />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/users-external-account-view"
+        element={
+          <RouteWithTitle
+            title="External Identity Accounts"
+            parentPath="users"
+            subTitle=""
+          >
+            <ExternalIdentityAccountPost
+              key="userExternalAccount"
+              mode="view"
+            />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/users-external-account-edit"
+        element={
+          <RouteWithTitle
+            title="External Identity Accounts"
+            parentPath="users"
+            subTitle=""
+          >
+            <ExternalIdentityAccountPost
+              key="userExternalAccount"
+              mode="edit"
+            />
           </RouteWithTitle>
         }
       />
@@ -219,6 +301,54 @@ function RoutesMain() {
               key="appPermissionScope"
               mode="edit"
             />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/applications-view-token-exchange"
+        element={
+          <RouteWithTitle
+            title="Token Exchanges"
+            parentPath="applications"
+            subTitle=""
+          >
+            <ApplicationTokenExchangePage key="appTokenExchange" mode="edit" />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/applications-token-exchange-new"
+        element={
+          <RouteWithTitle
+            title="Token Exchanges"
+            parentPath="applications"
+            subTitle=""
+          >
+            <ApplicationTokenExchangePost key="appTokenExchange" mode="new" />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/applications-token-exchange-view"
+        element={
+          <RouteWithTitle
+            title="Token Exchanges"
+            parentPath="applications"
+            subTitle=""
+          >
+            <ApplicationTokenExchangePost key="appTokenExchange" mode="view" />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/applications-token-exchange-edit"
+        element={
+          <RouteWithTitle
+            title="Token Exchanges"
+            parentPath="applications"
+            subTitle=""
+          >
+            <ApplicationTokenExchangePost key="appTokenExchange" mode="edit" />
           </RouteWithTitle>
         }
       />

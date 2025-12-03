@@ -14,7 +14,7 @@ import { useAuth } from "../../component/AuthContext";
 function UserPermissionScopePage() {
   const pageDisplayCount = 10;
   const postDisplayCount = 15;
-  const { isLoading, setIsLoading } = useAuth();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
@@ -22,8 +22,22 @@ function UserPermissionScopePage() {
 
   const location = useLocation();
 
-  const { company, domain, user } = location.state;
+  const {
+    company: companyState,
+    domain: domainState,
+    user: userState,
+  } = location.state || {};
+  const {
+    isLoading,
+    setIsLoading,
+    company: companyAuth,
+    domain: domainAuth,
+    activeUser: userAuth,
+  } = useAuth();
 
+  const user = userState ? userState : userAuth;
+  const domain = domainState ? domainState : domainAuth;
+  const company = companyState ? companyState : companyAuth;
   const [scopes, setScopes] = useState([]);
 
   //const [apiScopes, setApiScopes] = useState([]);
@@ -47,7 +61,7 @@ function UserPermissionScopePage() {
     setCurrentApi(api);
     const allScopes = await apiApi.getPermissions(api.id);
     const nonExistScopes = allScopes.data.filter(
-      (item) => !scopes.map((e) => e.id).includes(`${api.id}#${item.id}`)
+      (item) => !scopes.map((e) => e.id).includes(`${api.name}#${item.id}`)
     );
 
     //setApiScopes(allScopes.data);
@@ -86,7 +100,7 @@ function UserPermissionScopePage() {
       domain.id,
       user.id,
       checkedItems.map((item) => {
-        return { ...item, id: `${currentApi.id}#${item.id}` };
+        return { ...item, id: `${currentApi.name}#${item.id}` };
       })
     );
     setCheckedItems([]);

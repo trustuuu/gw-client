@@ -5,12 +5,28 @@ import TabHeader from "../../component/tabs/TabHeader";
 import TabBody from "../../component/tabs/TabBody";
 import UserPost from "./UserPost";
 import UserPermissionScopePage from "./UserPermissionScopePage";
+import ExternalIdentityAccountsPage from "./ExternalIdentityAccountsPage";
+import { useAuth } from "../../component/AuthContext";
 
-function UserView() {
+function UserView(props) {
   const location = useLocation();
 
-  const { company, domain, user, mode: initMode } = location.state || {};
-  const [mode, setMode] = useState(initMode ?? "new");
+  const {
+    setIsLoading,
+    company: companyAuth,
+    domain: domainAuth,
+    activeUser: userAuth,
+  } = useAuth();
+  const {
+    company: companyState,
+    domain: domainState,
+    user: userState,
+    mode: initMode,
+  } = location.state || {};
+  const [mode, setMode] = useState(initMode ? initMode : props.mode ?? "new");
+  const user = userState ? userState : userAuth;
+  const domain = domainState ? domainState : domainAuth;
+  const company = companyState ? companyState : companyAuth;
 
   useEffect(() => {
     if (!mode) {
@@ -30,6 +46,18 @@ function UserView() {
       title: "Permission Scope",
       content: (
         <UserPermissionScopePage
+          mode={mode}
+          company={company}
+          domain={domain}
+          user={user}
+        />
+      ),
+      closeButton: true,
+    },
+    {
+      title: "External Identity Accounts",
+      content: (
+        <ExternalIdentityAccountsPage
           mode={mode}
           company={company}
           domain={domain}

@@ -45,6 +45,7 @@ const AuthContextProvider = ({ children }) => {
   const [scope, setScope] = useState();
   const [api, setApi] = useState();
   const [application, setApplication] = useState();
+  const [activeUser, setActiveUser] = useState();
 
   const [path, setPath] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -94,6 +95,7 @@ const AuthContextProvider = ({ children }) => {
     saveCodeVerifier: setCodeVerifier,
     setApi,
     setApplication,
+    setActiveUser,
     saveRole: setRole,
     saveScope: setScope,
     setPath,
@@ -101,6 +103,7 @@ const AuthContextProvider = ({ children }) => {
     codeVerifier,
     api,
     application,
+    activeUser,
     role,
     scope,
     path,

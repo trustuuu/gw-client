@@ -61,13 +61,13 @@ E --> F[External APIs / Knowledge / Identity Providers]
 - ⚙️ **SCIM 2.0 Integration**
   - `/scim/v2/Users`, `/scim/v2/Groups`, and enterprise extensions
 - 🤖 **AI Agentic Extension**
+
   - Built-in **MCP (Model Context Protocol)** adapter for connecting LLM-based agents
   - Agents can query or mutate directory data conversationally
   - Example: _“List all active users in iGoodWorks tenant”_ → structured API response
   - ![Example](docs/AgentChat.png)
   - ![Example](docs/AgentChatUser.png)
-  <!-- - 🔄 **Event & Automation Hooks**
-  - Webhooks, Pub/Sub, and Durable Task support for sync automation
+
 - 🧱 **Extensible via Plugins**
   - AI Agent Plugins (TypeScript or Python)
   - External IDP integrations (Azure AD, Okta, Google Workspace) -->
@@ -80,8 +80,53 @@ An **Agentic Directory** means the directory itself can be _queried, reasoned ab
 
 **Example:**
 
-```bash
-User: "Show me all users in the Sales department hired after 2023"
+User: "Show me all users with table format."
 Agent → UniDir:
-  GET /t/igoodworks/scim/v2/Users?filter=department eq "Sales" and startDate gt "2023-01-01"
+
+| ID                                   | Username               | Display Name | Email                      | Status | MFA   |
+| ------------------------------------ | ---------------------- | ------------ | -------------------------- | ------ | ----- |
+| guest01@igoodworks.comc-94ea43eae45a | guest01@igoodworks.com | Guest01      | guest01@igoodworks.com     | new    | false |
+| james.chang                          | james.chang            | James Chang  | james.chang@igoodworks.com | active | false |
+| peter.kim0ee2-4981-b70b-57b412480bc2 | peter.kim              | Peter Kim    | peter.kim@igoodworks.dom   | new    |       |
+| test01@ashurst.com-8b42-97af38ec69a4 | test01@ashurst.com     | Hellotest01  | test01@ashurst.com         | new    | true  |
+
+- url: http://oauth.biocloud.pro/v1/redirect-mcp?targetPage=users
+- List all users.
+
+## Grant Type flow
+
+- **Token Exchange**
+  | Scenario | Example |
+  | -------------------------------- | ------------------------------------------------------------------------------------------------ |
+  | **Backend API → Downstream API** | API A receives a user’s access_token and exchanges it for an access token scoped only for API B. |
+  | **Impersonation (Act-as)** | Admin app exchanges a token to act-as a user. |
+  | **Delegation** | Mobile app exchanges user token into a reduced-scope backend token. |
+  | \*\*JWT → Access Token\*\* | Exchange a third-party JWT into your own OAuth2 access_token. |
+
+- **Realistic JSON Example (Request & Response)**
+
+```
+Request
+
+POST /oauth2/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=urn:ietf:params:oauth:grant-type:token-exchange
+subject_token=eyJhbGciOi...
+subject_token_type=urn:ietf:params:oauth:token-type:access_token
+requested_token_type=urn:ietf:params:oauth:token-type:access_token
+audience=api://service-b
+scope=read:items
+```
+
+```
+Response
+
+{
+  "access_token": "eyJhbGciOi...",
+  "issued_token_type": "urn:ietf:params:oauth:token-type:access_token",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "scope": "read:items"
+}
 ```

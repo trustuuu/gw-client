@@ -23,7 +23,8 @@ const setAccessToken = (token) => {
 async function gethAccessToken() {
   try {
     const data = { companyId: "company", domainId: "domain", userId: "user" };
-    const res = await httpClient.post(uniDirServer.session, data, {
+    const axiosAuth = axios.create();
+    const res = await axiosAuth.post(uniDirServer.session, data, {
       withCredentials: true, //Cookie included !
     });
     serverSessionData = res.data;
@@ -41,7 +42,7 @@ async function gethAccessToken() {
       sessionStorage.clear();
       navigate("/login");
     }
-    console.error("🔴 Refresh token failed:", err);
+    console.error("Get access token failed:", err);
     throw err;
   }
 }
@@ -74,11 +75,14 @@ httpClient.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
+        console.log("getting new token...");
         let newAccessToken = await gethAccessToken();
         if (!newAccessToken) {
+          console.log("getting refresh token...");
           newAccessToken = await getRefreshToken();
         }
 
+        if (newAccessToken) console.log("successfully got new token!");
         if (httpClient.defaults.headers.common) {
           httpClient.defaults.headers.common[
             "Authorization"

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { userFields } from "../../constants/userFields";
 import { useNavigate, useLocation } from "react-router-dom";
 import userApi from "../../api/user-api";
@@ -14,21 +14,35 @@ fields.forEach(
   (field) => (fieldsState[field.id] = field.type === "checkbox" ? false : "")
 );
 
-export default function UserPost() {
-  const { setIsLoading } = useAuth();
+export default function UserPost(props) {
+  const {
+    setIsLoading,
+    setActiveUser,
+    company: companyAuth,
+    domain: domainAuth,
+    activeUser: userAuth,
+  } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   const [errorText, setError] = useState();
-  const { company, domain, user, mode: initMode } = location.state || {};
-  const [mode, setMode] = useState(initMode ?? "new");
+
+  const {
+    company: companyState,
+    domain: domainState,
+    user: userState,
+    mode: initMode,
+  } = location.state || {};
+  const [mode, setMode] = useState(initMode ? initMode : props.mode ?? "new");
+  const user = userState ? userState : userAuth;
+  const domain = domainState ? domainState : domainAuth;
+  const company = companyState ? companyState : companyAuth;
   const [itemState, setItemState] = useState(
     mode == "new" ? fieldsState : user
   );
-
-  // useEffect(()=>{
-  //   setItemState(user);
-  // }, [user])
+  // useEffect(() => {
+  //   setItemState(mode == "new" ? fieldsState : user);
+  // }, [user]);
 
   const handleChange = (e) => {
     setItemState({
@@ -111,8 +125,11 @@ export default function UserPost() {
       delete newitemState.authVerification;
 
       await userApi.update(company.id, domain.id, newitemState);
-      navigate(-1);
+      setActiveUser(newitemState);
+      setMode("view");
+      //navigate(-1);
     } catch (err) {
+      console.log("err", err);
       if (err.response.status === 409) {
         setError(`duplicated error: ${itemState.userName} already exist!`);
       } else {

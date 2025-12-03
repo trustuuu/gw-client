@@ -85,6 +85,65 @@ const removePermissionScopes = async (companyId, domainId, id, data) => {
     console.log(error);
   }
 };
+
+const getExternalIdentityAccounts = async (companyId, domainId, userId) => {
+  return await httpClient.get(
+    `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts`
+  );
+};
+
+const addExternalIdentityAccount = async (
+  companyId,
+  domainId,
+  userId,
+  data
+) => {
+  return await httpClient.post(
+    `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts`,
+    data
+  );
+};
+
+const updateExternalIdentityAccount = async (
+  companyId,
+  domainId,
+  userId,
+  data
+) => {
+  return await httpClient.put(
+    `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts/${
+      data.id
+    }`,
+    data
+  );
+};
+
+const removeExternalIdentityAccounts = async (
+  companyId,
+  domainId,
+  userId,
+  data
+) => {
+  try {
+    if (typeof data === "string")
+      return await httpClient.delete(
+        `${userUrl(
+          companyId,
+          domainId
+        )}/${userId}/ExternalIdentityAccounts/${data}`
+      );
+    else
+      return await httpClient.delete(
+        `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts`,
+        {
+          data: data,
+        }
+      );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const userApi = {
   get,
   getWhere,
@@ -94,6 +153,10 @@ const userApi = {
   getPermissionScopes,
   addPermissionScopes,
   removePermissionScopes,
+  getExternalIdentityAccounts,
+  addExternalIdentityAccount,
+  updateExternalIdentityAccount,
+  removeExternalIdentityAccounts,
   verifyUser,
   resetPassword,
 };

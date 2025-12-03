@@ -19,7 +19,8 @@ function UserPage({
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
-  const { company, domain, path, setPath, setIsLoading } = useAuth();
+  const { company, domain, setActiveUser, path, setPath, setIsLoading } =
+    useAuth();
   const [users, setUsers] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -80,6 +81,7 @@ function UserPage({
   };
 
   const onClickView = (item) => {
+    setActiveUser(item);
     setPath({ ...path, subTitle: item.displayName });
     navigate("/users-view", {
       state: {
