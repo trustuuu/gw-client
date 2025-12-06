@@ -2,15 +2,17 @@ import { useState, useEffect } from "react";
 import { apiFields } from "../../constants/apiFields";
 import { useNavigate, useLocation } from "react-router-dom";
 import apiApi from "../../api/api-api";
-import ItemField from "../../component/ItemField";
 import FormAction from "../../component/FormAction";
-import PanelExpandable from "../../component/PanelExpandable";
 import Stepper from "../../component/Stepper";
 import { generateString } from "../../utils/Utils";
 import { useAuth } from "../../component/AuthContext";
+import DisplayPanel from "../../component/DisplayPanel";
+import { validateFields } from "../../constants/validateFields";
 
 const fields = apiFields;
-const fields_general = fields.filter((a) => a.category === "settings.general");
+const fields_general = fields.filter(
+  (a) => a.category === "settings.general" && a.id !== "domain"
+);
 const fields_token_setting = fields.filter(
   (a) => a.category === "settings.tokenSetting"
 );
@@ -142,18 +144,19 @@ export default function ApiPost(props) {
   const steps = [
     {
       title: "General Settings",
-      page: displayPanel(
+      page: DisplayPanel(
         "General Settings",
-        fields_general.filter((f) => f.id !== "domain"),
+        fields_general,
         api,
         itemState,
         handleChange,
         mode
       ),
+      verify: () => validateFields(itemState, fields_general),
     },
     {
       title: "Token Setting",
-      page: displayPanel(
+      page: DisplayPanel(
         "Token Setting",
         fields_token_setting,
         api,
@@ -161,10 +164,11 @@ export default function ApiPost(props) {
         handleChange,
         mode
       ),
+      verify: () => validateFields(itemState, fields_token_setting),
     },
     {
       title: "RBAC Settings",
-      page: displayPanel(
+      page: DisplayPanel(
         "RBAC Settings",
         fields_rbac,
         api,
@@ -172,10 +176,11 @@ export default function ApiPost(props) {
         handleChange,
         mode
       ),
+      verify: () => validateFields(itemState, fields_rbac),
     },
     {
       title: "Access Settings",
-      page: displayPanel(
+      page: DisplayPanel(
         "Access Settings",
         fields_access,
         api,
@@ -183,6 +188,7 @@ export default function ApiPost(props) {
         handleChange,
         mode
       ),
+      verify: () => validateFields(itemState, fields_access),
     },
   ];
 
@@ -192,12 +198,12 @@ export default function ApiPost(props) {
         <h4 className="text-red-400">{errorText}</h4>
         {mode === "new" ? (
           <div>
-            {/* {displayPanel('Basic Information', fields_basic, api, itemState, handleChange, mode)} */}
+            {/* {DisplayPanel('Basic Information', fields_basic, api, itemState, handleChange, mode)} */}
             <Stepper steps={steps} handleSubmit={handleSubmit} />
           </div>
         ) : (
           <div>
-            {displayPanel(
+            {DisplayPanel(
               "General Settings",
               fields_general.filter((f) => f.id !== "domain"),
               api,
@@ -205,7 +211,7 @@ export default function ApiPost(props) {
               handleChange,
               mode
             )}
-            {displayPanel(
+            {DisplayPanel(
               "Token Setting",
               fields_token_setting,
               api,
@@ -213,7 +219,7 @@ export default function ApiPost(props) {
               handleChange,
               mode
             )}
-            {displayPanel(
+            {DisplayPanel(
               "RBAC Settings",
               fields_rbac,
               api,
@@ -221,7 +227,7 @@ export default function ApiPost(props) {
               handleChange,
               mode
             )}
-            {displayPanel(
+            {DisplayPanel(
               "Access Settings",
               fields_access,
               api,
@@ -259,34 +265,3 @@ export default function ApiPost(props) {
     </div>
   );
 }
-
-const displayPanel = (title, fields, item, itemState, handleChange, mode) => {
-  if (!item) return null;
-  return (
-    <div className="py-6">
-      <PanelExpandable title={title} initExpand={true}>
-        <div className="space-y-4">
-          {fields.map((field) =>
-            (field.hiddenUpdate || field.hiddenUpdate !== undefined) &&
-            mode === "edit" ? (
-              <></>
-            ) : (
-              <ItemField
-                key={field.id}
-                item={item}
-                handleChange={handleChange}
-                value={
-                  field.valueType === "array" && itemState[field.id]
-                    ? itemState[field.id].join("\r\n")
-                    : itemState[field.id]
-                }
-                field={field}
-                mode={mode}
-              />
-            )
-          )}
-        </div>
-      </PanelExpandable>
-    </div>
-  );
-};

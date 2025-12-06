@@ -52,7 +52,19 @@ export default function ItemView({
           placeholder={placeholder}
           className={customClass ? fixedInputClass + customClass : customClass}
         >
-          <option value={Item[id]}>{Item[id]}</option>
+          {/* <option value={Item[id]}>{Item[id]}</option> */}
+          {list
+            .filter((c) => c.key == Item[id])
+            .map((l) => {
+              return (
+                <option
+                  value={l.key}
+                  selected={l.key === Item[id] ? "selected" : ""}
+                >
+                  {l.value}
+                </option>
+              );
+            })}
         </select>
       ) : (
         <></>

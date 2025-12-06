@@ -97,7 +97,7 @@ const domainFields = [
     name: "description",
     type: "text",
     autoComplete: "description",
-    isRequired: true,
+    isRequired: false,
     placeholder: "Description",
   },
   // {
@@ -141,7 +141,7 @@ const companyFields = [
     name: "description",
     type: "text",
     autoComplete: "description",
-    isRequired: true,
+    isRequired: false,
     placeholder: "Description",
   },
   // {

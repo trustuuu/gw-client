@@ -2,15 +2,17 @@ import { useState } from "react";
 import { applicationFields } from "../../constants/applicationFields";
 import { useNavigate, useLocation } from "react-router-dom";
 import applicationApi from "../../api/application-api";
-import ItemField from "../../component/ItemField";
 import FormAction from "../../component/FormAction";
-import PanelExpandable from "../../component/PanelExpandable";
 import Stepper from "../../component/Stepper";
 import { generateString } from "../../utils/Utils";
 import { useAuth } from "../../component/AuthContext";
+import { validateFields } from "../../constants/validateFields";
+import DisplayPanel from "../../component/DisplayPanel";
 
 const fields = applicationFields;
-const fields_basic = fields.filter((a) => a.category === "settings.basic");
+const fields_basic = fields.filter(
+  (a) => a.category === "settings.basic" && a.id !== "domain"
+);
 const fields_settings_properties = fields.filter(
   (a) =>
     a.category === "settings.properties" || a.category === "settings.advanced"
@@ -133,11 +135,14 @@ export default function ApplicationPost(props) {
         companyId: company.id,
         domain: domain.id,
       });
-
+      const validated = validateFields(data, fields);
+      if (validated != "success") {
+        throw new Error(`${validated}`);
+      }
       await applicationApi.create(data);
       navigate("/applications");
     } catch (err) {
-      if (err.response.status === 409) {
+      if (err.response && err.response.status === 409) {
         setError(`duplicated error: ${itemState.client_name} already exist!`);
       } else {
         setError(err.message);
@@ -178,7 +183,7 @@ export default function ApplicationPost(props) {
       setItemState(app.data);
       setMode("view");
     } catch (err) {
-      if (err.response.status === 409) {
+      if (err.response && err.response.status === 409) {
         setError(`duplicated error: ${itemState.client_name} already exist!`);
       } else {
         setError(err.message);
@@ -190,18 +195,19 @@ export default function ApplicationPost(props) {
   const steps = [
     {
       title: "Basic Information",
-      page: displayPanel(
+      page: DisplayPanel(
         "Basic Information",
-        fields_basic.filter((f) => f.id !== "domain"),
+        fields_basic,
         application,
         itemState,
         handleChange,
         mode
       ),
+      verify: () => validateFields(itemState, fields_basic),
     },
     {
       title: "Application Properties",
-      page: displayPanel(
+      page: DisplayPanel(
         "Application Properties",
         fields_settings_properties,
         application,
@@ -209,10 +215,11 @@ export default function ApplicationPost(props) {
         handleChange,
         mode
       ),
+      verify: () => validateFields(itemState, fields_settings_properties),
     },
     {
       title: "Application URIs",
-      page: displayPanel(
+      page: DisplayPanel(
         "Application URIs",
         fields_settings_uris,
         application,
@@ -220,10 +227,11 @@ export default function ApplicationPost(props) {
         handleChange,
         mode
       ),
+      verify: () => validateFields(itemState, fields_settings_uris),
     },
     {
       title: "ID Token",
-      page: displayPanel(
+      page: DisplayPanel(
         "ID Token",
         fields_settings_idToken,
         application,
@@ -231,10 +239,11 @@ export default function ApplicationPost(props) {
         handleChange,
         mode
       ),
+      verify: () => validateFields(itemState, fields_settings_idToken),
     },
     {
       title: "Refresh Tokken Rotation",
-      page: displayPanel(
+      page: DisplayPanel(
         "Refresh Tokken Rotation",
         fields_settings_refreshTokenRotation,
         application,
@@ -242,10 +251,12 @@ export default function ApplicationPost(props) {
         handleChange,
         mode
       ),
+      verify: () =>
+        validateFields(itemState, fields_settings_refreshTokenRotation),
     },
     {
       title: "Refresh Tokken Expiration",
-      page: displayPanel(
+      page: DisplayPanel(
         "Refresh Tokken Expiration",
         fields_settings_refreshTokenExpiration,
         application,
@@ -253,6 +264,8 @@ export default function ApplicationPost(props) {
         handleChange,
         mode
       ),
+      verify: () =>
+        validateFields(itemState, fields_settings_refreshTokenExpiration),
     },
   ];
 
@@ -262,20 +275,20 @@ export default function ApplicationPost(props) {
         <h4 className="text-red-400">{errorText}</h4>
         {mode === "new" ? (
           <div>
-            {/* {displayPanel('Basic Information', fields_basic, application, itemState, handleChange, mode)} */}
+            {/* {DisplayPanel('Basic Information', fields_basic, application, itemState, handleChange, mode)} */}
             <Stepper steps={steps} handleSubmit={handleSubmit} />
           </div>
         ) : (
           <div>
-            {displayPanel(
+            {DisplayPanel(
               "Basic Information",
-              fields_basic.filter((f) => f.id !== "domain"),
+              fields_basic,
               itemState,
               itemState,
               handleChange,
               mode
             )}
-            {displayPanel(
+            {DisplayPanel(
               "Application Properties",
               fields_settings_properties,
               itemState,
@@ -283,7 +296,7 @@ export default function ApplicationPost(props) {
               handleChange,
               mode
             )}
-            {displayPanel(
+            {DisplayPanel(
               "Application URIs",
               fields_settings_uris,
               itemState,
@@ -291,7 +304,7 @@ export default function ApplicationPost(props) {
               handleChange,
               mode
             )}
-            {displayPanel(
+            {DisplayPanel(
               "ID Tokken",
               fields_settings_idToken,
               itemState,
@@ -299,7 +312,7 @@ export default function ApplicationPost(props) {
               handleChange,
               mode
             )}
-            {displayPanel(
+            {DisplayPanel(
               "Refresh Tokken Rotation",
               fields_settings_refreshTokenRotation,
               itemState,
@@ -307,7 +320,7 @@ export default function ApplicationPost(props) {
               handleChange,
               mode
             )}
-            {displayPanel(
+            {DisplayPanel(
               "efresh Tokken Expiration",
               fields_settings_refreshTokenExpiration,
               itemState,
@@ -345,33 +358,3 @@ export default function ApplicationPost(props) {
     </div>
   );
 }
-
-const displayPanel = (title, fields, item, itemState, handleChange, mode) => {
-  return (
-    <PanelExpandable title={title} initExpand={true}>
-      <div className="space-y-4 w-full">
-        {fields.map((field) =>
-          (field.hiddenUpdate || field.hiddenUpdate !== undefined) &&
-          mode === "edit" ? (
-            <></>
-          ) : (
-            <ItemField
-              key={field.name}
-              item={item}
-              handleChange={handleChange}
-              value={
-                field.valueType === "array" &&
-                itemState[field.id] &&
-                Array.isArray(itemState[field.id])
-                  ? itemState[field.id].join("\r\n")
-                  : itemState[field.id]
-              }
-              field={field}
-              mode={mode}
-            />
-          )
-        )}
-      </div>
-    </PanelExpandable>
-  );
-};

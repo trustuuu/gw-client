@@ -66,10 +66,9 @@ export default function ObjectPost({
     setIsLoading(false);
     event.preventDefault();
   };
-
   const customClassEdit = "ms-2 text-sm font-medium min-w-80 ";
   const customClass = "ms-2 text-sm font-medium min-w-80 ";
-  if (itemState === undefined) return <></>;
+  // if (itemState === undefined) return <></>;
   if (mode === "new" || mode === "edit") {
     return (
       <div className="flex justify-center">
@@ -85,7 +84,7 @@ export default function ObjectPost({
                   //company={company}
                   key={field.id}
                   handleChange={handleChange}
-                  value={itemState[field.id]}
+                  value={itemState === undefined ? "" : itemState[field.id]}
                   field={field}
                   customClass={
                     field.customClass ? field.customClass : customClass
@@ -137,13 +136,14 @@ export default function ObjectPost({
           <div className="space-y-1">
             {fields.map((field) =>
               field.hiddenDisplay ||
+              !Item ||
               field.hiddenDisplay !== undefined ? null : (
                 <ItemView
                   Item={Item}
                   //company={company}
                   key={field.id}
                   handleChange={handleChange}
-                  value={itemState[field.id]}
+                  value={itemState === undefined ? "" : itemState[field.id]}
                   field={field}
                   customClass={
                     field.customClass ? field.customClass : customClassEdit

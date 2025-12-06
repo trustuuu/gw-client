@@ -10,6 +10,7 @@ import {
 } from "../constants/formFields";
 import FormAction from "../component/FormAction";
 import { authServer } from "../api/igw-api";
+import { validateFields } from "../constants/validateFields";
 
 export default function SignUp() {
   const [userState, setUserState] = useState({});
@@ -120,9 +121,16 @@ export default function SignUp() {
         mode
       ),
       verify: () => {
-        if (userState.authVerification == userState.confirmPassword)
-          return "success";
-        else return "password is not matched!";
+        // Password match check
+        if (userState.authVerification !== userState.confirmPassword) {
+          return "password is not matched!";
+        }
+
+        // Field validations
+        const fieldError = validateFields(userState, signupFields);
+        if (fieldError) return fieldError;
+
+        return "success";
       },
     },
     {
@@ -135,6 +143,7 @@ export default function SignUp() {
         handleChangeCompany,
         mode
       ),
+      verify: () => validateFields(companyState, companyFields),
     },
     {
       title: "Domain Information",
@@ -146,6 +155,7 @@ export default function SignUp() {
         handleChangeDomain,
         mode
       ),
+      verify: () => validateFields(domainState, domainFields),
     },
   ];
 

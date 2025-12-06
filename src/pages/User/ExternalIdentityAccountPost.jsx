@@ -66,7 +66,8 @@ export default function ExternalIdentityAccountPost() {
 
   const handleCancel = (event) => {
     event.preventDefault();
-    if (window.history.length) {
+    if (event.target.textContent == "Cencel") setMode("view");
+    else if (window.history.length) {
       navigate("/users-view-external-identity-account");
     } else navigate(-1);
   };
@@ -91,7 +92,7 @@ export default function ExternalIdentityAccountPost() {
         user.id,
         itemState
       );
-      navigate(-1);
+      setMode("view"); //navigate(-1);
     } catch (err) {
       if (err.response.status == 409) {
         setError(`duplicated error: ${itemState.name} already exist!`);

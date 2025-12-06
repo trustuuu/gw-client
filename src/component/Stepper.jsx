@@ -11,8 +11,10 @@ const Stepper = ({ steps, handleSubmit }) => {
     "bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
 
   const verifyCurrentPage = (e) => {
+    console.log("verify", steps[currentStep - 1].verify);
     if (steps[currentStep - 1].verify) {
       const result = steps[currentStep - 1].verify();
+      console.log("result", result);
       if (result == "success") {
         setError(null);
       } else {
@@ -21,7 +23,6 @@ const Stepper = ({ steps, handleSubmit }) => {
         return;
       }
     }
-
     if (currentStep === steps.length) {
       handleSubmit(e);
     } else {
@@ -29,6 +30,7 @@ const Stepper = ({ steps, handleSubmit }) => {
       e.preventDefault();
     }
   };
+
   return (
     <>
       <div className="flex justify-between">
@@ -52,7 +54,7 @@ const Stepper = ({ steps, handleSubmit }) => {
           </div>
         ))}
       </div>
-      <div className="w-full mt-4 flex items-center h-[400px] overflow-auto">
+      <div className="w-full mt-4 flex items-start h-[600px] overflow-auto">
         {steps?.map((step, i) => (
           <div className="w-full px-4" id={i}>
             {currentStep - 1 === i && step.page}
@@ -76,6 +78,7 @@ const Stepper = ({ steps, handleSubmit }) => {
         )}
         {!complete && (
           <button
+            type="button"
             className={fixedButtonClass}
             onClick={(e) => verifyCurrentPage(e)}
           >

@@ -11,7 +11,6 @@ export default function Input({
 }) {
   const showItem = "my-5 flex items-center text-pretty";
   const hiddenItem = "my-5 flex items-center invisible";
-
   const {
     labelText,
     labelFor,

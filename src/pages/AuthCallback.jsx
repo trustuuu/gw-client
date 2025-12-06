@@ -66,6 +66,7 @@ export default function AuthCallback() {
       const res = await axios.post(authServer.tokenEndpoint, form_data, {
         withCredentials: true,
         headers,
+        timeout: 15000, // Set a 15-second timeout
       });
 
       return res.data;
@@ -163,7 +164,6 @@ export default function AuthCallback() {
   const callServerCallback = useCallback(async (tokenJson, id_token) => {
     const deviceId = getDeviceId();
     const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
-
     const headers = {
       [deviceHeader]: deviceId,
       Authorization: `Bearer ${tokenJson.access_token}`,
