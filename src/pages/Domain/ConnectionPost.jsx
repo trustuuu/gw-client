@@ -125,7 +125,7 @@ export default function ConnectionPost() {
     try {
       e.preventDefault();
       // 1. Copy the text using the Clipboard API
-      await navigator.clipboard.writeText("teststsetetstestset");
+      await navigator.clipboard.writeText(connection.clientSecret);
 
       // 2. Set the state to 'copied' to show the checkmark
       setIsCopied(true);

@@ -255,6 +255,10 @@ export default function ExternalIdentityAccountPost() {
       );
       //const tokenEndpointGoogle = "https://oauth2.googleapis.com/token";
       const authUrlGoogle = import.meta.env.VITE_AUTH_URL_GOOGLE; //"https://accounts.google.com/o/oauth2/v2/auth";
+      console.log(
+        import.meta.env.VITE_AUTH_URL_GOOGLE,
+        "https://accounts.google.com/o/oauth2/v2/auth"
+      );
       const authUrl = new URL(authUrlGoogle);
       authUrl.searchParams.append("client_id", connection.clientId);
       authUrl.searchParams.append("redirect_uri", connection.redirectUrl);
