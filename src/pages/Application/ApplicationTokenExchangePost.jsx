@@ -11,7 +11,9 @@ import ItemField from "../../component/ItemField";
 const fields = tokenExchangePolicyFields;
 let fieldsState = {};
 fields.forEach(
-  (field) => (fieldsState[field.id] = field.type == "checkbox" ? false : "")
+  (field) =>
+    (fieldsState[field.id] =
+      field.type == "checkbox" ? false : field.default ?? "")
 );
 
 export default function ApplicationTokenExchangePost({ props }) {
@@ -41,7 +43,7 @@ export default function ApplicationTokenExchangePost({ props }) {
     location.state ? location.state.mode : props.mode
   );
   const [itemState, setItemState] = useState(
-    mode == "new" ? { ...fieldsState } : { ...policy }
+    mode == "new" ? { ...fieldsState, clientId: application.id } : { ...policy }
   );
 
   if (!mode) navigate("/applications-view-token-exchange");

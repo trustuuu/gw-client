@@ -16,6 +16,7 @@ function ButtonToolbox({
   return (
     <div className="self-center uppercase">
       <button
+        type="button"
         ref={trigger}
         onClick={clickHandle}
         disabled={disabled}

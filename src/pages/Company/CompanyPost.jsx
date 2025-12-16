@@ -10,7 +10,9 @@ import { useAuth } from "../../component/AuthContext";
 const fields = companyFields;
 let fieldsState = {};
 fields.forEach(
-  (field) => (fieldsState[field.id] = field.type == "checkbox" ? false : "")
+  (field) =>
+    (fieldsState[field.id] =
+      field.type == "checkbox" ? false : field.default ?? "")
 );
 
 export default function CompanyPost() {

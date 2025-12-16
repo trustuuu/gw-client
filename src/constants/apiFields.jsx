@@ -67,6 +67,7 @@ export const apiFields = [
       { key: "RS256", value: "RS256" },
       { key: "HS256", value: "HS256" },
     ],
+    default: "RS256",
     category: "settings.tokenSetting",
   },
   {
@@ -172,6 +173,7 @@ export const apiAppRolesFields = [
       { key: "Applications", value: "Applications" },
       { key: "Both", value: "Both (Users/Groups + Applications" },
     ],
+    default: "UsersGroups",
     category: "settings.access.role",
   },
   {

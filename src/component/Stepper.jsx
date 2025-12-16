@@ -11,10 +11,9 @@ const Stepper = ({ steps, handleSubmit }) => {
     "bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
 
   const verifyCurrentPage = (e) => {
-    console.log("verify", steps[currentStep - 1].verify);
     if (steps[currentStep - 1].verify) {
       const result = steps[currentStep - 1].verify();
-      console.log("result", result);
+
       if (result == "success") {
         setError(null);
       } else {

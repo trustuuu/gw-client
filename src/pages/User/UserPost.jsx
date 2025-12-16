@@ -11,7 +11,9 @@ import DivExpand from "../../component/DivExpand";
 const fields = userFields;
 let fieldsState = {};
 fields.forEach(
-  (field) => (fieldsState[field.id] = field.type === "checkbox" ? false : "")
+  (field) =>
+    (fieldsState[field.id] =
+      field.type == "checkbox" ? false : field.default ?? "")
 );
 
 export default function UserPost(props) {

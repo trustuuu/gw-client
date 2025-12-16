@@ -319,14 +319,14 @@ export default function ApiOverview(prop) {
             </p>
             <code className="mt-2 block overflow-auto rounded-md  p-3 text-xs ">
               {`curl --request POST \\
-  --url https://your-tenant.example.com/oauth/v1/token \\
-  --header 'content-type: application/json' \\
-  --data '{
-    "client_id": "YOUR_CLIENT_ID",
-    "client_secret": "YOUR_CLIENT_SECRET",
-    "audience": "${api.identifier}",
-    "grant_type": "client_credentials"
-  }'`}
+              --url https://your-tenant.example.com/oauth/v1/token \\
+              --header 'content-type: application/json' \\
+              --data '{
+                "client_id": "YOUR_CLIENT_ID",
+                "client_secret": "YOUR_CLIENT_SECRET",
+                "audience": "${api.identifier}",
+                "grant_type": "client_credentials"
+              }'`}
             </code>
             <p className="mt-3 text-xs">
               For SPA/Native apps, use Authorization Code + PKCE and set{" "}

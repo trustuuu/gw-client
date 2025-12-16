@@ -59,6 +59,7 @@ function ApplicationTokenExchangePage({ application: appState }) {
       state: {
         company,
         domain,
+        application,
         mode: "new",
       },
     });

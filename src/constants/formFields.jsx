@@ -1,3 +1,5 @@
+import { ClipboardIcon, CheckIcon } from "@heroicons/react/24/outline";
+
 const loginFields = [
   {
     labelText: "Email address",
@@ -113,6 +115,114 @@ const domainFields = [
   // }
 ];
 
+const connectionFields = [
+  {
+    labelText: "Connection Name",
+    labelFor: "name",
+    id: "name",
+    name: "name",
+    type: "text",
+    autoComplete: "name",
+    isRequired: true,
+    placeholder: "Connection Name",
+  },
+  {
+    labelText: "Description",
+    labelFor: "description",
+    id: "description",
+    name: "description",
+    type: "text",
+    autoComplete: "description",
+    isRequired: false,
+    placeholder: "Description",
+  },
+  {
+    labelText: "Provider",
+    labelFor: "provider",
+    id: "provider",
+    name: "provider",
+    type: "select",
+    autoComplete: "provider",
+    isRequired: true,
+    placeholder: "Provider",
+    list: [
+      { key: "azure", value: "Azure", selected: true },
+      { key: "google", value: "Google" },
+      { key: "okta", value: "Okta" },
+      { key: "custom", value: "Custom" },
+    ],
+    default: "google",
+  },
+  {
+    labelText: "Client Id",
+    labelFor: "clientId",
+    id: "clientId",
+    name: "clientId",
+    type: "text",
+    autoComplete: "clientId",
+    isRequired: true,
+    placeholder: "Client Id",
+  },
+  {
+    labelText: "Client Secret",
+    labelFor: "clientSecret",
+    id: "clientSecret",
+    name: "clientSecret",
+    type: "password",
+    autoComplete: "clientSecret",
+    isRequired: true,
+    placeholder: "Client Secret",
+    component: ({ handleCopyClick, isCopied }) => {
+      return (
+        <div className={"py-4 px-4 "}>
+          <button
+            onClick={handleCopyClick}
+            className={`
+          flex items-center justify-center 
+          py-2 px-4 rounded font-medium transition duration-150 ease-in-out
+          ${
+            isCopied
+              ? "bg-green-500 hover:bg-green-600 text-white"
+              : "bg-blue-500 hover:bg-blue-600 text-white"
+          }
+        `}
+            disabled={isCopied} // Optional: Disable button while checkmark is visible
+          >
+            {isCopied ? (
+              <CheckIcon className="h-5 w-5" /> // Checkmark icon
+            ) : (
+              <ClipboardIcon className="h-5 w-5" /> // Copy icon
+            )}
+
+            <span>{isCopied ? "Copied!" : "Copy"}</span>
+          </button>
+        </div>
+      );
+    },
+  },
+  {
+    labelText: "Scopes",
+    labelFor: "scopes",
+    id: "scopes",
+    name: "scopes",
+    valueType: "array",
+    type: "textarea",
+    autoComplete: "scopes",
+    isRequired: true,
+    placeholder: "Scopes",
+  },
+  {
+    labelText: "Redirect Url",
+    labelFor: "redirectUrl",
+    id: "redirectUrl",
+    name: "redirectUrl",
+    type: "text",
+    autoComplete: "redirectUrl",
+    isRequired: true,
+    placeholder: "Redirect Url",
+  },
+];
+
 const companyFields = [
   {
     labelText: "Company Name",
@@ -169,6 +279,7 @@ const companyFields = [
       { key: "customer", value: "Customer" },
       { key: "reseller", value: "Reseller" },
     ],
+    default: "customer",
     reseller: true,
   },
 ];
@@ -217,4 +328,11 @@ const groupFields = [
 ];
 
 //signingAlgorithm
-export { loginFields, signupFields, domainFields, companyFields, groupFields };
+export {
+  loginFields,
+  signupFields,
+  domainFields,
+  companyFields,
+  groupFields,
+  connectionFields,
+};

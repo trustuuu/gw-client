@@ -10,7 +10,9 @@ import ItemView from "../../component/ItemView";
 const fields = domainFields;
 let fieldsState = {};
 fields.forEach(
-  (field) => (fieldsState[field.id] = field.type == "checkbox" ? false : "")
+  (field) =>
+    (fieldsState[field.id] =
+      field.type == "checkbox" ? false : field.default ?? "")
 );
 
 export default function Domain() {

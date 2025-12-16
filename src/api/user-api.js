@@ -1,5 +1,5 @@
 import { httpClient } from "./httpClient";
-import { uniDirServer } from "./igw-api";
+import { authServer, uniDirServer } from "./igw-api";
 
 const url = `${uniDirServer.Endpoint}/companys`;
 const userUrl = (companyId, domainId) =>
@@ -92,6 +92,20 @@ const getExternalIdentityAccounts = async (companyId, domainId, userId) => {
   );
 };
 
+const getExternalIdentityAccount = async (
+  companyId,
+  domainId,
+  userId,
+  accountId
+) => {
+  return await httpClient.get(
+    `${userUrl(
+      companyId,
+      domainId
+    )}/${userId}/ExternalIdentityAccounts/${accountId}`
+  );
+};
+
 const addExternalIdentityAccount = async (
   companyId,
   domainId,
@@ -116,6 +130,24 @@ const updateExternalIdentityAccount = async (
     }`,
     data
   );
+};
+
+const retrieveExternalIdentityAccountToken = async (
+  companyId,
+  domainId,
+  userId,
+  data
+) => {
+  return await httpClient.post(
+    `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts/${
+      data.id
+    }`,
+    data
+  );
+};
+
+const retrieveExternalIdentityAccountNewToken = async (data) => {
+  return await httpClient.post(authServer.tokenEndpoint, data);
 };
 
 const removeExternalIdentityAccounts = async (
@@ -154,8 +186,11 @@ const userApi = {
   addPermissionScopes,
   removePermissionScopes,
   getExternalIdentityAccounts,
+  getExternalIdentityAccount,
   addExternalIdentityAccount,
   updateExternalIdentityAccount,
+  retrieveExternalIdentityAccountToken,
+  retrieveExternalIdentityAccountNewToken,
   removeExternalIdentityAccounts,
   verifyUser,
   resetPassword,

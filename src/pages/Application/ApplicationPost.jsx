@@ -31,7 +31,9 @@ const fields_settings_refreshTokenExpiration = fields.filter(
 );
 let fieldsState = {};
 fields.forEach(
-  (field) => (fieldsState[field.id] = field.type === "checkbox" ? false : "")
+  (field) =>
+    (fieldsState[field.id] =
+      field.type == "checkbox" ? false : field.default ?? "")
 );
 
 export default function ApplicationPost(props) {

@@ -23,6 +23,7 @@ export const typeFields = [
       { key: "home", value: "Home" },
       { key: "other", value: "Other" },
     ],
+    default: "work",
   },
   {
     labelText: "Value",

@@ -81,6 +81,7 @@ export const applicationFields = [
       { key: "native", value: "Native" },
       { key: "machine", value: "Machine to Machine Applications" },
     ],
+    default: "SPA",
     category: "settings.properties",
   },
   {
@@ -228,6 +229,7 @@ export const applicationFields = [
         { key: "MFA", value: "MFA" },
         // { key: "passwordless_otp", value: "Passwordless OTP" },
       ],
+      default: "authorization_code",
       autoComplete: "grant_types",
       isRequired: true,
       placeholder: "Grant Types",
@@ -245,6 +247,7 @@ export const applicationFields = [
         };
       },
     },
+    default: "authorization_code",
     autoComplete: "grant_types",
     isRequired: true,
     placeholder: "Grant Types",

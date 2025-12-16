@@ -17,7 +17,9 @@ export default function ObjectPost({
   //const fields = addressFields;
   let fieldsState = {};
   fields.forEach(
-    (field) => (fieldsState[field.id] = field.type === "checkbox" ? false : "")
+    (field) =>
+      (fieldsState[field.id] =
+        field.type == "checkbox" ? false : field.default ?? "")
   );
   const { setIsLoading } = useAuth();
 

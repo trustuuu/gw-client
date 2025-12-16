@@ -29,62 +29,175 @@ export const externalIdentityAccountFields = [
     isRequired: true,
     placeholder: "User Id",
   },
-  {
-    labelText: "Provider",
-    labelFor: "provider",
-    id: "provider",
-    name: "provider",
-    type: "select",
-    list: [
-      { key: "google", value: "Google" },
-      { key: "azure", value: "Azure" },
-      { key: "okta", value: "Okta" },
-      {
-        key: "custom",
-        value: "Custom",
-      },
-    ],
-    autoComplete: "provider",
-    isRequired: true,
-    placeholder: "Provider",
-  },
-  //   {
-  //     labelText: "Provider",
-  //     labelFor: "provider",
-  //     id: "provider",
-  //     name: "provider",
-  //     type: "text",
-  //     source: {
-  //       labelText: "Provider",
-  //       labelFor: "provider",
-  //       id: "provider_select",
-  //       parentId: "provider",
-  //       name: "provider_select",
-  //       type: "select",
-  //       list: [
-  //         { key: "google", value: "Google" },
-  //         { key: "azure", value: "Azure" },
-  //         { key: "okta", value: "Okta" },
-  //         {
-  //           key: "custom",
-  //           value: "Custom",
-  //         },
-  //       ],
-  //       autoComplete: "provider",
-  //       isRequired: true,
-  //       placeholder: "Provider",
-  //       handleChange: (handleChange) => {
-  //         return (e) => {
-  //           const itemValue = e.target.value;
-  //           handleChange(e, itemValue);
-  //           return itemValue;
-  //         };
-  //       },
+  // {
+  //   labelText: "Provider",
+  //   labelFor: "provider",
+  //   id: "provider",
+  //   parentId: "connection",
+  //   name: "provider",
+  //   type: "select",
+  //   list: [
+  //     { key: "google", value: "Google" },
+  //     { key: "azure", value: "Azure" },
+  //     { key: "okta", value: "Okta" },
+  //     {
+  //       key: "custom",
+  //       value: "Custom",
   //     },
-  //     autoComplete: "provider",
-  //     isRequired: true,
-  //     placeholder: "Provider",
+  //   ],
+  //   autoComplete: "provider",
+  //   isRequired: true,
+  //   placeholder: "provider",
+  //   handleChange: (handleChange) => {
+  //     return (e) => {
+  //       console.log("e handleChange", e);
+  //       const itemValue = e.target.value;
+  //       console.log("source itemValue handleChange", itemValue);
+  //       handleChange(e, itemValue);
+  //       return itemValue;
+  //     };
   //   },
+  // },
+  {
+    labelText: "",
+    labelFor: "connection",
+    id: "connection",
+    parentId: "connection",
+    name: "connection",
+    type: "select",
+    list: [],
+    default: "google",
+    autoComplete: "connection",
+    isRequired: true,
+    placeholder: "Connection",
+    handleChange: (handleChange) => {
+      return (e) => {
+        const itemValue = e.target.value;
+        handleChange(e, itemValue);
+        return itemValue;
+      };
+    },
+    source: {
+      labelText: "Connection",
+      labelFor: "provider",
+      id: "provider",
+      parentId: "connection",
+      name: "provider",
+      type: "select",
+      list: [
+        { key: "google", value: "Google" },
+        { key: "azure", value: "Azure" },
+        { key: "okta", value: "Okta" },
+        {
+          key: "custom",
+          value: "Custom",
+        },
+      ],
+      autoComplete: "provider",
+      isRequired: true,
+      placeholder: "provider",
+      handleChange: (handleChange) => {
+        return (e) => {
+          const itemValue = e.target.value;
+          handleChange(e, itemValue);
+          return itemValue;
+        };
+      },
+    },
+  },
+  // {
+  //   labelText: "Provider",
+  //   labelFor: "provider",
+  //   id: "provider",
+  //   name: "provider",
+  //   type: "select",
+  //   list: [
+  //     { key: "google", value: "Google" },
+  //     { key: "azure", value: "Azure" },
+  //     { key: "okta", value: "Okta" },
+  //     // {
+  //     //   key: "custom",
+  //     //   value: "Custom",
+  //     // },
+  //   ],
+  //   default: "google",
+  //   autoComplete: "provider",
+  //   isRequired: true,
+  //   placeholder: "Provider",
+  //   handleChange: (handleChange) => {
+  //     return (e) => {
+  //       const itemValue = e.target.value;
+  //       handleChange(e, itemValue);
+  //       return itemValue;
+  //     };
+  //   },
+  //   source: {
+  //     labelText: "Connection",
+  //     labelFor: "connection_select",
+  //     id: "connection_select",
+  //     parentId: "connection",
+  //     name: "connection_select",
+  //     type: "select",
+  //     list: [
+  //       { key: "google", value: "Google" },
+  //       { key: "azure", value: "Azure" },
+  //       { key: "okta", value: "Okta" },
+  //       {
+  //         key: "custom",
+  //         value: "Custom",
+  //       },
+  //     ],
+  //     autoComplete: "connection",
+  //     isRequired: true,
+  //     placeholder: "connection",
+  //     handleChange: (handleChange) => {
+  //       return (e) => {
+  //         const itemValue = e.target.value;
+  //         console.log("itemValue handleChange", itemValue);
+  //         handleChange(e, itemValue);
+  //         return itemValue;
+  //       };
+  //     },
+  //   },
+  // },
+  // {
+  //   labelText: "",
+  //   labelFor: "connection",
+  //   id: "connection",
+  //   name: "connection",
+  //   type: "text",
+  //   source: {
+  //     labelText: "Connection",
+  //     labelFor: "connection_select",
+  //     id: "connection_select",
+  //     parentId: "connection",
+  //     name: "connection_select",
+  //     type: "select",
+  //     list: [
+  //       { key: "google", value: "Google" },
+  //       { key: "azure", value: "Azure" },
+  //       { key: "okta", value: "Okta" },
+  //       {
+  //         key: "custom",
+  //         value: "Custom",
+  //       },
+  //     ],
+  //     autoComplete: "connection",
+  //     isRequired: true,
+  //     placeholder: "connection",
+  //     handleChange: (handleChange) => {
+  //       return (e) => {
+  //         const itemValue = e.target.value;
+  //         console.log("itemValue handleChange", itemValue);
+  //         handleChange(e, itemValue);
+  //         return itemValue;
+  //       };
+  //     },
+  //   },
+  //   autoComplete: "connection",
+  //   isRequired: true,
+  //   placeholder: "connection",
+  // },
 
   {
     labelText: "Provider User Id",
@@ -102,7 +215,7 @@ export const externalIdentityAccountFields = [
     labelFor: "Provider Refresh Token",
     id: "providerRefreshToken",
     name: "providerRefreshToken",
-    type: "text",
+    type: "password",
     autoComplete: "providerRefreshToken",
     isRequired: false,
     placeholder: "Provider Refresh Token",
@@ -112,10 +225,22 @@ export const externalIdentityAccountFields = [
     labelFor: "Provider Access Token",
     id: "providerAccessToken",
     name: "providerAccessToken",
-    type: "text",
+    type: "password",
     autoComplete: "providerAccessToken",
     isRequired: true,
     placeholder: "Provider Access Token",
+    component: ({ mode, handleClick }) => {
+      return mode == "edit" ? (
+        <input
+          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded"
+          type="button"
+          value="Retrieve New Token from External"
+          onClick={handleClick}
+        />
+      ) : (
+        <></>
+      );
+    },
   },
   {
     labelText: "Provider Access Expires At (Seconds)",

@@ -39,7 +39,7 @@ function ApplicationExchanges({
       {/* Apis */}
       <div>
         <header className="text-xs uppercase dark:bg-opacity-50 rounded-sm font-semibold p-2">
-          Exchange Tokens
+          Token Exchange Policies
         </header>
         <ul className={customClass ? customClass : "my-1 overflow-y-auto"}>
           {/* Item */}
@@ -49,7 +49,7 @@ function ApplicationExchanges({
               <div className="grow flex">
                 <div className="self-center uppercase w-1/6 min-w-48">Name</div>
                 <div className="self-center uppercase w-1/6 min-w-48">
-                  Client Id
+                  Target Audience
                 </div>
                 <div className="text-left uppercase justify-self-start w-4/6">
                   Description
@@ -99,7 +99,9 @@ function ApplicationExchanges({
                         {policy ? policy.name : ""}
                       </div>
                       <div className="self-center  w-1/6 min-w-48">
-                        {policy ? policy.clientId : ""}
+                        {policy.allowedTargetAudiences
+                          ? policy.allowedTargetAudiences[0]
+                          : ""}
                       </div>
                       <div className="text-left justify-self-start w-4/6">
                         {policy ? policy.description : ""}

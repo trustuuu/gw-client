@@ -174,7 +174,7 @@ function DomainPage() {
                 <div className="grow flex">
                   <div
                     className="grow flex"
-                    onClick={onClickView.bind(this, company)}
+                    onClick={onClickView.bind(this, domain)}
                   >
                     <div className="self-center uppercase w-1/6 min-w-48">
                       {domain ? domain.name : ""}

@@ -10,8 +10,8 @@ export default function ItemView({
   company,
   reseller,
 }) {
-  const showItem = "my-5 flex items-center text-pretty";
-  const hiddenTiem = "my-5 flex items-center invisible ";
+  const showItem = "flex flex-row w-full items-center p-2 text-pretty";
+  const hiddenItem = "flex flex-row w-full items-center p-2 invisible ";
   const {
     labelText,
     labelFor,
@@ -21,7 +21,6 @@ export default function ItemView({
     isRequired = false,
     placeholder,
     list,
-    component,
   } = field;
   let inputContext = null;
 
@@ -33,11 +32,13 @@ export default function ItemView({
           rows={5}
           id={id}
           name={name}
-          value={value}
+          value={Array.isArray(value) ? value.join("\n") : value}
           onChange={handleChange}
           required={isRequired}
           placeholder={placeholder}
-          className={customClass ? fixedInputClass + customClass : customClass}
+          className={
+            customClass ? fixedInputClass + customClass : fixedInputClass
+          }
         ></textarea>
       );
       break;
@@ -50,7 +51,9 @@ export default function ItemView({
           onChange={handleChange}
           required={isRequired}
           placeholder={placeholder}
-          className={customClass ? fixedInputClass + customClass : customClass}
+          className={
+            customClass ? fixedInputClass + customClass : fixedInputClass
+          }
         >
           {/* <option value={Item[id]}>{Item[id]}</option> */}
           {list
@@ -97,10 +100,14 @@ export default function ItemView({
           name={name}
           type={type}
           required={isRequired}
-          className={customClass ? fixedInputClass + customClass : customClass}
+          className={
+            customClass ? fixedInputClass + customClass : fixedInputClass
+          }
           placeholder={placeholder}
         >
-          {Item[id]}
+          {type === "password"
+            ? "************************************"
+            : Item[id]}
         </div>
       );
   }
@@ -111,7 +118,7 @@ export default function ItemView({
         reseller
           ? company.type == "reseller"
             ? showItem
-            : hiddenTiem
+            : hiddenItem
           : showItem
       }
     >

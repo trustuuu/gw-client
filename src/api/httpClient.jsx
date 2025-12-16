@@ -20,7 +20,7 @@ const setAccessToken = (token) => {
   httpClient.defaults.headers = headers;
 };
 
-async function gethAccessToken() {
+const gethAccessToken = async () => {
   try {
     const data = { companyId: "company", domainId: "domain", userId: "user" };
     const axiosAuth = axios.create();
@@ -45,7 +45,7 @@ async function gethAccessToken() {
     console.error("Get access token failed:", err);
     throw err;
   }
-}
+};
 async function getRefreshToken() {
   const axiosAuth = axios.create();
   const deviceId = getDeviceId();
@@ -109,4 +109,4 @@ httpClient.interceptors.response.use(
   }
 );
 
-export { httpClient, setHttpClient, setAccessToken };
+export { httpClient, setHttpClient, setAccessToken, gethAccessToken };

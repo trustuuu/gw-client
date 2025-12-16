@@ -43,6 +43,8 @@ import ApplicationTokenExchangePost from "./Application/ApplicationTokenExchange
 import UserPermissionScopePage from "./User/UserPermissionScopePage";
 import ExternalIdentityAccountsPage from "./User/ExternalIdentityAccountsPage";
 import ExternalIdentityAccountPost from "./User/ExternalIdentityAccountPost";
+import ConnectionPage from "./Domain/ConnectionPage";
+import ConnectionPost from "./Domain/ConnectionPost";
 
 function RoutesMain() {
   return (
@@ -79,7 +81,7 @@ function RoutesMain() {
       <Route
         path="/onboarding-domains"
         element={
-          <RouteWithTitle title="domain">
+          <RouteWithTitle title="domains">
             <DomainPage />
           </RouteWithTitle>
         }
@@ -93,6 +95,26 @@ function RoutesMain() {
             subTitle="domain"
           >
             <DomainPost />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/onboarding-connections"
+        element={
+          <RouteWithTitle title="connections">
+            <ConnectionPage />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/onboarding-connection-new"
+        element={
+          <RouteWithTitle
+            title="view"
+            parentPath="onboarding-connections"
+            subTitle="connection"
+          >
+            <ConnectionPost />
           </RouteWithTitle>
         }
       />

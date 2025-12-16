@@ -16,6 +16,7 @@ export const tokenExchangePolicyFields = [
     id: "clientId",
     name: "clientId",
     type: "text",
+    readOnly: true,
     autoComplete: "clientId",
     isRequired: true,
     placeholder: "Client ID",

@@ -1,5 +1,5 @@
 const fixedInputClass =
-  "rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-200 dark:placeholder-gray-500 dark:accent-pink-100 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm";
+  " flex-grow min-w-0 rounded-md relative block px-3 py-2 border border-gray-300 placeholder-gray-200 dark:placeholder-gray-500 dark:accent-pink-100 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm ";
 
 export default function Input({
   handleChange,
@@ -9,8 +9,9 @@ export default function Input({
   company,
   reseller,
 }) {
-  const showItem = "my-5 flex items-center text-pretty";
-  const hiddenItem = "my-5 flex items-center invisible";
+  const showItem = "flex flex-row w-full items-center p-2 text-pretty";
+  const hiddenItem = "flex flex-row w-full items-center p-2 invisible ";
+
   const {
     labelText,
     labelFor,
@@ -28,7 +29,7 @@ export default function Input({
   switch (type) {
     case "textarea":
       inputContext = (
-        <div className="flex flex-col">
+        <>
           {source ? (
             <Input
               company={company}
@@ -52,7 +53,7 @@ export default function Input({
             rows={5}
             id={id}
             name={name}
-            value={value}
+            value={Array.isArray(value) ? value.join("\n") : value}
             onChange={handleChange}
             required={isRequired}
             placeholder={placeholder}
@@ -60,34 +61,54 @@ export default function Input({
               customClass ? fixedInputClass + customClass : fixedInputClass
             }
           ></textarea>
-        </div>
+        </>
       );
       break;
 
     case "select":
       inputContext = list ? (
-        <select
-          id={id}
-          parentid={parentId}
-          name={name}
-          onChange={handleChange}
-          required={isRequired}
-          placeholder={placeholder}
-          className={
-            customClass ? fixedInputClass + customClass : fixedInputClass
-          }
-        >
-          {list.map((l) => {
-            return (
-              <option
-                value={l.key}
-                selected={l.key === value ? "selected" : ""}
-              >
-                {l.value}
-              </option>
-            );
-          })}
-        </select>
+        <div className="flex flex-col">
+          {source ? (
+            <Input
+              company={company}
+              key={source.id}
+              handleChange={source.handleChange(handleChange)}
+              //listener={}
+              value={source.value}
+              field={source}
+              parentField={field}
+              customClass={
+                source.customClass
+                  ? source.customClass
+                  : customClass +
+                    `${source.type == "checkbox" ? " max-w-4 " : " min-w-80 "}`
+              }
+              reseller={source.reseller}
+            />
+          ) : null}
+          <select
+            id={id}
+            parentid={parentId}
+            name={name}
+            onChange={handleChange}
+            required={isRequired}
+            placeholder={placeholder}
+            className={
+              customClass ? fixedInputClass + customClass : fixedInputClass
+            }
+          >
+            {list.map((l) => {
+              return (
+                <option
+                  value={l.key}
+                  selected={l.key === value ? "selected" : ""}
+                >
+                  {l.value}
+                </option>
+              );
+            })}
+          </select>
+        </div>
       ) : (
         <></>
       );
@@ -95,21 +116,41 @@ export default function Input({
 
     default:
       inputContext = (
-        <input
-          // ref={inputRef}
-          onChange={handleChange}
-          value={value}
-          id={id}
-          name={name}
-          type={type}
-          required={isRequired}
-          className={
-            customClass ? fixedInputClass + customClass : fixedInputClass
-          }
-          placeholder={placeholder}
-          checked={value}
-          readOnly={readOnly ? true : ""}
-        />
+        <>
+          {source ? (
+            <Input
+              company={company}
+              key={source.id}
+              handleChange={source.handleChange(handleChange)}
+              //listener={}
+              value={value}
+              field={source}
+              parentField={field}
+              customClass={
+                source.customClass
+                  ? source.customClass
+                  : customClass +
+                    `${source.type == "checkbox" ? " max-w-4 " : " min-w-80 "}`
+              }
+              reseller={source.reseller}
+            />
+          ) : null}
+          <input
+            // ref={inputRef}
+            onChange={handleChange}
+            value={value}
+            id={id}
+            name={name}
+            type={type}
+            required={isRequired}
+            className={
+              customClass ? fixedInputClass + customClass : fixedInputClass
+            }
+            placeholder={placeholder}
+            checked={value}
+            readOnly={readOnly ? true : ""}
+          />
+        </>
       );
   }
 

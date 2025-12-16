@@ -73,5 +73,6 @@ export const addressFields = [
       { key: "home", value: "Home" },
       { key: "other", value: "Other" },
     ],
+    default: "work",
   },
 ];

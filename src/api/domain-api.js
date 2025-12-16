@@ -41,6 +41,50 @@ const getPrimary = async (companyId) => {
   return await httpClient.get(`${url}/${companyId}/domainNames/primary`);
 };
 
+const getConnections = async (companyId, domainId) => {
+  return await httpClient.get(
+    `${url}/${companyId}/domainNames/${domainId}/Connections`
+  );
+};
+
+const addConnection = async (companyId, domainId, data) => {
+  return await httpClient.post(
+    `${url}/${companyId}/domainNames/${domainId}/Connections`,
+    data
+  );
+};
+
+const updateConnection = async (companyId, domainId, data) => {
+  return await httpClient.put(
+    `${url}/${companyId}/domainNames/${domainId}/Connections/${data.id}`,
+    data
+  );
+};
+
+// const retrieveConnection = async (companyId, domainId, connectionId) => {
+//   return await httpClient.get(
+//     `${url}/${companyId}/domainNames/${domainId}/Connections/${connectionId}`
+//   );
+// };
+
+const removeConnections = async (companyId, domainId, data) => {
+  try {
+    if (typeof data === "string")
+      return await httpClient.delete(
+        `${url}/${companyId}/domainNames/${domainId}/Connections/${data}`
+      );
+    else
+      return await httpClient.delete(
+        `${url}/${companyId}/domainNames/${domainId}/Connections`,
+        {
+          data: data,
+        }
+      );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const domainApi = {
   get,
   create,
@@ -48,5 +92,10 @@ const domainApi = {
   remove,
   setPrimary,
   getPrimary,
+  getConnections,
+  addConnection,
+  updateConnection,
+  //retrieveConnection,
+  removeConnections,
 };
 export default domainApi;
