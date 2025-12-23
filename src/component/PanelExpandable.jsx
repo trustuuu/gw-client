@@ -5,7 +5,7 @@ export default function PanelExpandable({ title, initExpand, children }) {
   const [open, setOpen] = useState(initExpand ? initExpand : false);
 
   return (
-    <div className="w-full">
+    <div className=" w-full max-w-screen-lg">
       <input
         id="expandCollapse"
         type="checkbox"

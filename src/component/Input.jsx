@@ -164,14 +164,12 @@ export default function Input({
           : showItem
       }
     >
-      {labelText ? (
-        <label
-          htmlFor={labelFor}
-          className="text-wrap ms-2 text-sm font-medium min-w-48 max-w-48 "
-        >
-          {labelText}
-        </label>
-      ) : null}
+      <label
+        htmlFor={labelFor}
+        className="text-wrap ms-2 text-sm font-medium min-w-48 max-w-48 "
+      >
+        {labelText}
+      </label>
       {inputContext}
     </div>
   );

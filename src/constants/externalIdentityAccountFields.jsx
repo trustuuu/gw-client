@@ -59,7 +59,7 @@ export const externalIdentityAccountFields = [
   //   },
   // },
   {
-    labelText: "",
+    labelText: "Connection",
     labelFor: "connection",
     id: "connection",
     parentId: "connection",
@@ -78,7 +78,7 @@ export const externalIdentityAccountFields = [
       };
     },
     source: {
-      labelText: "Connection",
+      labelText: "Provider",
       labelFor: "provider",
       id: "provider",
       parentId: "connection",
@@ -232,9 +232,9 @@ export const externalIdentityAccountFields = [
     component: ({ mode, handleClick }) => {
       return mode == "edit" ? (
         <input
-          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded"
+          className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded max-w-40"
           type="button"
-          value="Retrieve New Token from External"
+          value="Get New Token"
           onClick={handleClick}
         />
       ) : (

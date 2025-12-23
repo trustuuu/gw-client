@@ -109,7 +109,7 @@ export default function GroupPost() {
   if (mode == "new" || mode == "edit") {
     return (
       <div className="flex justify-center">
-        <form className="mt-8 space-y-6">
+        <form className="mt-8 space-y-6 w-full max-w-screen-lg">
           <h4 className="text-red-400">{errorText}</h4>
           <div className="space-y-4">
             {fields.map((field) =>
@@ -148,7 +148,7 @@ export default function GroupPost() {
   } else {
     return (
       <div className="flex justify-center">
-        <form className="mt-8 space-y-6">
+        <form className="mt-8 space-y-6 w-full max-w-screen-lg">
           <h4 className="text-red-400">{errorText}</h4>
           <div className="space-y-4">
             {fields.map((field) =>

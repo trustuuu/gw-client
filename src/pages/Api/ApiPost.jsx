@@ -196,7 +196,7 @@ export default function ApiPost(props) {
 
   return (
     <div className="flex justify-center">
-      <form className="mt-8 space-y-6">
+      <form className="mt-8 space-y-6 w-full max-w-screen-lg">
         <h4 className="text-red-400">{errorText}</h4>
         {mode === "new" ? (
           <div>

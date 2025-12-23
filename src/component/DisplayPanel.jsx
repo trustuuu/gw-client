@@ -4,7 +4,7 @@ import PanelExpandable from "./PanelExpandable";
 const DisplayPanel = (title, fields, item, itemState, handleChange, mode) => {
   return (
     <PanelExpandable title={title} initExpand={true}>
-      <div className="space-y-4 w-full">
+      <div className="space-y-4  w-full max-w-screen-lg">
         {fields.map((field) =>
           (field.hiddenUpdate || field.hiddenUpdate !== undefined) &&
           mode === "edit" ? (
