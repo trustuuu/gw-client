@@ -178,7 +178,7 @@ export default function AuthCallback() {
       idToken: tokenJson.id_token,
       userId: id_token.id,
     };
-
+    console.log("uniDirServer.callback", uniDirServer.callback);
     await httpClient.post(uniDirServer.callback, token_data, {
       withCredentials: true,
       headers,
@@ -198,7 +198,6 @@ export default function AuthCallback() {
     (async () => {
       try {
         const tokenJson = await exchangeCodeForToken();
-        console.log("tokenJson", tokenJson);
         if (!tokenJson?.access_token) throw new Error("No access token");
 
         const id_token = await validateIdToken(tokenJson.id_token);
