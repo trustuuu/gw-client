@@ -50,7 +50,7 @@ export default function AuthCallback() {
       redirect_uri: client.redirect_uris[0],
       code_verifier: codeVerifier,
     };
-
+    console.log("form_data", form_data);
     const deviceId = getDeviceId();
     const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
 
