@@ -198,13 +198,15 @@ export default function AuthCallback() {
     (async () => {
       try {
         const tokenJson = await exchangeCodeForToken();
+        console.log("tokenJson", tokenJson);
         if (!tokenJson?.access_token) throw new Error("No access token");
 
         const id_token = await validateIdToken(tokenJson.id_token);
-
+        console.log("id_token", id_token);
         await hydrateUserSession(id_token, tokenJson.access_token);
+        console.log("hydrateUserSession", id_token, tokenJson.access_token);
         await callServerCallback(tokenJson, id_token);
-
+        console.log("callServerCallback");
         // Navigation after everything is fully complete
         //setTimeout(() => navigate("/dashboard"), 50);
       } catch (err) {
