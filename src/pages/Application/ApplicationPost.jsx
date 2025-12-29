@@ -125,6 +125,7 @@ export default function ApplicationPost(props) {
       if (!field.database && field.database !== undefined) {
         delete data[field.id];
       }
+      console.log("field", field);
     });
     return data;
   };
@@ -244,9 +245,9 @@ export default function ApplicationPost(props) {
       verify: () => validateFields(itemState, fields_settings_idToken),
     },
     {
-      title: "Refresh Tokken Rotation",
+      title: "Refresh token Rotation",
       page: DisplayPanel(
-        "Refresh Tokken Rotation",
+        "Refresh token Rotation",
         fields_settings_refreshTokenRotation,
         application,
         itemState,
@@ -257,9 +258,9 @@ export default function ApplicationPost(props) {
         validateFields(itemState, fields_settings_refreshTokenRotation),
     },
     {
-      title: "Refresh Tokken Expiration",
+      title: "Refresh token Expiration",
       page: DisplayPanel(
-        "Refresh Tokken Expiration",
+        "Refresh token Expiration",
         fields_settings_refreshTokenExpiration,
         application,
         itemState,
@@ -307,7 +308,7 @@ export default function ApplicationPost(props) {
               mode
             )}
             {DisplayPanel(
-              "ID Tokken",
+              "ID token",
               fields_settings_idToken,
               itemState,
               itemState,
@@ -315,7 +316,7 @@ export default function ApplicationPost(props) {
               mode
             )}
             {DisplayPanel(
-              "Refresh Tokken Rotation",
+              "Refresh token Rotation",
               fields_settings_refreshTokenRotation,
               itemState,
               itemState,
@@ -323,7 +324,7 @@ export default function ApplicationPost(props) {
               mode
             )}
             {DisplayPanel(
-              "efresh Tokken Expiration",
+              "efresh token Expiration",
               fields_settings_refreshTokenExpiration,
               itemState,
               itemState,

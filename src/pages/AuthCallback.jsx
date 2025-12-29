@@ -50,7 +50,7 @@ export default function AuthCallback() {
       redirect_uri: client.redirect_uris[0],
       code_verifier: codeVerifier,
     };
-    console.log("form_data", form_data);
+
     const deviceId = getDeviceId();
     const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
 
@@ -178,7 +178,7 @@ export default function AuthCallback() {
       idToken: tokenJson.id_token,
       userId: id_token.id,
     };
-    console.log("uniDirServer.callback", uniDirServer.callback);
+
     await httpClient.post(uniDirServer.callback, token_data, {
       withCredentials: true,
       headers,
@@ -201,11 +201,8 @@ export default function AuthCallback() {
         if (!tokenJson?.access_token) throw new Error("No access token");
 
         const id_token = await validateIdToken(tokenJson.id_token);
-        console.log("id_token", id_token);
         await hydrateUserSession(id_token, tokenJson.access_token);
-        console.log("hydrateUserSession", id_token, tokenJson.access_token);
         await callServerCallback(tokenJson, id_token);
-        console.log("callServerCallback");
         // Navigation after everything is fully complete
         //setTimeout(() => navigate("/dashboard"), 50);
       } catch (err) {

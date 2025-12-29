@@ -247,7 +247,7 @@ export const applicationFields = [
         };
       },
     },
-    default: "authorization_code",
+    default: ["authorization_code"],
     autoComplete: "grant_types",
     isRequired: true,
     placeholder: "Grant Types",
