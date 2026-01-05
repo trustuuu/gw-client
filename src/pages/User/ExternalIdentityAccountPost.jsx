@@ -7,7 +7,6 @@ import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
 import ItemView from "../../component/ItemView";
 import domainApi from "../../api/domain-api";
-import { httpClient } from "../../api/httpClient";
 
 const orgFields = externalIdentityAccountFields;
 let fieldsState = {};
@@ -231,31 +230,11 @@ export default function ExternalIdentityAccountPost() {
 
   const onClickToken = async () => {
     try {
-      // if (
-      //   !httpClient.defaults.headers.common ||
-      //   !httpClient.defaults.headers.common["Authorization"].startsWith(
-      //     "Bearer "
-      //   )
-      // ) {
-      //   throw new Error(
-      //     "Authorization header not found or not in Bearer format."
-      //   );
-      // }
-      // const data = {
-      //   grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
-      //   subject_token: httpClient.defaults.headers.common["Authorization"],
-      //   subject_token_type: "urn:ietf:params:oauth:token-type:access_token",
-      //   audience: "google-native-token",
-      //   scope: itemState.providerScopes,
-      // };
-      // const token = await userApi.retrieveExternalIdentityAccountNewToken(data);
-      // console.log("token", token);
-
       const connection = currentConnections.find(
         (c) => c.connection === c.connection
       );
       //const tokenEndpointGoogle = "https://oauth2.googleapis.com/token";
-      const authUrlGoogle = import.meta.env.VITE_AUTH_URL_GOOGLE; //"https://accounts.google.com/o/oauth2/v2/auth";
+      const authUrlGoogle = import.meta.env.VITE_AUTH_URL_GOOGLE;
       console.log(
         import.meta.env.VITE_AUTH_URL_GOOGLE,
         "https://accounts.google.com/o/oauth2/v2/auth"
@@ -266,7 +245,10 @@ export default function ExternalIdentityAccountPost() {
       authUrl.searchParams.append("response_type", "code"); // Requesting the authorization code
       authUrl.searchParams.append("scope", connection.scopes.join(" "));
       authUrl.searchParams.append("access_type", "offline"); // MANDATORY to get a Refresh Token
-      authUrl.searchParams.append("prompt", "consent"); // MANDATORY to ensure you get a Refresh Token on first consent
+      if (!account.providerRefreshToken)
+        authUrl.searchParams.append("prompt", "consent"); // MANDATORY to ensure you get a Refresh Token on first consent
+      authUrl.searchParams.append("login_hint", account.providerUserId);
+
       const reqId = `google-${Math.random().toString(8).substring(2, 8)}`;
       const stateData = {
         companyId: company.id,
@@ -278,10 +260,9 @@ export default function ExternalIdentityAccountPost() {
         origin: window.location.origin,
       };
       const encodedState = btoa(JSON.stringify(stateData));
-      // Now send this encodedState in your authorization request
       authUrl.searchParams.append("state", encodedState);
       window.location.href = authUrl;
-      //const authWindow = window.open(authUrl, '_blank', 'width=600,height=700');
+
       navigate("/users-external-account-view");
       //setMode("view"); //navigate(-1);
     } catch (err) {
