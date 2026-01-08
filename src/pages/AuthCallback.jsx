@@ -27,6 +27,7 @@ export default function AuthCallback() {
     saveDomain,
     codeVerifier,
     saveCodeVerifier,
+    setIsLoading,
   } = useAuth();
 
   const searchParams = new URLSearchParams(location.search);
@@ -43,7 +44,7 @@ export default function AuthCallback() {
   // ------------------------------
   const exchangeCodeForToken = useCallback(async () => {
     if (!code) return null;
-
+    setIsLoading(false);
     const form_data = {
       grant_type: "authorization_code",
       code,
@@ -151,7 +152,7 @@ export default function AuthCallback() {
         root: id_token.root,
         type: com.data.type ?? "customer",
       });
-
+      setIsLoading(false);
       setTitle("Logged in");
       setAuthReady(true);
     },

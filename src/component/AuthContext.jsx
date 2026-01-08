@@ -50,12 +50,19 @@ const AuthContextProvider = ({ children }) => {
   const [path, setPath] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [codeVerifier, setCodeVerifier] = usePersistedState("session", null);
-
+  const [isInitialized, setIsInitialized] = useState(false);
+  console.log("isInitialized in AuthContext", isInitialized);
   // Set HTTP header if present
   useEffect(() => {
-    if (header) {
-      setHttpClient(header);
-    }
+    const init = async () => {
+      // If you have an API call to verify the token, do it here.
+      // Otherwise, just let the persisted state settle.
+      if (header) {
+        setHttpClient(header);
+      }
+      setIsInitialized(true); // Signal that we are ready to render
+    };
+    init();
   }, [header]);
 
   // Auth actions
@@ -87,8 +94,18 @@ const AuthContextProvider = ({ children }) => {
       client,
       accessToken,
       header,
+      isInitialized,
     }),
-    [user, company, rootCompany, domain, client, accessToken, header]
+    [
+      user,
+      company,
+      rootCompany,
+      domain,
+      client,
+      accessToken,
+      header,
+      isInitialized,
+    ]
   );
 
   const contextValue = {

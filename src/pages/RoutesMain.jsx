@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import LogInPage from "./LogInPage";
@@ -45,6 +45,7 @@ import ExternalIdentityAccountsPage from "./User/ExternalIdentityAccountsPage";
 import ExternalIdentityAccountPost from "./User/ExternalIdentityAccountPost";
 import ConnectionPage from "./Domain/ConnectionPage";
 import ConnectionPost from "./Domain/ConnectionPost";
+//import { useAuth } from "../component/AuthContext";
 
 function RoutesMain() {
   return (
@@ -505,22 +506,14 @@ function RoutesMain() {
         }
       />
 
+      <Route path="/resetpw-send" element={<PasswordResetPage />} />
+      <Route path="/resetpw-link" element={<PasswordResetFromLinkPage />} />
+      {/* <Route path="/users-forget-pw" element={<PasswordResetPage />} />
       <Route
-        path="/resetpw-send"
-        element={
-          <RouteWithTitle title="Password Reset Send">
-            <PasswordResetPage />
-          </RouteWithTitle>
-        }
-      />
-      <Route
-        path="/resetpw-link"
-        element={
-          <RouteWithTitle title="Password Reset Link">
-            <PasswordResetFromLinkPage />
-          </RouteWithTitle>
-        }
-      />
+        path="/users-forget-resetpw"
+        element={<PasswordResetFromLinkPage />}
+      /> */}
+
       <Route
         path="/settings-mfa"
         element={

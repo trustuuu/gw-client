@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const generateRandomPassword = () => {
   const chars =
@@ -17,7 +18,9 @@ const PasswordResetPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [useRandomPassword, setUseRandomPassword] = useState(true);
   const [statusMessage, setStatusMessage] = useState("");
-
+  const [disabled, setDisabled] = useState(false);
+  const [sent, setSent] = useState(false);
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,14 +34,25 @@ const PasswordResetPage = () => {
       : tempPassword;
 
     try {
-      await axios.post("/api/send-reset-link", { email, password });
+      if (e.nativeEvent.submitter.innerText === "Close") {
+        navigate("/login");
+        return;
+      }
+      setDisabled(true);
+      await axios.post(`${import.meta.env.VITE_UNIDIR_AUTH_SERVER}/forgot-pw`, {
+        email,
+        password,
+      });
       setStatusMessage("Reset link and password have been sent successfully!");
       setEmail("");
       setTempPassword("");
       setConfirmPassword("");
+      setSent(true);
     } catch (error) {
       console.error("Error sending reset link:", error);
       setStatusMessage("Failed to send reset link. Please try again.");
+    } finally {
+      setDisabled(false);
     }
   };
 
@@ -105,9 +119,14 @@ const PasswordResetPage = () => {
 
         <button
           type="submit"
-          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded"
+          className={`w-full ${
+            disabled
+              ? "bg-gray-500"
+              : "bg-indigo-500 hover:bg-indigo-600 hover:cursor-pointer"
+          } text-white font-bold py-2 px-4 rounded`}
+          disabled={disabled}
         >
-          Send Reset Link
+          {sent ? "Close" : disabled ? "Processing..." : "Send Reset Link"}
         </button>
 
         {statusMessage && (

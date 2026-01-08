@@ -13,13 +13,22 @@ import SidebarUsers from "../component/SidebarUser";
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isInitialized } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  // if (isLoading) {
+  //   return (
+  //     <div className="h-screen w-screen flex items-center justify-center">
+  //       Loading...
+  //     </div>
+  //   );
+  // }
 
   const isChatRoute = location.pathname.startsWith("/chatbot");
   const renderSidebar = () => {
-    if (!user) return null;
-
+    if (!user) {
+      return null;
+    }
     if (location.pathname.startsWith("/apis-")) {
       return (
         <SidebarApi sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
@@ -45,11 +54,9 @@ function Layout() {
     }
   };
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     setNavigate(navigate); // Set it once on app load
-  }, [navigate]);
+  }, [navigate, user, isInitialized]);
 
   useEffect(() => {
     if (localStorage.theme === "dark" || !("theme" in localStorage)) {
