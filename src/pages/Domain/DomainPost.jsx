@@ -6,6 +6,7 @@ import domainApi from "../../api/domain-api";
 import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
 import ItemView from "../../component/ItemView";
+import { useMutation, useQueryClient } from "@tanstack/react-query"; // 1. Import hooks
 
 const fields = domainFields;
 let fieldsState = {};
@@ -16,6 +17,7 @@ fields.forEach(
 );
 
 export default function Domain() {
+  const queryClient = useQueryClient();
   const location = useLocation();
   const navigate = useNavigate();
   const [errorText, setError] = useState();
@@ -25,6 +27,39 @@ export default function Domain() {
     mode == "new" ? { ...fieldsState } : { ...domain }
   );
   const { saveDomain, setIsLoading } = useAuth();
+
+    const mutation = useMutation({
+    mutationFn: async ({ data, action }) => {
+      if (action === "create") {
+        const data = {
+        ...itemState,
+        id: itemState.name,
+        primary: domainCount == 0 ? true : false,
+      };
+      const domainSession = {
+        id: data.id,
+        name: data.name,
+        description: data.description,
+      };
+      return await domainApi.create(company.id, data);
+
+      } else {
+        return await domainApi.update(company.id, itemState);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["domains", company?.id] });
+      navigate(-1);
+    },
+    onError: (err) => {
+      if (err.response?.status === 409) {
+        setError(`Duplicated error: ${itemState.name} already exists!`);
+      } else {
+        setError(err.message);
+      }
+    },
+    onSettled: () => setIsLoading(false),
+  });
 
   const handleChange = (e) => {
     setItemState({
@@ -38,35 +73,36 @@ export default function Domain() {
 
   const handleSubmit = (event) => {
     setIsLoading(true);
-    createDomain();
+    //createDomain();
+    mutation.mutate({ data: itemState, action: "create" });
     setIsLoading(false);
     event.preventDefault();
   };
 
-  const createDomain = async () => {
-    try {
-      const data = {
-        ...itemState,
-        id: itemState.name,
-        primary: domainCount == 0 ? true : false,
-      };
-      await domainApi.create(company.id, data);
-      const domainSession = {
-        id: data.id,
-        name: data.name,
-        description: data.description,
-      };
-      if (data.primary) saveDomain(domainSession);
-      navigate(-1);
-    } catch (err) {
-      if (err.response.status == 409) {
-        setError(`duplicated error: ${itemState.name} already exist!`);
-      } else {
-        setError(err.message);
-      }
-      console.log(err);
-    }
-  };
+  // const createDomain = async () => {
+  //   try {
+  //     const data = {
+  //       ...itemState,
+  //       id: itemState.name,
+  //       primary: domainCount == 0 ? true : false,
+  //     };
+  //     await domainApi.create(company.id, data);
+  //     const domainSession = {
+  //       id: data.id,
+  //       name: data.name,
+  //       description: data.description,
+  //     };
+  //     if (data.primary) saveDomain(domainSession);
+  //     navigate(-1);
+  //   } catch (err) {
+  //     if (err.response.status == 409) {
+  //       setError(`duplicated error: ${itemState.name} already exist!`);
+  //     } else {
+  //       setError(err.message);
+  //     }
+  //     console.log(err);
+  //   }
+  // };
 
   const handleCancel = (event) => {
     event.preventDefault();
@@ -82,24 +118,25 @@ export default function Domain() {
 
   const handleSave = async (event) => {
     setIsLoading(true);
-    saveItem();
+    //saveItem();
+    mutation.mutate({ data: itemState, action: "update" });
     setIsLoading(false);
     event.preventDefault();
   };
 
-  const saveItem = async () => {
-    try {
-      await domainApi.update(company.id, itemState);
-      navigate(-1);
-    } catch (err) {
-      if (err.response.status == 409) {
-        setError(`duplicated error: ${itemState.name} already exist!`);
-      } else {
-        setError(err.message);
-      }
-      console.log(err);
-    }
-  };
+  // const saveItem = async () => {
+  //   try {
+  //     await domainApi.update(company.id, itemState);
+  //     navigate(-1);
+  //   } catch (err) {
+  //     if (err.response.status == 409) {
+  //       setError(`duplicated error: ${itemState.name} already exist!`);
+  //     } else {
+  //       setError(err.message);
+  //     }
+  //     console.log(err);
+  //   }
+  // };
 
   const customClassEdit =
     "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";

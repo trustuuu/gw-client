@@ -4,6 +4,9 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  resolve: {
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
+  },
   plugins: [react(), tailwindcss()],
   server: {
     port: 3000, // 여기에 원하는 포트 지정

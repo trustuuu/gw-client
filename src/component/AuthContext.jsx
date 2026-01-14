@@ -51,7 +51,6 @@ const AuthContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [codeVerifier, setCodeVerifier] = usePersistedState("session", null);
   const [isInitialized, setIsInitialized] = useState(false);
-  console.log("isInitialized in AuthContext", isInitialized);
   // Set HTTP header if present
   useEffect(() => {
     const init = async () => {

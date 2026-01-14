@@ -10,6 +10,7 @@ function ApiAppRoles({
   customClass,
   signleMode,
 }) {
+  
   const [checkedItems, setCheckedItems] = useState([]);
   const [selectedRole, setSelectRole] = useState({});
   const handleChangeCheck = function (e) {

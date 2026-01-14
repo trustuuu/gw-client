@@ -10,6 +10,7 @@ function ApiUsersGroups({
   customClass,
   initCheckedItems,
 }) {
+  
   const [checkedItems, setCheckedItems] = useState(
     initCheckedItems ? initCheckedItems : []
   );

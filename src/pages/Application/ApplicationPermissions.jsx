@@ -8,6 +8,7 @@ function ApplicationPermissions({
   onClickDel,
   customClass,
 }) {
+  
   const [checkedItems, setCheckedItems] = useState([]);
   const handleChangeCheck = function (e) {
     const item = e.target.name;

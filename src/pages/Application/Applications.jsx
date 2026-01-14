@@ -9,7 +9,6 @@ function Applications({
   onClickEdit,
 }) {
   const [checkedItems, setCheckedItems] = useState([]);
-
   const handleChangeCheck = function (e) {
     const item = e.target.name;
     const isChecked = e.target.checked;

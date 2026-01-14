@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { companyFields } from "../../constants/formFields";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query"; // 1. Import hooks
 import companyApi from "../../api/company-api";
 import Input from "../../component/Input";
 import FormAction from "../../component/FormAction";
@@ -16,15 +17,43 @@ fields.forEach(
 );
 
 export default function CompanyPost() {
+  const queryClient = useQueryClient();
   const { setIsLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [errorText, setError] = useState();
+  
   const { header, company, parent } = location.state;
   const [mode, setMode] = useState(location.state.mode);
   const [itemState, setItemState] = useState(
     mode == "new" ? { ...fieldsState, type: "customer" } : { ...company }
   );
+
+  // 3. Define Mutations for Create and Update
+  const mutation = useMutation({
+    mutationFn: async ({ data, action }) => {
+      if (action === "create") {
+        return await companyApi.create(
+          { ...data, id: data.name, parent: parent.id },
+          header
+        );
+      } else {
+        return await companyApi.update(data, header);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      navigate(-1);
+    },
+    onError: (err) => {
+      if (err.response?.status === 409) {
+        setError(`Duplicated error: ${itemState.name} already exists!`);
+      } else {
+        setError(err.message);
+      }
+    },
+    onSettled: () => setIsLoading(false),
+  });
 
   const handleChange = (e) => {
     setItemState({
@@ -37,70 +66,36 @@ export default function CompanyPost() {
   };
 
   const handleSubmit = (event) => {
-    setIsLoading(true);
-    createItem();
-    setIsLoading(false);
     event.preventDefault();
+    setIsLoading(true);
+    mutation.mutate({ data: itemState, action: "create" });
   };
 
-  const createItem = async () => {
-    try {
-      await companyApi.create(
-        { ...itemState, id: itemState.name, parent: parent.id },
-        header
-      );
-      navigate(-1);
-    } catch (err) {
-      if (err.response.status == 409) {
-        setError(`duplicated error: ${itemState.name} already exist!`);
-      } else {
-        setError(err.message);
-      }
-      console.log(err);
-    }
+  const handleSave = (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+    mutation.mutate({ data: itemState, action: "update" });
   };
 
   const handleCancel = (event) => {
     event.preventDefault();
-    if (window.history.length) {
-      navigate("/onboarding-companies");
-    } else navigate(-1);
+    // Simplified cancel logic
+    navigate("/onboarding-companies");
   };
 
-  const handleEdit = async (event) => {
+  const handleEdit = (event) => {
+    event.preventDefault();
     setMode("edit");
-    event.preventDefault();
   };
 
-  const handleSave = async (event) => {
-    setIsLoading(true);
-    saveItem();
-    setIsLoading(false);
-    event.preventDefault();
-  };
+  // ... Styling classes (customClass, etc.) remain same
+  const customClassEdit = "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";
+  const customClass = "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 min-w-80 dark:bg-gray-300 ";
 
-  const saveItem = async () => {
-    try {
-      await companyApi.update(itemState, header);
-      navigate(-1);
-    } catch (err) {
-      if (err.response.status == 409) {
-        setError(`duplicated error: ${itemState.name} already exist!`);
-      } else {
-        setError(err.message);
-      }
-      console.log(err);
-    }
-  };
-
-  const customClassEdit =
-    "ms-2 text-sm font-medium text-gray-900 dark:text-gray-300 min-w-80 dark:bg-gray-800 bg-gray-400 text-gray-800";
-  const customClass =
-    "ms-2 text-sm font-medium text-gray-900 dark:text-gray-800 min-w-80 dark:bg-gray-300 ";
   if (mode == "new" || mode == "edit") {
     return (
       <div className="flex justify-center">
-        <form className="mt-8 space-y-6">
+        <form className="mt-8 space-y-6" onSubmit={mode === "new" ? handleSubmit : handleSave}>
           <h4 className="text-red-400">{errorText}</h4>
           <div className="space-y-4">
             {fields.map((field) => (
@@ -110,9 +105,7 @@ export default function CompanyPost() {
                 handleChange={handleChange}
                 value={itemState[field.id]}
                 field={field}
-                customClass={
-                  field.customClass ? field.customClass : customClass
-                }
+                customClass={field.customClass ? field.customClass : customClass}
                 reseller={field.reseller}
               />
             ))}
@@ -122,6 +115,7 @@ export default function CompanyPost() {
               <FormAction
                 handleSubmit={mode == "new" ? handleSubmit : handleSave}
                 text={mode == "new" ? "Create" : "Save"}
+                disabled={mutation.isPending} // Disable button during save
               />
             </div>
             <div>
@@ -132,9 +126,10 @@ export default function CompanyPost() {
       </div>
     );
   } else {
+    // View mode remains largely the same...
     return (
       <div className="flex justify-center">
-        <form className="mt-8 space-y-6">
+        <div className="mt-8 space-y-6">
           <h4 className="text-red-400">{errorText}</h4>
           <div className="space-y-4">
             {fields.map((field) => (
@@ -145,9 +140,7 @@ export default function CompanyPost() {
                 handleChange={handleChange}
                 value={itemState[field.id]}
                 field={field}
-                customClass={
-                  field.customClass ? field.customClass : customClassEdit
-                }
+                customClass={field.customClass ? field.customClass : customClassEdit}
               />
             ))}
           </div>
@@ -159,7 +152,7 @@ export default function CompanyPost() {
               <FormAction handleSubmit={handleCancel} text="Close" />
             </div>
           </div>
-        </form>
+        </div>
       </div>
     );
   }

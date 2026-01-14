@@ -13,7 +13,6 @@ function Groups({
   const [checkedItems, setCheckedItems] = useState(
     selectedItems ? selectedItems : []
   );
-
   const handleChangeCheck = function (e) {
     const item = e.target.name;
     const isChecked = e.target.checked;
