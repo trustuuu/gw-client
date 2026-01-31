@@ -83,8 +83,8 @@ const GroupMember = React.memo(({ members, parentCallback }) => {
                         {member
                           ? member.displayName
                             ? member.displayName
-                            : member.$ref
-                              ? member.$ref.displayName
+                            : member.data
+                              ? member.data.displayName
                               : ""
                           : ""}
                       </div>
