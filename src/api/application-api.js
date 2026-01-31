@@ -1,5 +1,6 @@
-import { uniDirServer, uniOAuthServer } from "./igw-api";
+import { uniDirServer, uniOAuthServer, authServer } from "./igw-api";
 import { httpClient } from "./httpClient";
+import axios from "axios";
 
 const url = `${uniOAuthServer.Endpoint}`;
 const applicationsUrl = (companyId, domainId) =>
@@ -11,7 +12,7 @@ const applicationsUrl = (companyId, domainId) =>
 
 const get = async (companyId, domainId, id, condition) => {
   if (id) {
-    return await httpClient.get(`${applicationsUrl()}/application/${id}`);
+    return await httpClient.get(`${applicationsUrl()}/${id}`);
   } else if (domainId) {
     return await httpClient.get(`${applicationsUrl(companyId, domainId)}`, {
       params: { condition: condition ? condition : null },
@@ -118,6 +119,29 @@ const purgeCors = async (companyId, domainId, id) => {
   );
 };
 
+const getToken = async (appId, client_id, client_secret) => {
+  const data = {
+    grant_type: "client_credentials",
+    client_id: client_id,
+    client_secret: client_secret,
+  };
+
+        return await axios.post(authServer.tokenEndpoint, data, {
+        withCredentials: true,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        timeout: 15000, // Set a 15-second timeout
+      });
+
+
+  // return await httpClient.post(
+  //   authServer.tokenEndpoint,
+  //   data,
+  //   {
+  //     headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  //   }
+  // );
+};
+
 const applicationApi = {
   get,
   getWhere,
@@ -133,6 +157,7 @@ const applicationApi = {
   createTokenExchange,
   updateTokenExchange,
   removeTokenExchange,
+  getToken,
 };
 export default applicationApi;
 

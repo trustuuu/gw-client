@@ -143,16 +143,9 @@ function ConnectionPage() {
           onClickDel={onClickDel}
           disabledDel={checkedItems.length < 1}
         />
-        <ButtonToolbox
-          text="Set Primary"
-          svg={primarySvg}
-          clickHandle={onClickPrimary}
-          disabled={checkedItems.length !== 1}
-          customClass={primaryButtonClass}
-        />
       </header>
       <div className="p-3">
-        {/* Current Company */}
+        {/* Current Domain */}
         <div className="shadow-lg rounded-sm mb-10">
           <header className="text-xs uppercase dark:bg-opacity-50 rounded-sm font-semibold p-2">
             Current Domain

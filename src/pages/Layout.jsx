@@ -10,6 +10,7 @@ import LoadingWrapper from "../component/LoadingWrapper";
 import SidebarApplications from "../component/SidebarApplication";
 import { setNavigate } from "../component/navigate";
 import SidebarUsers from "../component/SidebarUser";
+import SidebarScim from "../component/SidebarScim";
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -43,6 +44,13 @@ function Layout() {
     } else if (location.pathname.startsWith("/users-")) {
       return (
         <SidebarUsers
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
+      );
+    } else if (location.pathname.startsWith("/onboarding-scims-")) {
+      return (
+        <SidebarScim
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
         />

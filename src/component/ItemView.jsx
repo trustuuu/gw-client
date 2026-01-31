@@ -1,14 +1,26 @@
 const fixedInputClass =
   "rounded-md appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 dark:text-gray-600 dark:accent-pink-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm";
 
+/**
+ * @param {Object} props
+ * @param {Object} props.Item
+ * @param {function} props.handleChange
+ * @param {any} props.value
+ * @param {Object} props.field
+ * @param {string} [props.customClass]
+ * @param {Company} [props.company]
+ * @param {boolean} [props.reseller]
+ * @param {React.ReactNode} [props.children]
+ */
 export default function ItemView({
   Item,
   handleChange,
   value,
   field,
   customClass,
-  company,
-  reseller,
+  company = null,
+  reseller = false,
+  children,
 }) {
   const showItem = "flex flex-row w-full items-center p-2 text-pretty";
   const hiddenItem = "flex flex-row w-full items-center p-2 invisible ";
@@ -129,6 +141,7 @@ export default function ItemView({
         {labelText}
       </label>
       {inputContext}
+      {children}
     </div>
   );
 }

@@ -9,13 +9,13 @@ import Groups from "./Groups";
 import groupApi from "../../api/group-api";
 import ButtonToolbox from "../../component/ButtonToolbox";
 
-function GroupPage({
+const GroupPage = ({
   status,
   showTool,
   excludes,
   parentCallback,
   noDetailView,
-}) {
+}) => {
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
@@ -27,7 +27,7 @@ function GroupPage({
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
   const [delBtnLabel, setDelBtnLabel] = useState(
-    status === "active" ? "Delete" : "Recover"
+    status === "active" ? "Delete" : "Recover",
   );
 
   const [postsPerPage] = useState(postDisplayCount);
@@ -63,8 +63,11 @@ function GroupPage({
       company.id,
       domain.id,
       checkedItems.map((item) => {
-        return { ...item, status: status === "active" ? "deleted" : "active" };
-      })
+        return {
+          ...item,
+          status: status === "active" ? "deleted" : "active",
+        };
+      }),
     );
     setCheckedItems([]);
     await getGroups();
@@ -114,14 +117,14 @@ function GroupPage({
       let data = dom.data;
       if (excludes) {
         data = data.filter(
-          (item) => !excludes.map((e) => e.value).includes(item.id)
+          (item) => !excludes.map((e) => e.value).includes(item.id),
         );
       }
       setGroups(data);
       setPageEnd(
         Math.ceil(dom.data.length / postsPerPage) < pageDisplayCount
           ? Math.ceil(dom.data.length / postsPerPage)
-          : pageDisplayCount
+          : pageDisplayCount,
       );
     } catch (error) {
       if (error.status === 401) navigate("/");
@@ -134,7 +137,7 @@ function GroupPage({
     getGroups();
     setDelBtnLabel(status === "active" ? "Delete" : "Recover");
     //setIsLoading(false);
-  }, [excludes]);
+  }, [status, company.id, domain.id]);
 
   const delSvg = (
     <svg
@@ -212,6 +215,8 @@ function GroupPage({
       </div>
     </div>
   );
-}
+};
+
+GroupPage.displayName = "GroupPage";
 
 export default GroupPage;

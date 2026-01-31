@@ -95,6 +95,7 @@ function ApplicationPage({ status }) {
     try {
       setIsLoading(true);
       const items = await applicationApi.get(company.id, domId, null, null);
+      console.log(items.data);
       setApplications(items.data);
       setPageEnd(
         Math.ceil(items.data.length / postsPerPage) < pageDisplayCount

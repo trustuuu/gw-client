@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import Checkbox from "../../component/Checkbox";
 
-function GroupMember({ members, parentCallback }) {
+const GroupMember = React.memo(({ members, parentCallback }) => {
   const [checkedItems, setCheckedItems] = useState([]);
 
   const handleChangeCheck = function (e) {
@@ -25,7 +25,7 @@ function GroupMember({ members, parentCallback }) {
       setCheckedItems(checkedItems.filter((i) => i.value !== item));
     }
   };
-
+  console.log(members);
   return (
     <div className="p-3">
       {/* Groups */}
@@ -80,7 +80,13 @@ function GroupMember({ members, parentCallback }) {
                   <div className="grow flex items-center text-sm py-2">
                     <div className="grow flex">
                       <div className="self-center  w-1/6 min-w-48">
-                        {member ? member.displayName : ""}
+                        {member
+                          ? member.displayName
+                            ? member.displayName
+                            : member.$ref
+                              ? member.$ref.displayName
+                              : ""
+                          : ""}
                       </div>
                       <div className="text-left justify-self-start w-4/6">
                         {member ? member.type : ""}
@@ -102,6 +108,6 @@ function GroupMember({ members, parentCallback }) {
       </div>
     </div>
   );
-}
+});
 
 export default GroupMember;

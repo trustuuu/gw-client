@@ -9,13 +9,13 @@ import Users from "./Users";
 import userApi from "../../api/user-api";
 import ButtonToolbox from "../../component/ButtonToolbox";
 
-function UserPage({
+const UserPage = ({
   status,
   showTool,
   excludes,
   parentCallback,
   noDetailView,
-}) {
+}) => {
   const navigate = useNavigate();
   const pageDisplayCount = 4;
   const postDisplayCount = 10;
@@ -28,7 +28,7 @@ function UserPage({
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
   const [delBtnLabel, setDelBtnLabel] = useState(
-    status === "active" ? "Delete" : "Recover"
+    status === "active" ? "Delete" : "Recover",
   );
 
   const [postsPerPage] = useState(postDisplayCount);
@@ -64,8 +64,11 @@ function UserPage({
       company.id,
       domain.id,
       checkedItems.map((item) => {
-        return { ...item, status: status === "active" ? "deleted" : "active" };
-      })
+        return {
+          ...item,
+          status: status === "active" ? "deleted" : "active",
+        };
+      }),
     );
     setCheckedItems([]);
     await getUsers();
@@ -116,14 +119,14 @@ function UserPage({
       let data = dom.data;
       if (excludes) {
         data = data.filter(
-          (item) => !excludes.map((e) => e.value).includes(item.id)
+          (item) => !excludes.map((e) => e.value).includes(item.id),
         );
       }
       setUsers(data);
       setPageEnd(
         Math.ceil(dom.data.length / postsPerPage) < pageDisplayCount
           ? Math.ceil(dom.data.length / postsPerPage)
-          : pageDisplayCount
+          : pageDisplayCount,
       );
       setIsLoading(false);
     } catch (error) {
@@ -134,7 +137,7 @@ function UserPage({
   useEffect(() => {
     getUsers();
     setDelBtnLabel(status === "active" ? "Delete" : "Recover");
-  }, [excludes]);
+  }, [status, company.id, domain.id]);
 
   const delSvg = (
     <svg
@@ -213,6 +216,6 @@ function UserPage({
       </div>
     </div>
   );
-}
-
+};
+UserPage.displayName = "UserPage";
 export default UserPage;

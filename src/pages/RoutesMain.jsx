@@ -12,6 +12,9 @@ import CompanyPage from "./Company/CompanyPage";
 import CompanyPost from "./Company/CompanyPost";
 import DomainPage from "./Domain/DomainPage";
 import DomainPost from "./Domain/DomainPost";
+import SCIMPage from "./SCIM/SCIMPage";
+import SCIMPost from "./SCIM/SCIMPost";
+import SCIMOverview from "./SCIM/SCIMOverview";
 import UserPage from "./User/UserPage";
 import UserPost from "./User/UserPost";
 import UserView from "./User/UserView";
@@ -116,6 +119,74 @@ function RoutesMain() {
             subTitle="connection"
           >
             <ConnectionPost />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/onboarding-scims"
+        element={
+          <RouteWithTitle title="scims">
+            <SCIMPage />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/onboarding-scims-new"
+        element={
+          <RouteWithTitle
+            title="view"
+            parentPath="onboarding-scims"
+            subTitle="scim"
+          >
+            <SCIMPost />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/onboarding-scims-brief"
+        element={
+          <RouteWithTitle
+            title="Overview"
+            parentPath="onboarding-scims"
+            subTitle="scim"
+          >
+            <SCIMOverview />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/onboarding-scims-view-setting"
+        element={
+          <RouteWithTitle
+            title="Properties"
+            parentPath="onboarding-scims"
+            subTitle="scim"
+          >
+            <SCIMPost key="scimNew" mode="view" />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/onboarding-scims-view-authentication"
+        element={
+          <RouteWithTitle
+            title="Authentication"
+            parentPath="onboarding-scims"
+            subTitle="scim"
+          >
+            <SCIMPost key="scimNew" mode="view" />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/onboarding-scims-view-configuration"
+        element={
+          <RouteWithTitle
+            title="Configuration"
+            parentPath="onboarding-scims"
+            subTitle="scim"
+          >
+            <SCIMPost key="scimNew" mode="view" />
           </RouteWithTitle>
         }
       />

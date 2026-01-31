@@ -1,13 +1,24 @@
 const fixedInputClass =
   " flex-grow min-w-0 rounded-md relative block px-3 py-2 border border-gray-300 placeholder-gray-200 dark:placeholder-gray-500 dark:accent-pink-100 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm ";
 
+/**
+ * @param {Object} props
+ * @param {function} props.handleChange
+ * @param {any} props.value
+ * @param {Object} props.field
+ * @param {string} [props.customClass]
+ * @param {Company} [props.company]
+ * @param {boolean} [props.reseller]
+ * @param {React.ReactNode} [props.children]
+ */
 export default function Input({
   handleChange,
   value,
   field,
   customClass,
-  company,
-  reseller,
+  company = null,
+  reseller = false,
+  children,
 }) {
   const showItem = "flex flex-row w-full items-center p-2 text-pretty";
   const hiddenItem = "flex flex-row w-full items-center p-2 invisible ";
@@ -149,6 +160,7 @@ export default function Input({
             placeholder={placeholder}
             checked={value}
             readOnly={readOnly ? true : ""}
+            autoComplete={field.autoComplete}
           />
         </>
       );
@@ -171,6 +183,7 @@ export default function Input({
         {labelText}
       </label>
       {inputContext}
+      {children}
     </div>
   );
 }
