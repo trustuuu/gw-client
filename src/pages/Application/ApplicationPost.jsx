@@ -11,29 +11,29 @@ import DisplayPanel from "../../component/DisplayPanel";
 
 const fields = applicationFields;
 const fields_basic = fields.filter(
-  (a) => a.category === "settings.basic" && a.id !== "domain"
+  (a) => a.category === "settings.basic" && a.id !== "domain",
 );
 const fields_settings_properties = fields.filter(
   (a) =>
-    a.category === "settings.properties" || a.category === "settings.advanced"
+    a.category === "settings.properties" || a.category === "settings.advanced",
 );
 const fields_settings_uris = fields.filter(
-  (a) => a.category === "settings.uris"
+  (a) => a.category === "settings.uris",
 );
 const fields_settings_idToken = fields.filter(
-  (a) => a.category === "settings.idToken"
+  (a) => a.category === "settings.idToken",
 );
 const fields_settings_refreshTokenRotation = fields.filter(
-  (a) => a.category === "settings.refreshTokenRotation"
+  (a) => a.category === "settings.refreshTokenRotation",
 );
 const fields_settings_refreshTokenExpiration = fields.filter(
-  (a) => a.category === "settings.refreshTokenExpiration"
+  (a) => a.category === "settings.refreshTokenExpiration",
 );
 let fieldsState = {};
 fields.forEach(
   (field) =>
     (fieldsState[field.id] =
-      field.type == "checkbox" ? false : field.default ?? "")
+      field.type == "checkbox" ? false : (field.default ?? "")),
 );
 
 export default function ApplicationPost(props) {
@@ -59,7 +59,7 @@ export default function ApplicationPost(props) {
   const domain = domainState ? domainState : domainAuth;
 
   const [mode, setMode] = useState(
-    location.state ? location.state.mode : props.mode
+    location.state ? location.state.mode : props.mode,
   );
 
   if (!mode) navigate("/applications");
@@ -73,7 +73,7 @@ export default function ApplicationPost(props) {
           app_type: "SPA",
           permissions_consent_screen: true,
         }
-      : application
+      : application,
   );
 
   const handleChange = (e, childValue) => {
@@ -87,9 +87,9 @@ export default function ApplicationPost(props) {
         e.target.type === "checkbox"
           ? e.target.checked
           : currentItem.valueType !== undefined &&
-            currentItem.valueType === "array"
-          ? e.target.value.split(/\r\n|\n|\r/)
-          : e.target.value;
+              currentItem.valueType === "array"
+            ? e.target.value.split(/\r\n|\n|\r/)
+            : e.target.value;
       setItemState({ ...itemState, [targetId]: itemValue });
     } else {
       if (currentItem.valueType === "array") {
@@ -125,7 +125,6 @@ export default function ApplicationPost(props) {
       if (!field.database && field.database !== undefined) {
         delete data[field.id];
       }
-      console.log("field", field);
     });
     return data;
   };
@@ -204,7 +203,7 @@ export default function ApplicationPost(props) {
         application,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () => validateFields(itemState, fields_basic),
     },
@@ -216,7 +215,7 @@ export default function ApplicationPost(props) {
         application,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () => validateFields(itemState, fields_settings_properties),
     },
@@ -228,7 +227,7 @@ export default function ApplicationPost(props) {
         application,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () => validateFields(itemState, fields_settings_uris),
     },
@@ -240,7 +239,7 @@ export default function ApplicationPost(props) {
         application,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () => validateFields(itemState, fields_settings_idToken),
     },
@@ -252,7 +251,7 @@ export default function ApplicationPost(props) {
         application,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () =>
         validateFields(itemState, fields_settings_refreshTokenRotation),
@@ -265,7 +264,7 @@ export default function ApplicationPost(props) {
         application,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () =>
         validateFields(itemState, fields_settings_refreshTokenExpiration),
@@ -289,7 +288,7 @@ export default function ApplicationPost(props) {
               itemState,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
             {DisplayPanel(
               "Application Properties",
@@ -297,7 +296,7 @@ export default function ApplicationPost(props) {
               itemState,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
             {DisplayPanel(
               "Application URIs",
@@ -305,7 +304,7 @@ export default function ApplicationPost(props) {
               itemState,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
             {DisplayPanel(
               "ID token",
@@ -313,7 +312,7 @@ export default function ApplicationPost(props) {
               itemState,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
             {DisplayPanel(
               "Refresh token Rotation",
@@ -321,7 +320,7 @@ export default function ApplicationPost(props) {
               itemState,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
             {DisplayPanel(
               "efresh token Expiration",
@@ -329,7 +328,7 @@ export default function ApplicationPost(props) {
               itemState,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
           </div>
         )}

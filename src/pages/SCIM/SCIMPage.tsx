@@ -38,8 +38,9 @@ function SCIMPage() {
   const deleteMutation = useMutation({
     mutationFn: (ids: string[]) => scimApi.remove(company.id, domain.id, ids),
     onSuccess: () => {
-      console.log("delete success");
-      queryClient.invalidateQueries({ queryKey: ["scims", company?.id, domain?.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["scims", company?.id, domain?.id],
+      });
       setCheckedItems([]);
     },
     onError: (err) => {
@@ -70,30 +71,30 @@ function SCIMPage() {
     }
   }, [deleteMutation, checkedItems]);
 
-  const onClickNew = useCallback(
-    () => {
-      setScim({ name: "" });
-      navigate("/onboarding-scims-new", {
-        state: { mode: "new", company, domain },
-      })},
-    [navigate, company, domain]
-  );
+  const onClickNew = useCallback(() => {
+    setScim({ name: "" });
+    navigate("/onboarding-scims-new", {
+      state: { mode: "new", company, domain },
+    });
+  }, [navigate, company, domain]);
   const onClickView = useCallback(
     (item: SCIM) => {
       setScim(item);
       setPath({ ...path, subTitle: item.name });
       navigate("/onboarding-scims-brief", {
         state: { scim: item, mode: "overview", company, domain },
-      })},
-    [navigate, company, domain]
+      });
+    },
+    [navigate, company, domain],
   );
   const onClickEdit = useCallback(
     (item: SCIM) => {
       setScim(item);
       navigate("/onboarding-scims-new", {
         state: { scim: item, mode: "edit", company, domain },
-      })},
-    [navigate, company, domain]
+      });
+    },
+    [navigate, company, domain],
   );
 
   return (
@@ -135,7 +136,6 @@ function SCIMPage() {
                       {domain ? domain.description : ""}
                     </div>
                   </div>
-
                 </div>
               </div>
             </li>

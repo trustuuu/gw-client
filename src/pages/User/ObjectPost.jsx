@@ -19,7 +19,7 @@ export default function ObjectPost({
   fields.forEach(
     (field) =>
       (fieldsState[field.id] =
-        field.type == "checkbox" ? false : field.default ?? "")
+        field.type == "checkbox" ? false : (field.default ?? "")),
   );
   const { setIsLoading } = useAuth();
 
@@ -27,7 +27,7 @@ export default function ObjectPost({
   //const { addresses } = location.state;
   const [mode, setMode] = useState(modeObject);
   const [itemState, setItemState] = useState(
-    mode == "new" ? { ...fieldsState, type: "work" } : Item
+    mode == "new" ? { ...fieldsState, type: "work" } : Item,
   );
 
   useEffect(() => setMode(modeObject), [modeObject]);
@@ -93,7 +93,7 @@ export default function ObjectPost({
                   }
                   reseller={field.reseller}
                 />
-              )
+              ),
             )}
           </div>
           <div className="flex justify-center">
@@ -151,7 +151,7 @@ export default function ObjectPost({
                     field.customClass ? field.customClass : customClassEdit
                   }
                 />
-              )
+              ),
             )}
           </div>
           <div className="flex justify-center">

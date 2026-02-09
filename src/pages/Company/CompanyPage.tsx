@@ -24,30 +24,29 @@ function CompanyPage() {
   const { data: companies = [], isLoading } = useQuery({
     queryKey: ["companies", company?.id],
     queryFn: async () => {
-    try {
-      const response = await companyApi.getTenants(company.id);
-      return response.data;
-    } catch (error: any) {
-      if (error.response?.status === 401) {
-        navigate("/");
+      try {
+        const response = await companyApi.getTenants(company.id);
+        return response.data;
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          navigate("/");
+        }
+        throw error;
       }
-      throw error;
-    }
-  },
-    refetchOnMount: true, 
+    },
+    refetchOnMount: true,
     enabled: !!company?.id,
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (ids:string[]) => companyApi.remove(ids),
+    mutationFn: (ids: string[]) => companyApi.remove(ids),
     onSuccess: () => {
-      console.log("delete success");
-      queryClient.invalidateQueries({queryKey:["companies", company?.id]}); 
+      queryClient.invalidateQueries({ queryKey: ["companies", company?.id] });
       setCheckedItems([]);
     },
     onError: (err) => {
-    console.error("failed to delete:", err);
-  }
+      console.error("failed to delete:", err);
+    },
   });
 
   const postsPerPage = postDisplayCount;
@@ -62,18 +61,18 @@ function CompanyPage() {
     return totalPages < pageDisplayCount ? totalPages : pageDisplayCount;
   }, [companies.length, postsPerPage, pageDisplayCount]);
 
-  const paginate = useCallback((pageNumber:number, startPage:number) => {
+  const paginate = useCallback((pageNumber: number, startPage: number) => {
     setCurrentPage(pageNumber);
     setPageStart(startPage);
   }, []);
 
   const onClickDel = useCallback(() => {
-  if (window.confirm("Do you want to delete selected companies?")) {
-    deleteMutation.mutate(checkedItems);
-  }
-}, [deleteMutation, checkedItems]);
+    if (window.confirm("Do you want to delete selected companies?")) {
+      deleteMutation.mutate(checkedItems);
+    }
+  }, [deleteMutation, checkedItems]);
 
-  const switchCompany = async (companyId:string) => {
+  const switchCompany = async (companyId: string) => {
     try {
       const coms = await companyApi.get(companyId);
       const companySession = {
@@ -98,23 +97,44 @@ function CompanyPage() {
     }
   };
 
-  const onClickNew = useCallback(() => navigate("/onboarding-company-new", { state: { mode: "new", company, parent: company } }), [navigate, company]);
-  const onClickView = useCallback((item:Company) => navigate("/onboarding-company-new", { state: { company: item, mode: "view", parent: company } }), [navigate, company]);
-  const onClickEdit = useCallback((item:Company) => navigate("/onboarding-company-new", { state: { company: item, mode: "edit", parent: company } }), [navigate, company]);
+  const onClickNew = useCallback(
+    () =>
+      navigate("/onboarding-company-new", {
+        state: { mode: "new", company, parent: company },
+      }),
+    [navigate, company],
+  );
+  const onClickView = useCallback(
+    (item: Company) =>
+      navigate("/onboarding-company-new", {
+        state: { company: item, mode: "view", parent: company },
+      }),
+    [navigate, company],
+  );
+  const onClickEdit = useCallback(
+    (item: Company) =>
+      navigate("/onboarding-company-new", {
+        state: { company: item, mode: "edit", parent: company },
+      }),
+    [navigate, company],
+  );
   // const onClickSwithToManage = async function () {
   //   setIsLoading(true);
   //   await switchCompany(checkedItems[0]);
   //   setIsLoading(false);
   // };
 
-  const onClickParentCompany = useCallback(async function () {
-    setIsLoading(true);
-    await switchCompany(company.parent);
-    setIsLoading(false);
-  }, [company]);
-  
+  const onClickParentCompany = useCallback(
+    async function () {
+      setIsLoading(true);
+      await switchCompany(company.parent);
+      setIsLoading(false);
+    },
+    [company],
+  );
+
   const isGlobalLoading = isLoading || deleteMutation.isPending;
-const switchCompanySvg = (
+  const switchCompanySvg = (
     <svg
       className="h-4 w-4 mr-2"
       width="24"
@@ -133,13 +153,12 @@ const switchCompanySvg = (
       <path d="M4 6v-1a1 1 0 0 1 1 -1h1m5 0h2m5 0h1a1 1 0 0 1 1 1v1m0 5v2m0 5v1a1 1 0 0 1 -1 1h-1m-5 0h-2m-5 0h-1a1 1 0 0 1 -1 -1v-1m0 -5v-2m0 -5" />
     </svg>
   );
-    const switchCompanyClass =
+  const switchCompanyClass =
     "w-30 ml-4 bg-gray-300 disabled:hover:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-400 enabled:transition enabled:transform enabled:hover:translate-x-1 enabled:hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center";
   const switchParentClass = switchCompanyClass + "w-30 ml-12";
 
   return (
     <div className="col-span-full xl:col-span-6 shadow-lg rounded-sm">
-      
       <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex">
         {user && (user.type === "reseller" || user.type === "root") && (
           <>
@@ -168,9 +187,9 @@ const switchCompanySvg = (
           </>
         )}
       </header>
-      
+
       <div className="p-3">
-                {/* Current Company */}
+        {/* Current Company */}
         <div className="shadow-lg rounded-sm mb-10">
           <header className="text-xs uppercase dark:bg-opacity-50 rounded-sm font-semibold p-2">
             Current Company

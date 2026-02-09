@@ -8,7 +8,7 @@ import { visit } from "unist-util-visit";
 
 export function JSONViewer({ data }) {
   const [collapsed, setCollapsed] = useState(
-    JSON.stringify(data).length > 400 // auto-collapse large data
+    JSON.stringify(data).length > 400, // auto-collapse large data
   );
 
   // simple color-highlighting function
@@ -18,20 +18,21 @@ export function JSONViewer({ data }) {
     return json
       .replace(
         /(&|<|>)/g,
-        (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c])
+        (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c],
       )
       .replace(
         /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
         (match) => {
           let cls = "text-gray-200";
           if (/^"/.test(match)) {
-            if (/:$/.test(match)) cls = "text-blue-400"; // key
+            if (/:$/.test(match))
+              cls = "text-blue-400"; // key
             else cls = "text-green-400"; // string
           } else if (/true|false/.test(match)) cls = "text-orange-400";
           else if (/null/.test(match)) cls = "text-pink-400";
           else cls = "text-amber-300"; // number
           return `<span class="${cls}">${match}</span>`;
-        }
+        },
       );
   };
 
@@ -699,6 +700,15 @@ export default function ChatBox() {
             />
           </div>
         ))}
+        {loading && (
+          <div className="flex justify-start relative py-1">
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl rounded-bl-none px-4 py-3 shadow-sm flex items-center space-x-1">
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+              <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+            </div>
+          </div>
+        )}
         <div ref={chatEndRef} />
       </div>
 

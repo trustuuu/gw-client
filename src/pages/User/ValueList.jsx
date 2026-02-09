@@ -10,7 +10,7 @@ let fieldsState = {};
 fields.forEach(
   (field) =>
     (fieldsState[field.id] =
-      field.type == "checkbox" ? false : field.default ?? "")
+      field.type == "checkbox" ? false : (field.default ?? "")),
 );
 
 export default function ValueList({
@@ -56,7 +56,7 @@ export default function ValueList({
       ]);
     } else {
       setCheckedItems(
-        checkedItems.filter((a) => `${a.type}${a.value}` != item)
+        checkedItems.filter((a) => `${a.type}${a.value}` != item),
       );
     }
   };
@@ -76,7 +76,7 @@ export default function ValueList({
   const onClickDel = async function (event) {
     const removeKeys = new Set(checkedItems.map((a) => `${a.type}${a.value}`));
     setValueList(
-      valueList.filter((a) => !removeKeys.has(`${a.type}${a.value}`))
+      valueList.filter((a) => !removeKeys.has(`${a.type}${a.value}`)),
     );
 
     event.preventDefault();
@@ -92,7 +92,7 @@ export default function ValueList({
 
   const handleSave = (value) => {
     const updatedValues = values.map((e) =>
-      `${e.type}${e.value}` === `${current.type}${current.value}` ? value : e
+      `${e.type}${e.value}` === `${current.type}${current.value}` ? value : e,
     );
     setValueList(updatedValues);
     setCurrent(value);
@@ -154,7 +154,7 @@ export default function ValueList({
                         checked={checkedItems.find(
                           (g) =>
                             `${g.type}${g.value}` ==
-                            `${value.type}${value.value}`
+                            `${value.type}${value.value}`,
                         )}
                         onChange={handleChangeCheck}
                       />

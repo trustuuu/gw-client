@@ -25,7 +25,7 @@ function ApplicationPage({ status }) {
   const [pageStart, setPageStart] = useState(1);
   const [pageEnd, setPageEnd] = useState(pageDisplayCount);
   const [delBtnLabel, setDelBtnLabel] = useState(
-    status == "active" ? "Delete" : "Recover"
+    status == "active" ? "Delete" : "Recover",
   );
 
   const [postsPerPage] = useState(postDisplayCount);
@@ -95,12 +95,11 @@ function ApplicationPage({ status }) {
     try {
       setIsLoading(true);
       const items = await applicationApi.get(company.id, domId, null, null);
-      console.log(items.data);
       setApplications(items.data);
       setPageEnd(
         Math.ceil(items.data.length / postsPerPage) < pageDisplayCount
           ? Math.ceil(items.data.length / postsPerPage)
-          : pageDisplayCount
+          : pageDisplayCount,
       );
 
       if (domains.length < 1) {

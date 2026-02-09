@@ -29,94 +29,104 @@ function DomainPage() {
 
   const queryClient = useQueryClient();
 
-  const { data: domains = [], isLoading, error } = useQuery({
-    queryKey: ['domains', company.id],
+  const {
+    data: domains = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["domains", company.id],
     queryFn: async () => {
-      try{
-        console.log("query company.id", company.id);
-      const response = await domainApi.get(company.id, null);
-      return response.data;
-    }catch (error: any) {
+      try {
+        const response = await domainApi.get(company.id, null);
+        return response.data;
+      } catch (error: any) {
         if (error.response?.status === 401) {
           navigate("/");
         }
         throw error;
       }
     },
-    refetchOnMount: true, 
+    refetchOnMount: true,
     enabled: !!company?.id,
   });
 
-const deleteMutation = useMutation({
-  mutationFn: async (ids: Domain[]) => {
-    try{
-      await domainApi.remove(company.id, ids);
-      setCheckedItems([]);
-      console.log("delete success");
-      queryClient.invalidateQueries({queryKey:["domains", company?.id]});
-      //return response.data;
-    }catch (error: any) {
-      if (error.response?.status === 401) {
-        navigate("/");
-      }
-      throw error;
-    }
-  },
-  });
-
-  const setPrimaryMutation = useMutation({
-    mutationFn: async () => {
-      try{
-        const response = await domainApi.setPrimary(company.id, checkedItems[0].id);
-        return response.data;
-      }catch (error: any) {
+  const deleteMutation = useMutation({
+    mutationFn: async (ids: Domain[]) => {
+      try {
+        await domainApi.remove(company.id, ids);
+        setCheckedItems([]);
+        queryClient.invalidateQueries({ queryKey: ["domains", company?.id] });
+        //return response.data;
+      } catch (error: any) {
         if (error.response?.status === 401) {
           navigate("/");
         }
         throw error;
       }
-    }
+    },
+  });
+
+  const setPrimaryMutation = useMutation({
+    mutationFn: async () => {
+      try {
+        const response = await domainApi.setPrimary(
+          company.id,
+          checkedItems[0].id,
+        );
+        return response.data;
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          navigate("/");
+        }
+        throw error;
+      }
+    },
   });
 
   const switchDomain = useCallback(() => {
     saveDomain(checkedItems[0]);
-        setCheckedItems([]);
+    setCheckedItems([]);
   }, [checkedItems]);
-
 
   const currentPosts =
     domains && domain
       ? domains
-          .filter((d:Domain) => d.id !== domain.id)
+          .filter((d: Domain) => d.id !== domain.id)
           .slice(indexOfFirstPost, indexOfLastPost)
       : [];
 
-  const paginate = (pageNumber:number, startPage:number, endPage:number) => {
+  const paginate = (pageNumber: number, startPage: number, endPage: number) => {
     setCurrentPage(pageNumber);
     setPageStart(startPage);
     setPageEnd(endPage);
   };
 
-  const handleCallback = (childCheckedItems:Domain[]) => {
+  const handleCallback = (childCheckedItems: Domain[]) => {
     setCheckedItems(childCheckedItems);
   };
 
-  const onClickNew = useCallback(function () {
-    navigate("/onboarding-domain-new", {
-      state: {
-        company: company,
-        mode: "new",
-        domainCount: domain ? domains.length : 0,
-      },
-    });
-  }, [navigate, company, domain, domains]);
-  const onClickDel = useCallback(async function () {
-if (window.confirm("Do you want to delete selected domains?")) {
-    deleteMutation.mutate(checkedItems);
-  }
-  }, [deleteMutation, checkedItems]);
+  const onClickNew = useCallback(
+    function () {
+      navigate("/onboarding-domain-new", {
+        state: {
+          company: company,
+          mode: "new",
+          domainCount: domain ? domains.length : 0,
+        },
+      });
+    },
+    [navigate, company, domain, domains],
+  );
+  const onClickDel = useCallback(
+    async function () {
+      if (window.confirm("Do you want to delete selected domains?")) {
+        deleteMutation.mutate(checkedItems);
+      }
+    },
+    [deleteMutation, checkedItems],
+  );
 
-  const onClickView = (item:Domain) => {
+  const onClickView = (item: Domain) => {
     navigate("/onboarding-domain-new", {
       state: {
         company: company,
@@ -127,7 +137,7 @@ if (window.confirm("Do you want to delete selected domains?")) {
     });
   };
 
-  const onClickEdit = (item:Domain) => {
+  const onClickEdit = (item: Domain) => {
     navigate("/onboarding-domain-new", {
       state: {
         company: company,
@@ -165,15 +175,15 @@ if (window.confirm("Do you want to delete selected domains?")) {
           onClickDel={onClickDel}
           disabledDel={checkedItems.length < 1}
         />
-                <ButtonToolbox
+        <ButtonToolbox
           text="Switch"
-          clickHandle={() =>  switchDomain() }
+          clickHandle={() => switchDomain()}
           disabled={checkedItems.length !== 1}
         />
         <ButtonToolbox
           text="Set Primary"
           svg={primarySvg}
-          clickHandle={() => setPrimaryMutation.mutate() }
+          clickHandle={() => setPrimaryMutation.mutate()}
           disabled={checkedItems.length !== 1}
           customClass={primaryButtonClass}
         />
@@ -223,7 +233,7 @@ if (window.confirm("Do you want to delete selected domains?")) {
         </div>
         {/* "Yesterday" group */}
         <Domains
-          domains={currentPosts.filter((d:Domain) => d.id !== domain.id)}
+          domains={currentPosts.filter((d: Domain) => d.id !== domain.id)}
           parentCallback={handleCallback}
           onClickView={onClickView}
           onClickEdit={onClickEdit}
@@ -232,19 +242,21 @@ if (window.confirm("Do you want to delete selected domains?")) {
         <Pagination
           postsPerPage={postsPerPage}
           totalPosts={
-            domain ? domains.filter((d:Domain) => d.id !== domain.id).length : 0
+            domain
+              ? domains.filter((d: Domain) => d.id !== domain.id).length
+              : 0
           }
           paginate={paginate}
           currentPage={currentPage}
           pageDisplayCount={
             domain
               ? Math.ceil(
-                  domains.filter((d:Domain) => d.id !== domain.id).length /
-                    postsPerPage
+                  domains.filter((d: Domain) => d.id !== domain.id).length /
+                    postsPerPage,
                 ) < pageDisplayCount
                 ? Math.ceil(
-                    domains.filter((d:Domain) => d.id !== domain.id).length /
-                      postsPerPage
+                    domains.filter((d: Domain) => d.id !== domain.id).length /
+                      postsPerPage,
                   )
                 : pageDisplayCount
               : 0
