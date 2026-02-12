@@ -35,9 +35,6 @@ export default function AuthCallback() {
   const error = searchParams.get("error");
 
   // Clear codeVerifier once when component mounts
-  useEffect(() => {
-    saveCodeVerifier(null);
-  }, []);
 
   // ------------------------------
   // 🔥 STEP 1 — Fetch access token
@@ -114,7 +111,7 @@ export default function AuthCallback() {
 
       // Fetch company
       const com = await httpClient.get(
-        `${uniDirServer.Endpoint}/companys/${id_token.companyId}`
+        `${uniDirServer.Endpoint}/companys/${id_token.companyId}`,
       );
 
       const companySession = {
@@ -128,7 +125,7 @@ export default function AuthCallback() {
 
       // Fetch domain
       const dom = await httpClient.get(
-        `${uniDirServer.Endpoint}/companys/${id_token.companyId}/domainNames/${id_token.domainId}`
+        `${uniDirServer.Endpoint}/companys/${id_token.companyId}/domainNames/${id_token.domainId}`,
       );
 
       const domainSession = {
@@ -156,7 +153,7 @@ export default function AuthCallback() {
       setTitle("Logged in");
       setAuthReady(true);
     },
-    [saveClient, saveCompany, saveDomain, saveUser]
+    [saveClient, saveCompany, saveDomain, saveUser],
   );
 
   // ------------------------------
@@ -201,6 +198,9 @@ export default function AuthCallback() {
         const tokenJson = await exchangeCodeForToken();
         if (!tokenJson?.access_token) throw new Error("No access token");
 
+        // Clear code verifier after successful exchange
+        saveCodeVerifier(null);
+
         const id_token = await validateIdToken(tokenJson.id_token);
         await hydrateUserSession(id_token, tokenJson.access_token);
         await callServerCallback(tokenJson, id_token);
@@ -212,6 +212,7 @@ export default function AuthCallback() {
         navigate("/error");
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code, error]);
 
   useEffect(() => {
