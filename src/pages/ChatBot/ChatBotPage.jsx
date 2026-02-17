@@ -543,10 +543,7 @@ function ChatMessage({ index, role, text, time, onDelete }) {
 }
 
 export default function ChatBox() {
-  const [messages, setMessages] = useState(() => {
-    const saved = localStorage.getItem("chat_history");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -588,10 +585,6 @@ export default function ChatBox() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   useEffect(scrollToBottom, [messages]);
 
-  useEffect(() => {
-    localStorage.setItem("chat_history", JSON.stringify(messages));
-  }, [messages]);
-
   async function sendMessage() {
     const text = input.trim();
     if (!text || loading) return;
@@ -599,11 +592,20 @@ export default function ChatBox() {
     const now = new Date().toLocaleTimeString();
     setInput("");
     setLoading(true);
-    setMessages((prev) => [...prev, { role: "user", text, time: now }]);
+
+    // Optimistically add user message
+    const newMessages = [...messages, { role: "user", text, time: now }];
+    setMessages(newMessages);
 
     try {
+      // Prepare history for backend (Gemini format: role 'user' or 'model')
+      const history = messages.map((msg) => ({
+        role: msg.role === "assistant" ? "model" : "user",
+        parts: [{ text: msg.text }],
+      }));
+
       const url = `${import.meta.env.VITE_MCP_HTTP_URL}/chat`;
-      const res = await httpClient.post(url, { message: text });
+      const res = await httpClient.post(url, { message: text, history });
       const reply = res?.data?.reply ?? "No response";
 
       setMessages((prev) => [
@@ -657,7 +659,6 @@ export default function ChatBox() {
 
   function clearHistory() {
     if (window.confirm("Clear all chat history?")) {
-      localStorage.removeItem("chat_history");
       setMessages([]);
     }
   }
