@@ -2,6 +2,7 @@ import axios from "axios";
 import { authServer, uniDirServer } from "../api/igw-api";
 import { navigate } from "../component/navigate";
 import { getDeviceId, getUTC } from "../utils/Utils";
+import { generateDpopProof } from "../utils/dpop";
 
 const httpClient = axios.create();
 let serverSessionData = null;
@@ -10,7 +11,7 @@ const setHttpClient = (headers) => {
   httpClient.defaults.headers = headers;
 };
 
-const setAccessToken = (token) => {
+const setAccessToken = async (token) => {
   const deviceId = getDeviceId();
   const deviceHeader = `x-${import.meta.env.VITE_DEVICE_ID}`;
   const headers = {
@@ -24,8 +25,18 @@ const gethAccessToken = async () => {
   try {
     const data = { companyId: "company", domainId: "domain", userId: "user" };
     const axiosAuth = axios.create();
+
+    // Generate DPoP proof for session endpoint
+    const sessionUrl = uniDirServer.session;
+    console.log("[DPoP] Generating proof for session endpoint:", sessionUrl);
+    const dpopProof = await generateDpopProof(sessionUrl, "POST");
+    console.log("[DPoP] Session proof generated successfully");
+
     const res = await axiosAuth.post(uniDirServer.session, data, {
       withCredentials: true, //Cookie included !
+      headers: {
+        DPoP: dpopProof,
+      },
     });
     serverSessionData = res.data;
     console.log("new session data retrieved");
@@ -59,6 +70,12 @@ async function getRefreshToken() {
     refresh_token: serverSessionData.refreshToken,
   };
 
+  // Generate DPoP proof for token endpoint
+  const tokenUrl = authServer.tokenEndpoint;
+  console.log("[DPoP] Generating proof for token endpoint:", tokenUrl);
+  const dpopProof = await generateDpopProof(tokenUrl, "POST");
+  headers.DPoP = dpopProof;
+  console.log("[DPoP] Token proof generated successfully");
   const tokenJson = await axiosAuth.post(authServer.tokenEndpoint, body, {
     withCredentials: true,
     headers: headers,
@@ -66,6 +83,46 @@ async function getRefreshToken() {
 
   return tokenJson.data.access_token;
 }
+
+// Request interceptor to add DPoP header to all requests
+httpClient.interceptors.request.use(
+  async (config) => {
+    // Generate DPoP proof for this request
+    // Construct the full URL for the DPoP proof
+    let url;
+
+    // Check if config.url is already an absolute URL
+    if (config.url.startsWith("http://") || config.url.startsWith("https://")) {
+      url = config.url;
+    } else if (config.baseURL) {
+      // config.url is relative, combine with baseURL
+      url = `${config.baseURL}${config.url}`;
+    } else {
+      // No baseURL, construct from window.location
+      const protocol = window.location.protocol; // Already includes ':'
+      const host = window.location.host;
+      url = `${protocol}//${host}${config.url}`;
+    }
+
+    const method = config.method.toUpperCase();
+    console.log("[DPoP] Request interceptor - URL:", url, "Method:", method);
+    try {
+      // Get access token from headers if present
+      const accessToken = config.headers?.Authorization?.replace("Bearer ", "");
+      const dpopProof = await generateDpopProof(url, method, accessToken);
+      config.headers.DPoP = dpopProof;
+      console.log("[DPoP] Proof added to request headers");
+    } catch (error) {
+      console.error("[DPoP] Error generating proof:", error);
+      // Continue without DPoP if generation fails
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
 
 httpClient.interceptors.response.use(
   (response) => response, // Success and return repsonse
@@ -84,9 +141,8 @@ httpClient.interceptors.response.use(
 
         if (newAccessToken) console.log("successfully got new token!");
         if (httpClient.defaults.headers.common) {
-          httpClient.defaults.headers.common[
-            "Authorization"
-          ] = `Bearer ${newAccessToken}`;
+          httpClient.defaults.headers.common["Authorization"] =
+            `Bearer ${newAccessToken}`;
         } else {
           setAccessToken(newAccessToken);
         }
@@ -106,7 +162,7 @@ httpClient.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export { httpClient, setHttpClient, setAccessToken, gethAccessToken };
