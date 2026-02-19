@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { jwtVerify, createRemoteJWKSet } from "jose";
+import { generateDpopProof } from "../utils/dpop";
 
 import { useAuth } from "../component/AuthContext";
 import { encodeClientCredentials, getDeviceId } from "../utils/Utils";
@@ -59,6 +60,20 @@ export default function AuthCallback() {
         "Basic " +
         encodeClientCredentials(client.client_id, client.client_secret),
     };
+
+    // Generate DPoP proof
+    try {
+      const dpopProof = await generateDpopProof(
+        authServer.tokenEndpoint,
+        "POST",
+      );
+      headers.DPoP = dpopProof;
+      console.log(
+        "DPoP proof generated and added to headers for token exchange",
+      );
+    } catch (error) {
+      console.error("Failed to generate DPoP proof", error);
+    }
 
     try {
       const res = await axios.post(authServer.tokenEndpoint, form_data, {
