@@ -86,8 +86,12 @@ export const externalIdentityAccountFields = [
       type: "select",
       list: [
         { key: "google", value: "Google" },
-        { key: "azure", value: "Azure" },
+        { key: "azure", value: "Microsoft Graph (Azure)" },
         { key: "okta", value: "Okta" },
+        { key: "salesforce", value: "Salesforce" },
+        { key: "facebook", value: "Facebook" },
+        { key: "unidir", value: "Universal Directory (GoodWorks)" },
+        { key: "internal", value: "Internal" },
         {
           key: "custom",
           value: "Custom",

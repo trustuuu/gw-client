@@ -146,10 +146,17 @@ const connectionFields = [
     isRequired: true,
     placeholder: "Provider",
     list: [
-      { key: "azure", value: "Azure", selected: true },
       { key: "google", value: "Google" },
+      { key: "azure", value: "Microsoft Graph (Azure)" },
       { key: "okta", value: "Okta" },
-      { key: "custom", value: "Custom" },
+      { key: "salesforce", value: "Salesforce" },
+      { key: "facebook", value: "Facebook" },
+      { key: "unidir", value: "Universal Directory (GoodWorks)" },
+      { key: "internal", value: "Internal" },
+      {
+        key: "custom",
+        value: "Custom",
+      },
     ],
     default: "google",
   },
@@ -220,6 +227,17 @@ const connectionFields = [
     autoComplete: "redirectUrl",
     isRequired: true,
     placeholder: "Redirect Url",
+  },
+  {
+    labelText: "Authorization Url",
+    labelFor: "authorizationUrl",
+    id: "authorizationUrl",
+    name: "authorizationUrl",
+    type: "text",
+    autoComplete: "authorizationUrl",
+    isRequired: false,
+    placeholder:
+      "Authorization Url (e.g. https://dev-123.okta.com/oauth2/v1/authorize)",
   },
 ];
 
