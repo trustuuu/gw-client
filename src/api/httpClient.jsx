@@ -2,6 +2,7 @@ import axios from "axios";
 import { authServer, uniDirServer } from "../api/igw-api";
 import { navigate } from "../component/navigate";
 import { getDeviceId, getUTC } from "../utils/Utils";
+import cryptoManager from "../utils/CryptoManager";
 import { generateDpopProof } from "../utils/dpop";
 
 const httpClient = axios.create();
@@ -51,6 +52,9 @@ const gethAccessToken = async () => {
   } catch (err) {
     if (err.response.status == 404) {
       sessionStorage.clear();
+      localStorage.removeItem("unidir_chat_history");
+      localStorage.removeItem("unidir_raw_context");
+      cryptoManager.clearKey().catch(console.error);
       navigate("/login");
     }
     console.error("Get access token failed:", err);
@@ -155,6 +159,9 @@ httpClient.interceptors.response.use(
       } catch (refreshErr) {
         if (refreshErr.response.status == 404) {
           sessionStorage.clear();
+          localStorage.removeItem("unidir_chat_history");
+          localStorage.removeItem("unidir_raw_context");
+          cryptoManager.clearKey().catch(console.error);
           navigate("/login");
         }
         return Promise.reject(refreshErr); // return fail

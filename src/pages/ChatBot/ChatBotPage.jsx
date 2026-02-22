@@ -2,7 +2,8 @@ import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import "highlight.js/styles/github-dark.css";
+import "highlight.js/styles/github.css";
+import cryptoManager from "../../utils/CryptoManager";
 import { httpClient } from "../../api/httpClient";
 import { visit } from "unist-util-visit";
 
@@ -544,6 +545,60 @@ function ChatMessage({ index, role, text, time, onDelete }) {
 
 export default function ChatBox() {
   const [messages, setMessages] = useState([]);
+  const [contextData, setContextData] = useState(null);
+  const [isStorageLoaded, setIsStorageLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadSecureStorage() {
+      try {
+        const savedHistory = localStorage.getItem("unidir_chat_history");
+        if (savedHistory) {
+          const decryptedHistory =
+            await cryptoManager.decryptData(savedHistory);
+          if (decryptedHistory) setMessages(decryptedHistory);
+        }
+
+        const savedContext = localStorage.getItem("unidir_raw_context");
+        if (savedContext) {
+          const decryptedContext =
+            await cryptoManager.decryptData(savedContext);
+          if (decryptedContext) setContextData(decryptedContext);
+        }
+      } catch (e) {
+        console.error("Failed to load secure chat data", e);
+      } finally {
+        setIsStorageLoaded(true);
+      }
+    }
+    loadSecureStorage();
+  }, []);
+
+  useEffect(() => {
+    async function saveHistory() {
+      if (!isStorageLoaded) return;
+      if (messages.length > 0) {
+        const encrypted = await cryptoManager.encryptData(messages);
+        if (encrypted) localStorage.setItem("unidir_chat_history", encrypted);
+      } else {
+        localStorage.removeItem("unidir_chat_history");
+      }
+    }
+    saveHistory();
+  }, [messages, isStorageLoaded]);
+
+  useEffect(() => {
+    async function saveContext() {
+      if (!isStorageLoaded) return;
+      if (contextData) {
+        const encrypted = await cryptoManager.encryptData(contextData);
+        if (encrypted) localStorage.setItem("unidir_raw_context", encrypted);
+      } else {
+        localStorage.removeItem("unidir_raw_context");
+      }
+    }
+    saveContext();
+  }, [contextData, isStorageLoaded]);
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -605,8 +660,16 @@ export default function ChatBox() {
       }));
 
       const url = `${import.meta.env.VITE_MCP_HTTP_URL}/chat`;
-      const res = await httpClient.post(url, { message: text, history });
+      const res = await httpClient.post(url, {
+        message: text,
+        history,
+        contextData,
+      });
       const reply = res?.data?.reply ?? "No response";
+
+      if (res?.data?.rawData) {
+        setContextData(res.data.rawData);
+      }
 
       setMessages((prev) => [
         ...prev,
@@ -660,6 +723,7 @@ export default function ChatBox() {
   function clearHistory() {
     if (window.confirm("Clear all chat history?")) {
       setMessages([]);
+      setContextData(null);
     }
   }
 

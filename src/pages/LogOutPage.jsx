@@ -3,13 +3,14 @@ import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../component/AuthContext";
 import { igwApi } from "../api/igw-api";
+import cryptoManager from "../utils/CryptoManager";
 
 const LogOutPage = () => {
   const navigate = useNavigate();
   const [cookies, _setCookie, removeCookie] = useCookies(["igw-udir"]);
   const { saveUser, saveClient, saveCompany, saveDomain } = useAuth();
 
-  const signOut = () => {
+  const signOut = async () => {
     //if (!cookies.IsRemember) {
     igwApi.logoutWithGoodWorks();
     saveUser(null);
@@ -17,6 +18,13 @@ const LogOutPage = () => {
     saveCompany(null);
     saveDomain(null);
     sessionStorage.clear();
+    localStorage.removeItem("unidir_chat_history");
+    localStorage.removeItem("unidir_raw_context");
+    try {
+      await cryptoManager.clearKey();
+    } catch (e) {
+      console.error("Failed to clear crypto keys", e);
+    }
     //}
     navigate("/");
   };

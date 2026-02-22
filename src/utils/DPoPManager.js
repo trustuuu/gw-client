@@ -284,6 +284,25 @@ class DPoPManager {
 
     return await jose.calculateJwkThumbprint(publicJWK, "sha256");
   }
+
+  async verifyAndStoreToken(tokenResponse) {
+    const accessToken = tokenResponse.access_token;
+
+    // 1. 서버가 준 토큰의 페이로드 해독 (라이브러리 사용 혹은 base64 decode)
+    const payloadBase64 = accessToken.split(".")[1];
+    const payload = JSON.parse(atob(payloadBase64));
+
+    // 2. 내 현재 공개키의 지문(Thumbprint) 계산
+    const myJkt = await this.getJwkThumbprint();
+
+    // 3. 서버가 토큰에 박아놓은 지문(cnf.jkt)과 대조
+    if (payload.cnf && payload.cnf.jkt === myJkt) {
+      console.log("✅ 토큰 바인딩 성공: 이 토큰은 내 키에 종속되었습니다.");
+      this.saveToken(accessToken); // 안전하게 저장
+    } else {
+      console.error("❌ 토큰 바인딩 실패: 키 지문이 일치하지 않습니다!");
+    }
+  }
 }
 
 // Create and export a singleton instance
