@@ -42,26 +42,6 @@ function ApiSystemPage({ status }) {
     setCheckedItems(childCheckedItems);
   };
 
-  const onClickNew = function () {
-    setApi({ name: "" });
-    navigate("/apis-view-post", {
-      state: {
-        company: company,
-        domain: domain,
-        mode: "new",
-      },
-    });
-  };
-
-  const onClickDel = async function () {
-    //const api = await apiApi.get(company.id, domain.id, checkedItems);
-    setIsLoading(true);
-    await apiApi.remove(checkedItems);
-    setCheckedItems([]);
-    await getApis();
-    setIsLoading(false);
-  };
-
   const onClickView = (item) => {
     setApi(item);
     setPath({ ...path, subTitle: item.name });
@@ -122,16 +102,7 @@ function ApiSystemPage({ status }) {
       {company.id !== "igoodworks" ? (
         <></>
       ) : (
-        <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex">
-          {/* <h2 className="font-semibold text-slate-800 dark:text-slate-100">Manage Domain</h2> */}
-          <Toolbox
-            onClickNew={onClickNew}
-            onClickDel={onClickDel}
-            DelButtonLabel={delBtnLabel}
-            visibleNew={status == "active"}
-            disabledDel={checkedItems.length < 1}
-          />
-        </header>
+        <header className="w-full px-5 py-4 border-b border-slate-100 dark:border-slate-700 relative inline-flex"></header>
       )}
       <div className="w-full p-3">
         {/* apis */}

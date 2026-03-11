@@ -30,7 +30,7 @@ function ApisSystem({
       {/* Apis */}
       <div>
         <header className="text-xs uppercase dark:bg-opacity-50 rounded-sm font-semibold p-2">
-          Apis
+          Service Permissions
         </header>
         <ul className={customClass ? customClass : "my-1 overflow-y-auto"}>
           {/* Item */}

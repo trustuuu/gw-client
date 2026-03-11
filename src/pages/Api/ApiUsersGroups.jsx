@@ -10,9 +10,8 @@ function ApiUsersGroups({
   customClass,
   initCheckedItems,
 }) {
-  
   const [checkedItems, setCheckedItems] = useState(
-    initCheckedItems ? initCheckedItems : []
+    initCheckedItems ? initCheckedItems : [],
   );
   useEffect(() => {
     setCheckedItems(initCheckedItems);
@@ -50,7 +49,7 @@ function ApiUsersGroups({
           <li className="grid grid-cols-10 p-2 border-b border-slate-100 dark:border-slate-700 text-sm font-semibold uppercase">
             <div className="col-span-1 self-center"></div>
             <div className="col-span-3 self-center uppercase">Display</div>
-            <div className="col-span-3 text-left uppercase">Object Type</div>
+            <div className="col-span-3 text-left uppercase">Type</div>
             <div className="col-span-3 shrink-0 self-end">Role assigned</div>
           </li>
           {apiUsersAndGroups ? (
