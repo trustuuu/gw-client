@@ -55,6 +55,16 @@ export const userFields = [
     },
   },
   {
+    labelText: "Universal Direcotry Logon Enable",
+    labelFor: "logonEnabled",
+    id: "logonEnabled",
+    name: "logonEnabled",
+    type: "checkbox",
+    autoComplete: "logonEnabled",
+    isRequired: false,
+    placeholder: "Enable",
+  },
+  {
     labelText: "MFA",
     labelFor: "mfa",
     id: "mfa",

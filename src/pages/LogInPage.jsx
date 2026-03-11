@@ -29,7 +29,7 @@ export default function LogInPage() {
       date.getUTCDate(),
       date.getUTCHours(),
       date.getUTCMinutes(),
-      date.getUTCSeconds()
+      date.getUTCSeconds(),
     );
 
     const expires_in =
@@ -147,6 +147,7 @@ export default function LogInPage() {
           <input type="hidden" name="scope" value={client.scope} />
           <input type="hidden" name="state" value={client.state} />
           <input type="hidden" name="code_challenge" value={codeChallenge} />
+          <input type="hidden" name="response_type" value="code" />
           <input
             type="hidden"
             name="code_challenge_method"

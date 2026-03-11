@@ -45,6 +45,7 @@ export default function AuthCallback() {
     setIsLoading(false);
     const form_data = {
       grant_type: "authorization_code",
+      response_type: "code",
       code,
       redirect_uri: client.redirect_uris[0],
       code_verifier: codeVerifier,

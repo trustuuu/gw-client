@@ -34,7 +34,6 @@ const GroupMemberPage = React.memo(
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-
     const currentPosts = useMemo(
       () =>
         members.length > 0

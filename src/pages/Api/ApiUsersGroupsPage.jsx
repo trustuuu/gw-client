@@ -107,7 +107,7 @@ function ApiUsersGroupsPage({ api: apiState }) {
           ...item,
           id: `${item.objectType}#${item.role}#${item.id}`,
         };
-      })
+      }),
     );
     setUserCheckedItems([]);
     setGroupCheckedItems([]);
@@ -125,7 +125,7 @@ function ApiUsersGroupsPage({ api: apiState }) {
     setPageEnd(
       Math.ceil(items.data.length / postsPerPage) < pageDisplayCount
         ? Math.ceil(items.data.length / postsPerPage)
-        : pageDisplayCount
+        : pageDisplayCount,
     );
   };
 

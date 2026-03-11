@@ -48,6 +48,8 @@ import ExternalIdentityAccountsPage from "./User/ExternalIdentityAccountsPage";
 import ExternalIdentityAccountPost from "./User/ExternalIdentityAccountPost";
 import ConnectionPage from "./Domain/ConnectionPage";
 import ConnectionPost from "./Domain/ConnectionPost";
+import ApiSystemPage from "./Api/ApiSystemPage";
+import ApiSystemView from "./Api/ApiSystemView";
 //import { useAuth } from "../component/AuthContext";
 
 function RoutesMain() {
@@ -590,6 +592,22 @@ function RoutesMain() {
         element={
           <RouteWithTitle title="MFA" parentPath="settings" subTitle="">
             <MFASettingPage />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/settings-permissions"
+        element={
+          <RouteWithTitle title="Permissions" parentPath="settings" subTitle="">
+            <ApiSystemPage />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/settings-apis-brief"
+        element={
+          <RouteWithTitle title="Permissions" parentPath="settings" subTitle="">
+            <ApiSystemView key="apiSystemView" mode="overview" />
           </RouteWithTitle>
         }
       />

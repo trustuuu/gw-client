@@ -6,11 +6,11 @@ import TabBody from "../../component/tabs/TabBody";
 import GroupPost from "./GroupPost";
 import GroupMemberPage from "./GroupMemberPage";
 import groupApi from "../../api/group-api";
+import { useResolvedIdentity } from "../../hooks/useResolvedIdentity";
 
 function GroupView() {
-  const location = useLocation();
+  const { user, group, domain, company, mode } = useResolvedIdentity();
 
-  const { company, domain, group, mode } = location.state;
   const refreshGroup = async (id) => {
     const newGroup = await groupApi.get(company.id, domain.id, id);
     SetCurrentGroup(newGroup.data);
@@ -49,7 +49,7 @@ function GroupView() {
     ];
   }
   const [visibleTab, setVisibleTab] = useState(0);
-
+  console.log("data in group view", data);
   return (
     <div className="w-full">
       <TabHeader
