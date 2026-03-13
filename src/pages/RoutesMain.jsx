@@ -50,6 +50,7 @@ import ConnectionPage from "./Domain/ConnectionPage";
 import ConnectionPost from "./Domain/ConnectionPost";
 import ApiSystemPage from "./Api/ApiSystemPage";
 import ApiSystemView from "./Api/ApiSystemView";
+import ActivateEmailPage from "./User/ActivateEmailPage";
 //import { useAuth } from "../component/AuthContext";
 
 function RoutesMain() {
@@ -549,6 +550,14 @@ function RoutesMain() {
         element={
           <RouteWithTitle title="SignUp">
             <SignUp />
+          </RouteWithTitle>
+        }
+      />
+      <Route
+        path="/activate-email"
+        element={
+          <RouteWithTitle title="Active Email">
+            <ActivateEmailPage />
           </RouteWithTitle>
         }
       />

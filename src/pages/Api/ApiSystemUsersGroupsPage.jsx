@@ -128,7 +128,6 @@ function ApiSystemUsersGroupsPage({ api: apiState }) {
     setModalOpen(false);
   };
   const getApiUsersAngGroups = async () => {
-    console.log("company.id, domain.id, api.id", company.id, domain.id, api.id);
     const items = await systemApi.getUsersAndGroups(
       company.id,
       domain.id,

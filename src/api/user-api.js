@@ -27,22 +27,35 @@ const update = async (companyId, domainId, data) => {
   else
     return await httpClient.put(
       `${userUrl(companyId, domainId)}/${data.id}`,
-      data
+      data,
     );
 };
 
 const resetPassword = async (companyId, domainId, data) => {
-  return await httpClient.put(
-    `${userUrl(companyId, domainId)}/${data.email}/resetPassword`,
-    data
-  );
+  try {
+    const result = await httpClient.put(
+      `${userUrl(companyId, domainId)}/${data.email}/resetPassword`,
+      data,
+    );
+    console.log("result", result);
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+  return result;
 };
 
 const verifyUser = async (companyId, domainId, email, data) => {
   return await httpClient.post(
     `${userUrl(companyId, domainId)}/${email}`,
-    data
+    data,
   );
+};
+
+const activateEmail = async (data) => {
+  const url = `${import.meta.env.VITE_UNIDIR_AUTH_SERVER}`;
+  return await httpClient.post(`${url}/verify-email`, data);
 };
 
 const remove = async (companyId, domainId, data) => {
@@ -57,14 +70,14 @@ const remove = async (companyId, domainId, data) => {
 
 const getPermissionScopes = async (companyId, domainId, id) => {
   return await httpClient.get(
-    `${userUrl(companyId, domainId)}/${id}/PermissionScopes`
+    `${userUrl(companyId, domainId)}/${id}/PermissionScopes`,
   );
 };
 
 const addPermissionScopes = async (companyId, domainId, id, data) => {
   return await httpClient.post(
     `${userUrl(companyId, domainId)}/${id}/PermissionScopes`,
-    data
+    data,
   );
 };
 
@@ -72,14 +85,14 @@ const removePermissionScopes = async (companyId, domainId, id, data) => {
   try {
     if (typeof data === "string")
       return await httpClient.delete(
-        `${userUrl(companyId, domainId)}/${id}/PermissionScopes/${data}`
+        `${userUrl(companyId, domainId)}/${id}/PermissionScopes/${data}`,
       );
     else
       return await httpClient.delete(
         `${userUrl(companyId, domainId)}/${id}/PermissionScopes`,
         {
           data: data,
-        }
+        },
       );
   } catch (error) {
     console.log(error);
@@ -88,7 +101,7 @@ const removePermissionScopes = async (companyId, domainId, id, data) => {
 
 const getExternalIdentityAccounts = async (companyId, domainId, userId) => {
   return await httpClient.get(
-    `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts`
+    `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts`,
   );
 };
 
@@ -96,13 +109,13 @@ const getExternalIdentityAccount = async (
   companyId,
   domainId,
   userId,
-  accountId
+  accountId,
 ) => {
   return await httpClient.get(
     `${userUrl(
       companyId,
-      domainId
-    )}/${userId}/ExternalIdentityAccounts/${accountId}`
+      domainId,
+    )}/${userId}/ExternalIdentityAccounts/${accountId}`,
   );
 };
 
@@ -110,11 +123,11 @@ const addExternalIdentityAccount = async (
   companyId,
   domainId,
   userId,
-  data
+  data,
 ) => {
   return await httpClient.post(
     `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts`,
-    data
+    data,
   );
 };
 
@@ -122,13 +135,13 @@ const updateExternalIdentityAccount = async (
   companyId,
   domainId,
   userId,
-  data
+  data,
 ) => {
   return await httpClient.put(
     `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts/${
       data.id
     }`,
-    data
+    data,
   );
 };
 
@@ -136,13 +149,13 @@ const retrieveExternalIdentityAccountToken = async (
   companyId,
   domainId,
   userId,
-  data
+  data,
 ) => {
   return await httpClient.post(
     `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts/${
       data.id
     }`,
-    data
+    data,
   );
 };
 
@@ -154,22 +167,22 @@ const removeExternalIdentityAccounts = async (
   companyId,
   domainId,
   userId,
-  data
+  data,
 ) => {
   try {
     if (typeof data === "string")
       return await httpClient.delete(
         `${userUrl(
           companyId,
-          domainId
-        )}/${userId}/ExternalIdentityAccounts/${data}`
+          domainId,
+        )}/${userId}/ExternalIdentityAccounts/${data}`,
       );
     else
       return await httpClient.delete(
         `${userUrl(companyId, domainId)}/${userId}/ExternalIdentityAccounts`,
         {
           data: data,
-        }
+        },
       );
   } catch (error) {
     console.log(error);
@@ -194,5 +207,6 @@ const userApi = {
   removeExternalIdentityAccounts,
   verifyUser,
   resetPassword,
+  activateEmail,
 };
 export default userApi;

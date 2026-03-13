@@ -70,7 +70,6 @@ function ApiSystemPage({ status }) {
     try {
       setIsLoading(true);
       const items = await systemApi.getSystemApis();
-      console.log(items.data.map((d) => d.data));
 
       setApis(items.data.map((d) => d.data));
       setPageEnd(

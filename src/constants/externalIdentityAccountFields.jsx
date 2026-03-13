@@ -29,35 +29,6 @@ export const externalIdentityAccountFields = [
     isRequired: true,
     placeholder: "User Id",
   },
-  // {
-  //   labelText: "Provider",
-  //   labelFor: "provider",
-  //   id: "provider",
-  //   parentId: "connection",
-  //   name: "provider",
-  //   type: "select",
-  //   list: [
-  //     { key: "google", value: "Google" },
-  //     { key: "azure", value: "Azure" },
-  //     { key: "okta", value: "Okta" },
-  //     {
-  //       key: "custom",
-  //       value: "Custom",
-  //     },
-  //   ],
-  //   autoComplete: "provider",
-  //   isRequired: true,
-  //   placeholder: "provider",
-  //   handleChange: (handleChange) => {
-  //     return (e) => {
-  //       console.log("e handleChange", e);
-  //       const itemValue = e.target.value;
-  //       console.log("source itemValue handleChange", itemValue);
-  //       handleChange(e, itemValue);
-  //       return itemValue;
-  //     };
-  //   },
-  // },
   {
     labelText: "Connection",
     labelFor: "connection",

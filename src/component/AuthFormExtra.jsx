@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function AuthFormExtra(props) {
   const handleChange = (e) => {
     props.handleData(e.target.checked);
@@ -23,12 +25,12 @@ export default function AuthFormExtra(props) {
       </div>
 
       <div className="text-sm">
-        <a
-          href="#"
-          className="font-medium text-purple-600 hover:text-purple-500"
+        <Link
+          to="/resetpw-send"
+          className="text-dark text-[14px] font-semibold hover:text-primary hover:underline"
         >
           Forgot your password?
-        </a>
+        </Link>
       </div>
     </div>
   );

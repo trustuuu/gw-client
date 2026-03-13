@@ -14,6 +14,7 @@ export default function RouteWithTitle({
 
   useEffect(() => {
     if (isInitialized && !user) {
+      if (path.title === "Active Email") return;
       navigate("/login");
     }
   }, [user, isInitialized]);

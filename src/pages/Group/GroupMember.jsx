@@ -25,7 +25,7 @@ const GroupMember = React.memo(({ members, parentCallback }) => {
       setCheckedItems(checkedItems.filter((i) => i.value !== item));
     }
   };
-  console.log(members);
+
   return (
     <div className="p-3">
       {/* Groups */}

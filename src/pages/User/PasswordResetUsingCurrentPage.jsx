@@ -36,7 +36,7 @@ const PasswordResetUsingCurrentPage = () => {
     } catch (error) {
       console.error("Error updating password:", error);
       setStatusMessage(
-        `Failed to update password. Please try again. ${error.response.data}`
+        `Failed to update password. Please try again. ${error.response.data.message}`,
       );
     }
     setIsLoading(false);

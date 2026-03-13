@@ -49,7 +49,6 @@ function GroupView() {
     ];
   }
   const [visibleTab, setVisibleTab] = useState(0);
-  console.log("data in group view", data);
   return (
     <div className="w-full">
       <TabHeader

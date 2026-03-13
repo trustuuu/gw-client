@@ -38,7 +38,7 @@ const PasswordResetFromLinkPage = () => {
           token,
           tempPassword,
           newPassword,
-        }
+        },
       );
       setStatusMessage("Password has been reset successfully!");
       setEmail("");
@@ -47,8 +47,10 @@ const PasswordResetFromLinkPage = () => {
       setConfirmNewPassword("");
       setSent(true);
     } catch (error) {
-      console.error("Error resetting password:", error);
-      setStatusMessage("Failed to reset password. Please try again.");
+      console.error("Error resetting password:", error.response.data.message);
+      setStatusMessage(
+        `Failed to reset password. Please try again. ${error.response.data.message}`,
+      );
     } finally {
       setDisabled(false);
     }
