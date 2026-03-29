@@ -6,8 +6,8 @@ const apisUrl = (companyId, domainId) =>
   domainId
     ? `${url}/${companyId}/${domainId}/api`
     : companyId
-    ? `${url}/${companyId}/api`
-    : `${url}/api`;
+      ? `${url}/${companyId}/api`
+      : `${url}/api`;
 
 const get = async (companyId, domainId, id, condition) => {
   if (id) {
@@ -69,21 +69,21 @@ const update = async (data) => {
 const updatePermission = async (apiId, data) => {
   return await httpClient.put(
     `${apisUrl()}/${apiId}/PermissionScopes/${data.id}`,
-    data
+    data,
   );
 };
 
 const updateAppRole = async (apiId, data) => {
   return await httpClient.put(
     `${apisUrl()}/${apiId}/AppRoles/${data.id}`,
-    data
+    data,
   );
 };
 
 const updateUsersAndGroups = async (apiId, data) => {
   return await httpClient.put(
     `${apisUrl()}/${apiId}/UsersAndGroups/${data.id}`,
-    data
+    data,
   );
 };
 
@@ -99,7 +99,7 @@ const removePermission = async (apiId, data) => {
   try {
     if (typeof data === "string")
       return await httpClient.delete(
-        `${apisUrl()}/${apiId}/PermissionScopes/${data}`
+        `${apisUrl()}/${apiId}/PermissionScopes/${data}`,
       );
     else
       return await httpClient.delete(`${apisUrl()}/${apiId}/PermissionScopes`, {
@@ -127,7 +127,7 @@ const removeUsersAndGroups = async (apiId, data) => {
   try {
     if (typeof data === "string")
       return await httpClient.delete(
-        `${apisUrl()}/${apiId}/UsersAndGroups/${data}`
+        `${apisUrl()}/${apiId}/UsersAndGroups/${data}`,
       );
     else
       return await httpClient.delete(`${apisUrl()}/${apiId}/UsersAndGroups`, {

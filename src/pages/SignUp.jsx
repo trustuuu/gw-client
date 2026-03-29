@@ -25,9 +25,9 @@ export default function SignUp() {
       e.target.type === "checkbox" //e.target.value === "true" || e.target.value === "false"
         ? e.target.checked
         : currentItem.valueType !== undefined &&
-          currentItem.valueType === "array"
-        ? e.target.value.split(/\r\n|\n|\r/)
-        : e.target.value;
+            currentItem.valueType === "array"
+          ? e.target.value.split(/\r\n|\n|\r/)
+          : e.target.value;
 
     setState({ ...itemState, [e.target.id]: itemValue });
   };
@@ -56,6 +56,7 @@ export default function SignUp() {
           },
           domain: {
             ...domainState,
+            primary: true,
             id: domainState.name,
           },
           user: {
@@ -118,7 +119,7 @@ export default function SignUp() {
         null,
         userState,
         handleChangeUser,
-        mode
+        mode,
       ),
       verify: () => {
         // Password match check
@@ -141,7 +142,7 @@ export default function SignUp() {
         null,
         companyState,
         handleChangeCompany,
-        mode
+        mode,
       ),
       verify: () => validateFields(companyState, companyFields),
     },
@@ -153,7 +154,7 @@ export default function SignUp() {
         null,
         domainState,
         handleChangeDomain,
-        mode
+        mode,
       ),
       verify: () => validateFields(domainState, domainFields),
     },

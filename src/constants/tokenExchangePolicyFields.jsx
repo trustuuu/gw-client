@@ -49,6 +49,18 @@ export const tokenExchangePolicyFields = [
     category: "settings.general",
   },
   {
+    labelText: "Allowed Subject Issuers",
+    labelFor: "allowedSubjectIssuers",
+    id: "allowedSubjectIssuers",
+    name: "allowedSubjectIssuers",
+    type: "textarea",
+    valueType: "array",
+    autoComplete: "allowedSubjectIssuers",
+    isRequired: true,
+    placeholder: "Allowed Subject Issuers",
+    category: "settings.general",
+  },
+  {
     labelText: "Allowed Subject Audiences",
     labelFor: "allowedSubjectAudiences",
     id: "allowedSubjectAudiences",

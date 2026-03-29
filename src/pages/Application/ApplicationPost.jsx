@@ -57,7 +57,7 @@ export default function ApplicationPost(props) {
   const application = applicationState ? applicationState : applicationAuth;
   const company = companyState ? companyState : companyAuth;
   const domain = domainState ? domainState : domainAuth;
-
+  console.log("application", application);
   const [mode, setMode] = useState(
     location.state ? location.state.mode : props.mode,
   );

@@ -85,6 +85,7 @@ function CompanyPage() {
       saveCompany(companySession);
 
       const dom = await domainApi.getPrimary(companyId);
+      console.log("dom in CompanyPage", dom);
       if (dom.data.length === 1) {
         saveDomain({
           id: dom.data[0].id,

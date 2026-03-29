@@ -11,10 +11,10 @@ import { validateFields } from "../../constants/validateFields";
 
 const fields = apiFields;
 const fields_general = fields.filter(
-  (a) => a.category === "settings.general" && a.id !== "domain"
+  (a) => a.category === "settings.general" && a.id !== "domain",
 );
 const fields_token_setting = fields.filter(
-  (a) => a.category === "settings.tokenSetting"
+  (a) => a.category === "settings.tokenSetting",
 );
 const fields_rbac = fields.filter((a) => a.category === "settings.rbac");
 const fields_access = fields.filter((a) => a.category === "settings.access");
@@ -23,7 +23,7 @@ let fieldsState = {};
 fields.forEach(
   (field) =>
     (fieldsState[field.id] =
-      field.type == "checkbox" ? false : field.default ?? "")
+      field.type == "checkbox" ? false : (field.default ?? "")),
 );
 
 export default function ApiPost(props) {
@@ -31,7 +31,7 @@ export default function ApiPost(props) {
   const navigate = useNavigate();
   const [errorText, setError] = useState();
   const [mode, setMode] = useState(
-    location.state ? location.state.mode : props.mode
+    location.state ? location.state.mode : props.mode,
   );
 
   const {
@@ -43,7 +43,7 @@ export default function ApiPost(props) {
     : { company: null, domain: null, api: null };
   const { company: companyAuth, domain: domainAuth, api: apiAuth } = useAuth();
   const api = apiState ? apiState : apiAuth;
-
+  console.log("api", api);
   useEffect(() => {
     if (!api) {
       navigate("/apis");
@@ -55,7 +55,7 @@ export default function ApiPost(props) {
   const [itemState, setItemState] = useState(
     mode === "new"
       ? { ...fieldsState, id: generateString(32), signingAlgorithm: "RS256" }
-      : api
+      : api,
   );
 
   const handleChange = (e) => {
@@ -64,9 +64,9 @@ export default function ApiPost(props) {
       e.target.type === "checkbox"
         ? e.target.checked
         : currentItem.valueType !== undefined &&
-          currentItem.valueType === "array"
-        ? e.target.value.split(/\r\n|\n|\r/)
-        : e.target.value;
+            currentItem.valueType === "array"
+          ? e.target.value.split(/\r\n|\n|\r/)
+          : e.target.value;
 
     setItemState({ ...itemState, [e.target.id]: itemValue });
   };
@@ -152,7 +152,7 @@ export default function ApiPost(props) {
         api,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () => validateFields(itemState, fields_general),
     },
@@ -164,7 +164,7 @@ export default function ApiPost(props) {
         api,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () => validateFields(itemState, fields_token_setting),
     },
@@ -176,7 +176,7 @@ export default function ApiPost(props) {
         api,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () => validateFields(itemState, fields_rbac),
     },
@@ -188,7 +188,7 @@ export default function ApiPost(props) {
         api,
         itemState,
         handleChange,
-        mode
+        mode,
       ),
       verify: () => validateFields(itemState, fields_access),
     },
@@ -211,7 +211,7 @@ export default function ApiPost(props) {
               api,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
             {DisplayPanel(
               "Token Setting",
@@ -219,7 +219,7 @@ export default function ApiPost(props) {
               api,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
             {DisplayPanel(
               "RBAC Settings",
@@ -227,7 +227,7 @@ export default function ApiPost(props) {
               api,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
             {DisplayPanel(
               "Access Settings",
@@ -235,7 +235,7 @@ export default function ApiPost(props) {
               api,
               itemState,
               handleChange,
-              mode
+              mode,
             )}
           </div>
         )}
